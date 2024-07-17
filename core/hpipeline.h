@@ -14,7 +14,7 @@ namespace paxsim::core {
 
 //---------------------------------------------------------------------------------------------------------------------
 // HPipeline is a collection of message processing modules. Each module receives the incoming message and produces zero
-// or more outgoing messages. Timeout event produce zero or more outgoing messages.
+// or more outgoing messages. Timeout event produces zero or more outgoing messages.
 //---------------------------------------------------------------------------------------------------------------------
 template<typename M, typename... Ms>
 class HPipeline

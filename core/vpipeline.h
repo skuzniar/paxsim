@@ -14,7 +14,7 @@ namespace paxsim::core {
 
 //---------------------------------------------------------------------------------------------------------------------
 // VPipeline is a collection of message processing modules. Each module consumes the incoming message and produces zero
-// or more outgoing messages, which in turn are passed to the next module. Timeout event produce zero or more outgoing
+// or more outgoing messages, which in turn are passed to the next module. Timeout event produces zero or more outgoing
 // messages which are processed in the same way.
 //---------------------------------------------------------------------------------------------------------------------
 template<typename M, typename... Ms>

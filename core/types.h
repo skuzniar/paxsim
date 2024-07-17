@@ -2,6 +2,7 @@
 #define Paxsim_Core_types_dot_h
 
 #include <chrono>
+#include <optional>
 
 namespace paxsim::core {
 

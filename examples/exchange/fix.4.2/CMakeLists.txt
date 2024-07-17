@@ -5,6 +5,7 @@ list(APPEND CMAKE_MODULE_PATH
     "${CMAKE_SOURCE_DIR}/cmake")
 
 find_package(Boost REQUIRED)
+find_package(Threads REQUIRED)
 find_package(QuickFix REQUIRED)
 
 add_executable(fix.4.2 fix.4.2.cpp)
@@ -18,5 +19,6 @@ target_include_directories(fix.4.2 PRIVATE
 target_link_libraries(fix.4.2 PRIVATE 
     ${QUICKFIX_LIBRARIES}
     Boost::boost
+    Threads::Threads
     )
 

@@ -4,6 +4,7 @@
 #include <ostream>
 #include <iostream>
 #include <iomanip>
+#include <chrono>
 #include <type_traits>
 
 namespace paxsim::core {
@@ -59,12 +60,12 @@ union logpack
         return i;
     }
 
-    threshold threshold() const
+    threshold get_threshold() const
     {
         return static_cast<enum threshold>(l.threshold);
     }
 
-    level level() const
+    level get_level() const
     {
         return static_cast<enum level>(l.level);
     }
@@ -127,7 +128,7 @@ threshold
 get_threshold(std::basic_ostream<CharT, Traits>& os)
 {
     logpack   pack = os.iword(logidx());
-    threshold retv = pack.threshold();
+    threshold retv = pack.get_threshold();
     return retv;
 }
 
@@ -136,7 +137,7 @@ level
 get_level(std::basic_ostream<CharT, Traits>& os)
 {
     logpack pack = os.iword(logidx());
-    level   retv = pack.level();
+    level   retv = pack.get_level();
     return retv;
 }
 
