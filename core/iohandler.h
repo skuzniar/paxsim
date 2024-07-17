@@ -95,7 +95,7 @@ public:
                                      std::invoke_result_t<decltype(&Parser::parse), Parser, const char*, std::size_t>>;
 
             // Detect the type of the command by examining the return type of the Controller commands method.
-            using Cmd = std::invoke_result_t<decltype(&Controller::commands), Controller>::value_type;
+            using Cmd = typename std::invoke_result_t<decltype(&Controller::commands), Controller>::value_type;
 
             for (auto cmd : m_controller.commands()) {
                 if constexpr (tag::is_control<std::remove_reference_t<decltype(m_handler)>>()) {
