@@ -59,6 +59,11 @@ fixdump(const std::string_view buf, char sep = '|')
     return { buf.data(), buf.size(), sep };
 }
 
+// Generic conversion declaration
+template<typename T>
+T
+from_string(std::string_view v);
+
 } // namespace fix42::sim
 
 #endif
