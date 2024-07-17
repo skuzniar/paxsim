@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.20)
+
+add_subdirectory(telnet-basic)
+add_subdirectory(telnet-basic-control)
+add_subdirectory(telnet-hpipeline)
+add_subdirectory(telnet-hpipeline-control)
+add_subdirectory(telnet-vpipeline)
+add_subdirectory(telnet-vpipeline-control)
+add_subdirectory(telnet-xpipeline)
+add_subdirectory(telnet-context)
+add_subdirectory(telnet-control)

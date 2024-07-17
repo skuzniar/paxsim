@@ -1,0 +1,16 @@
+{
+    "Log":
+    {
+        "Level": "Debug"
+    },
+    "Session": 
+    {
+        "Port": 7777,
+        "SenderCompID": "PAXSIM-SERVER",
+        "TargetCompID": "PAXSIM-CLIENT"
+    },
+    "Control": 
+    {
+        "Port": 8888
+    }
+}
