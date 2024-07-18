@@ -64,7 +64,7 @@ public:
             log << level::debug << ts << ' ' << '[' << hexdump(ibuf.rpos(), size) << ']' << std::endl;
             ibuf.consumed(size);
 
-            for (auto msg : m_handler.process(message)) {
+            for (auto msg : m_handler.process(std::move(message))) {
                 if (msg) {
                     if (!write(*msg, obuf)) {
                         log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false
