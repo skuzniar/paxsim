@@ -68,63 +68,49 @@ main(int argc, char* argv[])
         std::cerr << "Unable to open configuration file: " << config << '\n';
         return 1;
     }
-    json cfg = json::parse(ifs);
-    if (cfg.empty()) {
-        std::cerr << "Could not parse: " << config << '\n';
-        return 1;
-    }
-
-    std::string level = cfg["Log"]["Level"];
-
-    switch (std::tolower(level[0])) {
-        default:
-        case 'd':
-            core::log << threshold::debug;
-            break;
-        case 'i':
-            core::log << threshold::info;
-            break;
-        case 'w':
-            core::log << threshold::warning;
-            break;
-        case 'e':
-            core::log << threshold::error;
-            break;
-        case 'f':
-            core::log << threshold::fatal;
-            break;
-    }
-
-    /*
-    std::unique_ptr<core::redirecter> rd;
-
-    if (auto value = cfg["Log"]["File"]; value.is_string()) {
-        std::string file = value;
-        if (std::ofstream fstream(file); fstream) {
-            std::cout << "Redirecting standard output to " << file << '\n';
-            rd = std::make_unique<redirecter>(std::clog, fstream);
-        }
-    }
-    */
-
-    auto sescfg = cfg["Session"];
-    auto ctlcfg = cfg["Control"];
-
-    int sesport = sescfg["Port"];
-    int ctlport = ctlcfg["Port"];
-
-    if (sesport == 0 || ctlport == 0) {
-        std::cerr << "Invalid configuration. Empty session and/or control port." << '\n';
-        return 1;
-    }
 
     try {
+        json cfg = json::parse(ifs);
+        if (cfg.empty()) {
+            std::cerr << "Could not parse: " << config << '\n';
+            return 1;
+        }
+
+        std::string level = cfg["Log"]["Level"];
+
+        switch (std::tolower(level[0])) {
+            default:
+            case 'd':
+                core::log << threshold::debug;
+                break;
+            case 'i':
+                core::log << threshold::info;
+                break;
+            case 'w':
+                core::log << threshold::warning;
+                break;
+            case 'e':
+                core::log << threshold::error;
+                break;
+            case 'f':
+                core::log << threshold::fatal;
+                break;
+        }
+
+        auto sescfg = cfg["Session"];
+        auto ctlcfg = cfg["Control"];
+
+        int sesport = sescfg["Port"];
+        int ctlport = ctlcfg["Port"];
+
+        if (sesport == 0 || ctlport == 0) {
+            std::cerr << "Invalid configuration. Empty session and/or control port." << '\n';
+            return 1;
+        }
+
         boost::asio::io_context iocontx;
         boost::asio::signal_set signals(iocontx, SIGINT, SIGTERM);
         signals.async_wait([&](auto, auto) { iocontx.stop(); });
-
-        // TODO - setup log stream to point to std::cerr, etc.
-        core::log << threshold::info;
 
         // Session pipeline
         using SESHandler   = core::VPipeline<sim::Session, core::HPipeline<sim::OrderBook, sim::Pass>>;

@@ -163,7 +163,7 @@ operator<<(std::ostream& s, level l)
 //----------------------------------------------------------------------------------------------------------------------
 // Static instance of the logging stream
 //----------------------------------------------------------------------------------------------------------------------
-static std::ostream log(std::clog.rdbuf());
+static std::ostream log(std::cout.rdbuf());
 
 namespace detail {
 
@@ -441,8 +441,8 @@ strip_path(const char* path)
 } // namespace detail
 
 // The filename with extension but no path
-#define _file_  paxsim::core::detail::strip_path(__FILE__)
-#define _line_  __LINE__
+#define _file_ paxsim::core::detail::strip_path(__FILE__)
+#define _line_ __LINE__
 
 } // namespace paxsim::core
 
