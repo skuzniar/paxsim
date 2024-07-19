@@ -2,7 +2,7 @@
 #define Paxsim_Examples_Fix42_Ctl_Writer_dot_h
 
 #include "core/streamlog.h"
-#include <nlohmann/json.hpp>
+#include <json5cpp.h>
 
 namespace fix42::ctl {
 
@@ -10,7 +10,7 @@ using namespace paxsim::core;
 
 using paxsim::core::log;
 
-using json = nlohmann::json;
+using json = Json::Value;
 
 //---------------------------------------------------------------------------------------------------------------------
 // JSON protocol writer. Copy the message to the output buffer and add a newline.
@@ -27,8 +27,6 @@ public:
 
     static std::pair<bool, std::size_t> write(const json& message, char* obuf, std::size_t size)
     {
-        assert(message.size() + 1 < size);
-
         return { true, 0 };
 
         /*

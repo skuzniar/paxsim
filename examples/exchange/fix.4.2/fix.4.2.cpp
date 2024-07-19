@@ -17,15 +17,14 @@
 #include "ctl/writer.h"
 
 #include <boost/asio.hpp>
-#include <nlohmann/json.hpp>
+#include <json5cpp.h>
 #include <iostream>
 #include <fstream>
 
 using namespace paxsim;
-using namespace paxsim::core; // For log
 using namespace fix42;
-//
-using json = nlohmann::json;
+
+using json = Json::Value;
 
 void
 usage(const char* program)
@@ -70,48 +69,47 @@ main(int argc, char* argv[])
     }
 
     try {
-        json cfg = json::parse(ifs);
-        if (cfg.empty()) {
-            std::cerr << "Could not parse: " << config << '\n';
+        json cfg;
+
+        std::string err;
+        if (!Json5::parse(ifs, cfg, &err)) {
+            std::cerr << "Could not parse: " << config << ' ' << "error: " << err << '\n';
             return 1;
         }
 
         const auto& cfglog = cfg["Log"];
 
-        if (auto iter = cfglog.find("Level"); iter != cfglog.end()) {
-            std::string level = *iter;
-
-            switch (std::tolower(level[0])) {
+        if (const auto& level = cfglog["Level"]) {
+            switch (std::tolower(level.asString()[0])) {
                 default:
                 case 'd':
-                    core::log << threshold::debug;
+                    core::log << core::threshold::debug;
                     break;
                 case 'i':
-                    core::log << threshold::info;
+                    core::log << core::threshold::info;
                     break;
                 case 'w':
-                    core::log << threshold::warning;
+                    core::log << core::threshold::warning;
                     break;
                 case 'e':
-                    core::log << threshold::error;
+                    core::log << core::threshold::error;
                     break;
                 case 'f':
-                    core::log << threshold::fatal;
+                    core::log << core::threshold::fatal;
                     break;
             }
         }
 
-        if (auto iter = cfglog.find("File"); iter != cfglog.end()) {
-            std::string file = *iter;
+        if (const auto& file = cfglog["File"]) {
             core::log << core::level::info << "Redirecting log output to: " << file << '\n';
-            core::log.is(file);
+            core::log.is(file.asString());
         }
 
-        auto sescfg = cfg["Session"];
-        auto ctlcfg = cfg["Control"];
+        const auto& sescfg = cfg["Session"];
+        const auto& ctlcfg = cfg["Control"];
 
-        int sesport = sescfg["Port"];
-        int ctlport = ctlcfg["Port"];
+        int sesport = sescfg["Port"].asInt();
+        int ctlport = ctlcfg["Port"].asInt();
 
         if (sesport == 0 || ctlport == 0) {
             std::cerr << "Invalid configuration. Empty session and/or control port." << '\n';

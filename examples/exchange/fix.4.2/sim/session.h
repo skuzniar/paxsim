@@ -11,7 +11,7 @@
 #include "core/streamlog.h"
 #include "types.h"
 
-#include <nlohmann/json.hpp>
+#include <json5cpp.h>
 #include <vector>
 #include <optional>
 
@@ -20,7 +20,7 @@ namespace fix42::sim {
 using namespace paxsim::core;
 using paxsim::core::log;
 
-using json = nlohmann::json;
+using json = Json::Value;
 
 //---------------------------------------------------------------------------------------------------------------------
 // Fix protocol Context.
@@ -28,8 +28,8 @@ using json = nlohmann::json;
 struct SessionContext
 {
     SessionContext(const json& cfg)
-      : SenderCompID(cfg["Session"]["SenderCompID"])
-      , TargetCompID(cfg["Session"]["TargetCompID"])
+      : SenderCompID(cfg["Session"]["SenderCompID"].asString())
+      , TargetCompID(cfg["Session"]["TargetCompID"].asString())
     {
     }
 

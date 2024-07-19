@@ -2,7 +2,7 @@
 #define Paxsim_Examples_Fix42_Ctl_Controller_dot_h
 
 #include "core/streamlog.h"
-#include <nlohmann/json.hpp>
+#include <json5cpp.h>
 #include <vector>
 #include <optional>
 
@@ -12,7 +12,7 @@ using namespace paxsim::core;
 
 using paxsim::core::log;
 
-using json = nlohmann::json;
+using json = Json::Value;
 
 //---------------------------------------------------------------------------------------------------------------------
 // JSON protocol Controller. Posts the control message to the associated context.

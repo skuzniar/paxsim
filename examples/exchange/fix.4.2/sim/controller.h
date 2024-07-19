@@ -8,7 +8,7 @@
 #include <vector>
 #include <optional>
 
-#include <nlohmann/json.hpp>
+#include <json5cpp.h>
 
 namespace fix42::sim {
 
@@ -16,7 +16,7 @@ using namespace paxsim::core;
 
 using paxsim::core::log;
 
-using json = nlohmann::json;
+using json = Json::Value;
 
 //---------------------------------------------------------------------------------------------------------------------
 // Fix protocol Order Book Context. Provides storage for orders and control commands.
