@@ -76,25 +76,35 @@ main(int argc, char* argv[])
             return 1;
         }
 
-        std::string level = cfg["Log"]["Level"];
+        const auto& cfglog = cfg["Log"];
 
-        switch (std::tolower(level[0])) {
-            default:
-            case 'd':
-                core::log << threshold::debug;
-                break;
-            case 'i':
-                core::log << threshold::info;
-                break;
-            case 'w':
-                core::log << threshold::warning;
-                break;
-            case 'e':
-                core::log << threshold::error;
-                break;
-            case 'f':
-                core::log << threshold::fatal;
-                break;
+        if (auto iter = cfglog.find("Level"); iter != cfglog.end()) {
+            std::string level = *iter;
+
+            switch (std::tolower(level[0])) {
+                default:
+                case 'd':
+                    core::log << threshold::debug;
+                    break;
+                case 'i':
+                    core::log << threshold::info;
+                    break;
+                case 'w':
+                    core::log << threshold::warning;
+                    break;
+                case 'e':
+                    core::log << threshold::error;
+                    break;
+                case 'f':
+                    core::log << threshold::fatal;
+                    break;
+            }
+        }
+
+        if (auto iter = cfglog.find("File"); iter != cfglog.end()) {
+            std::string file = *iter;
+            core::log << core::level::info << "Redirecting log output to: " << file << '\n';
+            core::log.is(file);
         }
 
         auto sescfg = cfg["Session"];

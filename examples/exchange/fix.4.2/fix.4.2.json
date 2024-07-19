@@ -1,7 +1,8 @@
 {
     "Log":
     {
-        "Level": "Info"
+        "Level": "Info",
+        "File": "log.txt"
     },
     "Session": 
     {

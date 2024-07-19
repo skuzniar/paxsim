@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <chrono>
 #include <type_traits>
@@ -161,9 +162,29 @@ operator<<(std::ostream& s, level l)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// Static instance of the logging stream
+// Static instance of the logging stream uses std::clog as the default output stream.
 //----------------------------------------------------------------------------------------------------------------------
-static std::ostream log(std::cout.rdbuf());
+struct logstream : public std::ostream
+{
+    explicit logstream(std::ostream& os)
+    : std::ostream(os.rdbuf())
+    {
+    }
+
+    void is(std::ostream& os) {
+        rdbuf(os.rdbuf());
+    }
+
+    void is(const std::string& file) {
+        ofs = std::ofstream(file);
+        rdbuf(ofs.rdbuf());
+    }
+
+    private:
+    std::ofstream ofs;
+};
+
+static logstream log(std::clog);
 
 namespace detail {
 
