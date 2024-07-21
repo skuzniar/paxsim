@@ -1,0 +1,17 @@
+{
+    Target: "Order",
+    Selector: 
+    {
+        Id: "oid-1", 
+        Quantity: 123, 
+        Price: 4.6
+    },
+    Action: 
+    {
+        Fill: 
+        {
+            Quantity: 234,
+            Price: 5.7
+        }
+    }
+}

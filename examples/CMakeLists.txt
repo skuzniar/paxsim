@@ -6,4 +6,5 @@ set(CMAKE_BUILD_TYPE Release)
 project(paxsim)
 
 add_subdirectory(core)
+add_subdirectory(control)
 add_subdirectory(exchange)

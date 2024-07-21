@@ -1,0 +1,16 @@
+{
+    Target: "Execution",
+    Selector: 
+    {
+        Id: "xid-1", 
+        Quantity: 123, 
+        Price: 4.6
+    },
+    Action: 
+    {
+        Bust: 
+        {
+            Text: "Busting execution 'xid-1'"
+        }
+    }
+}

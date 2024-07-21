@@ -1,0 +1,22 @@
+{
+    //--- Logger settings
+    Log:
+    {
+        Level: "Info",
+        XFile: "log.txt"
+    }
+
+    //--- Main trading session settings
+    Session: 
+    {
+        Port: 7777,
+        SenderCompID: "PAXSIM-SERVER",
+        TargetCompID: "PAXSIM-CLIENT"
+    }
+
+    //--- Controller session settings
+    "Control": 
+    {
+        Port: 8888
+    }
+}
