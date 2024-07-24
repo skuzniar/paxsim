@@ -46,8 +46,6 @@ struct ControllerContext
 //---------------------------------------------------------------------------------------------------------------------
 class Controller
 {
-    static constexpr const char* iam = "Controller";
-
 public:
     Controller(ControllerContext& context)
       : m_context(context)

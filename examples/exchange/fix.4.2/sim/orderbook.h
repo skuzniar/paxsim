@@ -51,8 +51,6 @@ struct OrderBookContext
 //---------------------------------------------------------------------------------------------------------------------
 class OrderBook : public tag::Control
 {
-    static constexpr const char* iam = "OrderBook ";
-
 public:
     template<typename Context>
     OrderBook(Context& context)
@@ -81,7 +79,7 @@ public:
     std::vector<std::optional<FIX::Message>> execute(const Command& command)
     {
         if (const auto* cmd = std::get_if<paxsim::control::order::Command>(&command)) {
-            log << level::info << ctlmark << iam << '[' << *cmd << ']' << std::endl;
+            log << level::debug << ctlmark << '[' << *cmd << ']' << std::endl;
             if (const auto* act = std::get_if<paxsim::control::order::Fill>(&cmd->action)) {
                 return execute(cmd->selector, *act);
             }
@@ -126,7 +124,7 @@ private:
             reject.set(FIX::OrdRejReason(FIX::OrdRejReason_DUPLICATE_ORDER));
             reject.set(FIX::Text("Duplicate client order ID: " + order.clientOrderID()));
 
-            log << level::info << hmark << iam << '[' << fixdump(reject.toString()) << ']' << std::endl;
+            log << level::debug << hmark << '[' << fixdump(reject.toString()) << ']' << std::endl;
             return { reject };
         }
 
@@ -147,7 +145,7 @@ private:
         report.set(FIX::Price(order.price()));
         report.set(FIX::AvgPx(order.avgPrice()));
 
-        log << level::info << hmark << iam << '[' << fixdump(report.toString()) << ']' << std::endl;
+        log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
         return { report };
     }
 
@@ -168,7 +166,7 @@ private:
             reject.set(FIX::CxlRejReason(FIX::CxlRejReason_UNKNOWN_ORDER));
             reject.set(FIX::Text("Client order ID: " + origid + " not found."));
 
-            log << level::info << hmark << iam << '[' << fixdump(reject.toString()) << ']' << std::endl;
+            log << level::debug << hmark << '[' << fixdump(reject.toString()) << ']' << std::endl;
             return { reject };
         }
 
@@ -206,7 +204,7 @@ private:
         report.set(FIX::Price(order.price()));
         report.set(FIX::AvgPx(order.avgPrice()));
 
-        log << level::info << hmark << iam << '[' << fixdump(report.toString()) << ']' << std::endl;
+        log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
         return { report };
     }
 
@@ -227,7 +225,7 @@ private:
             reject.set(FIX::CxlRejReason(FIX::CxlRejReason_UNKNOWN_ORDER));
             reject.set(FIX::Text("Client order ID: " + origid + " not found."));
 
-            log << level::info << hmark << iam << '[' << fixdump(reject.toString()) << ']' << std::endl;
+            log << level::debug << hmark << '[' << fixdump(reject.toString()) << ']' << std::endl;
             return { reject };
         }
 
@@ -251,7 +249,7 @@ private:
         report.set(FIX::Price(order.price()));
         report.set(FIX::AvgPx(order.avgPrice()));
 
-        log << level::info << hmark << iam << '[' << fixdump(report.toString()) << ']' << std::endl;
+        log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
         return { report };
     }
 

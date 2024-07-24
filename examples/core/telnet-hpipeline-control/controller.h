@@ -16,12 +16,11 @@ using paxsim::core::log;
 //---------------------------------------------------------------------------------------------------------------------
 class Controller
 {
-    static constexpr const char* iam = "Controller";
 public:
     static timepoint control_at()
     {
         constexpr int delay = 30;
-        log << level::info << ctlmark << iam << '[' << "Will send control command in " << delay << " seconds." << ']' << std::endl;
+        log << level::info << ctlmark << '[' << "Will send control command in " << delay << " seconds." << ']' << std::endl;
         return std::chrono::steady_clock::now() + std::chrono::seconds(delay);
     }
 

@@ -21,7 +21,7 @@ public:
     {
         // Demonstrate message drop
         if (message.find("drop") != std::string::npos || message.find("Drop") != std::string::npos) {
-            log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << " Dropping" << ' ' << '['
+            log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << " Dropping" << ' ' << '['
                 << hexdump(message.data(), message.size()) << ']' << std::endl;
             return {};
         }
@@ -30,11 +30,11 @@ public:
 
         // Demonstrate abort. We will immediately stop message processing and then stop the session.
         if (message.find("abort") != std::string::npos || message.find("Abort") != std::string::npos) {
-            log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << " Aborting" << ' ' << '['
+            log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << " Aborting" << ' ' << '['
                 << hexdump(message.data(), message.size()) << ']' << std::endl;
             return { {} };
         }
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << " Continuing" << ' ' << '['
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << " Continuing" << ' ' << '['
             << hexdump(message.data(), message.size()) << ']' << std::endl;
         return { { message } };
     }

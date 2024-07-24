@@ -50,7 +50,7 @@ private:
                     session->start(session);
                 }
             } else {
-                log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << e << ' ' << e.message()
+                log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << e << ' ' << e.message()
                     << std::endl;
             }
 

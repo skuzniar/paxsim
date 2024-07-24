@@ -29,7 +29,7 @@ public:
             log << level::info << in << '[' << hexdump(ibuf, pos + 1) << ']' << std::endl;
             return { true, pos + 1, std::string(ibuf, pos + 1) };
         }
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << "size=" << size << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << "size=" << size << std::endl;
         return { true, 0, {} };
     }
 };

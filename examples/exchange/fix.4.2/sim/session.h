@@ -50,8 +50,6 @@ struct SessionContext
 //---------------------------------------------------------------------------------------------------------------------
 class Session
 {
-    static constexpr const char* iam = "Session   ";
-
 public:
     Session(SessionContext& context)
       : m_context(context)
@@ -102,7 +100,7 @@ public:
             reset.set(FIX::GapFillFlag(false));
             reset.set(FIX::NewSeqNo(m_context.OSequence));
 
-            log << level::info << vmark << iam << '[' << fixdump(reset.toString()) << ']' << std::endl;
+            log << level::debug << vmark << '[' << fixdump(reset.toString()) << ']' << std::endl;
             return { { reset } };
         }
 
@@ -121,7 +119,7 @@ public:
 
         if (sequence > m_context.ISequence) {
             m_state = State::Recovery;
-            log << level::info << vmark << iam << '[' << fixdump(message.toString()) << ']' << std::endl;
+            log << level::debug << vmark << '[' << fixdump(message.toString()) << ']' << std::endl;
             return { logon(), resend(m_context.ISequence, 0) };
         }
 
@@ -155,7 +153,7 @@ public:
             return {};
         }
 
-        log << level::debug << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << "Passing through."
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << "Passing through."
             << std::endl;
         return { message };
     }
@@ -222,7 +220,7 @@ private:
         logon.set(FIX::HeartBtInt(m_context.HBInterval));
         logon.set(FIX::EncryptMethod(0));
 
-        log << level::info << vmark << iam << '[' << fixdump(logon.toString()) << ']' << std::endl;
+        log << level::debug << vmark << '[' << fixdump(logon.toString()) << ']' << std::endl;
         return logon;
     }
 
@@ -238,7 +236,7 @@ private:
             logout.set(FIX::Text(text));
         }
 
-        log << level::info << vmark << iam << '[' << fixdump(logout.toString()) << ']' << std::endl;
+        log << level::debug << vmark << '[' << fixdump(logout.toString()) << ']' << std::endl;
         return logout;
     }
 
@@ -254,7 +252,7 @@ private:
             heartbeat.set(FIX::TestReqID(testreqid));
         }
 
-        log << level::info << vmark << iam << '[' << fixdump(heartbeat.toString()) << ']' << std::endl;
+        log << level::debug << vmark << '[' << fixdump(heartbeat.toString()) << ']' << std::endl;
         return { heartbeat };
     }
 
@@ -268,7 +266,7 @@ private:
         resend.set(FIX::BeginSeqNo(begseq));
         resend.set(FIX::EndSeqNo(endseq));
 
-        log << level::info << vmark << iam << '[' << fixdump(resend.toString()) << ']' << std::endl;
+        log << level::debug << vmark << '[' << fixdump(resend.toString()) << ']' << std::endl;
         return { resend };
     }
 

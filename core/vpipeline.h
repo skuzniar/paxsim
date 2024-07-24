@@ -40,7 +40,7 @@ public:
     // Return the nearest expiration point at which we want the timer to go off
     [[nodiscard]] timepoint timeout_at() const
     {
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
         return m_expset.empty() ? timepoint::max() : m_expset.begin()->first;
     }
 
@@ -48,7 +48,7 @@ public:
     template<typename Msg>
     std::vector<std::optional<Msg>> process(const Msg& message)
     {
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
         std::vector<std::optional<Msg>> vec;
         std::apply([&](auto& p, auto&... ps) { process(vec, message, p, ps...); }, m_modules);
         return vec;
@@ -58,7 +58,7 @@ public:
     template<typename Msg, typename Cmd>
     std::vector<std::optional<Msg>> execute(const Cmd& command)
     {
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
         std::vector<std::optional<Msg>> vec;
         std::apply([&](auto& p, auto&... ps) { execute(vec, command, p, ps...); }, m_modules);
         return vec;
@@ -68,7 +68,7 @@ public:
     template<typename Msg>
     std::vector<std::optional<Msg>> timeout()
     {
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
         std::vector<std::optional<Msg>> vec;
         std::apply([&](auto& p, auto&... ps) { timeout(vec, 0UL, p, ps...); }, m_modules);
         return vec;
@@ -79,36 +79,36 @@ private:
     template<typename Msg, typename Mod, typename... Mods>
     bool process(std::vector<std::optional<Msg>>& vec, const Msg& msg, Mod& mod, Mods&... mods)
     {
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
 
         for (auto message : mod.process(msg)) {
             if (!message) {
                 vec.push_back({});
-                log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
+                log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
                 return false;
             }
             if (!process(vec, *message, mods...)) {
-                log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
+                log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
                 return false;
             }
         }
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << true << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << true << std::endl;
         return true;
     }
 
     template<typename Msg, typename Mod>
     bool process(std::vector<std::optional<Msg>>& vec, const Msg& msg, Mod& mod)
     {
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
 
         for (auto message : mod.process(msg)) {
             vec.push_back({ message });
             if (!message) {
-                log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
+                log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
                 return false;
             }
         }
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << true << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << true << std::endl;
         return true;
     }
 
@@ -116,17 +116,17 @@ private:
     template<typename Msg, typename Cmd, typename Mod, typename... Mods>
     bool execute(std::vector<std::optional<Msg>>& vec, const Cmd& cmd, Mod& mod, Mods&... mods)
     {
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
 
         if constexpr (tag::is_control<std::remove_reference_t<decltype(mod)>>()) {
             for (auto message : execute<Msg, Cmd>(cmd, mod)) {
                 if (!message) {
                     vec.push_back({});
-                    log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
+                    log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
                     return false;
                 }
                 if (!process(vec, *message, mods...)) {
-                    log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
+                    log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
                     return false;
                 }
             }
@@ -137,13 +137,13 @@ private:
     template<typename Msg, typename Cmd, typename Mod>
     bool execute(std::vector<std::optional<Msg>>& vec, const Cmd& cmd, Mod& mod)
     {
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
 
         if constexpr (tag::is_control<std::remove_reference_t<decltype(mod)>>()) {
             for (auto message : execute<Msg, Cmd>(cmd, mod)) {
                 vec.push_back({ message });
                 if (!message) {
-                    log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
+                    log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
                     return false;
                 }
             }
@@ -155,7 +155,7 @@ private:
     template<typename Msg, typename Mod, typename... Mods>
     bool timeout(std::vector<std::optional<Msg>>& vec, std::size_t idx, Mod& mod, Mods&... mods)
     {
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << idx << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << idx << std::endl;
 
         if constexpr (tag::is_cyclical<std::remove_reference_t<decltype(mod)>>()) {
             if (idx == m_expset.begin()->second) {
@@ -180,7 +180,7 @@ private:
     template<typename Msg, typename Mod>
     bool timeout(std::vector<std::optional<Msg>>& vec, std::size_t idx, Mod& mod)
     {
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << idx << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << idx << std::endl;
 
         if constexpr (tag::is_cyclical<std::remove_reference_t<decltype(mod)>>()) {
             if (idx == m_expset.begin()->second) {
@@ -247,11 +247,11 @@ private:
             },
             m_modules);
 
-        log << level::debug << "--------------------------------" << std::endl;
+        log << level::trace << ts << "--------------------------------" << std::endl;
         for (const auto& pair : m_expset) {
-            log << level::debug << pair.first.time_since_epoch().count() << ' ' << pair.second << std::endl;
+            log << level::trace << ts << pair.first.time_since_epoch().count() << ' ' << pair.second << std::endl;
         }
-        log << level::debug << "--------------------------------" << std::endl;
+        log << level::trace << ts << "--------------------------------" << std::endl;
     }
 
     // Initialize expiration set for all cyclical modules

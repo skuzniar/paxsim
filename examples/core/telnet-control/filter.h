@@ -31,24 +31,24 @@ public:
 
         // Demonstrate message drop
         if (message.find("drop") != std::string::npos || message.find("Drop") != std::string::npos) {
-            log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << " Dropping" << ' ' << '['
+            log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << " Dropping" << ' ' << '['
                 << hexdump(message.data(), message.size()) << ']' << std::endl;
             return {};
         }
 
         // Demonstrate break using control session. Finish message processing and then stop the session.
         if (m_context.action == Context::Action::Break) {
-            log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << " Breaking" << ' ' << '['
+            log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << " Breaking" << ' ' << '['
                 << hexdump(message.data(), message.size()) << ']' << std::endl;
             return { { message }, {} };
         }
         // Demonstrate abort using control session. Stop message processing and then stop the session.
         if (m_context.action == Context::Action::Abort) {
-            log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << " Aborting" << ' ' << '['
+            log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << " Aborting" << ' ' << '['
                 << hexdump(message.data(), message.size()) << ']' << std::endl;
             return { {} };
         }
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << " Continuing" << ' ' << '['
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << " Continuing" << ' ' << '['
             << hexdump(message.data(), message.size()) << ']' << std::endl;
         return { { message } };
     }

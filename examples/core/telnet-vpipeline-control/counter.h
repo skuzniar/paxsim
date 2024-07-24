@@ -22,7 +22,7 @@ public:
     {
         log << level::info << vmark << '[' << hexdump(message.data(), message.size()) << ']' << std::endl;
 
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << " Counting" << ' ' << '['
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << " Counting" << ' ' << '['
             << hexdump(message.data(), message.size()) << ']' << std::endl;
 
         return { { '[' + std::to_string(++m_counter) + ']' + " " + message } };

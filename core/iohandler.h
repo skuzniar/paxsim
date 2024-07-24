@@ -57,11 +57,11 @@ public:
     // Invoke IO callback.
     bool notify(RWBuffer& ibuf, RWBuffer& obuf)
     {
-        log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
 
         auto [result, size, message] = m_parser.parse(ibuf.rpos(), ibuf.rsize());
         while (result && size > 0) {
-            log << level::debug << ts << ' ' << '[' << hexdump(ibuf.rpos(), size) << ']' << std::endl;
+            log << level::trace << ts << ' ' << '[' << hexdump(ibuf.rpos(), size) << ']' << std::endl;
             ibuf.consumed(size);
 
             for (auto msg : m_handler.process(std::move(message))) {
@@ -99,7 +99,7 @@ public:
 
             for (auto cmd : m_controller.commands()) {
                 if constexpr (tag::is_control<std::remove_reference_t<decltype(m_handler)>>()) {
-                    log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+                    log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
                     for (auto msg : execute<Msg, Cmd>(cmd)) {
                         if (msg) {
                             if (!write(*msg, obuf)) {
@@ -130,19 +130,19 @@ public:
             std::tuple_element_t<2, std::invoke_result_t<decltype(&Parser::parse), Parser, const char*, std::size_t>>;
 
         if constexpr (tag::is_cyclical<std::remove_reference_t<decltype(m_handler)>>()) {
-            log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+            log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
             for (auto msg : timeout<Msg>()) {
                 if (msg) {
                     if (!write(*msg, obuf)) {
-                        log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
+                        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
                         return false;
                     }
                 } else {
-                    log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
+                    log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << false << std::endl;
                     return false;
                 }
             }
-            log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << true << std::endl;
+            log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << true << std::endl;
         }
         return true;
     }

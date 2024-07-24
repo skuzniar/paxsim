@@ -22,8 +22,6 @@ using paxsim::core::log;
 //---------------------------------------------------------------------------------------------------------------------
 class Pass
 {
-    static constexpr const char* iam = "Pass      ";
-
 public:
     Pass(SessionContext& context)
       : m_context(context)
@@ -36,7 +34,7 @@ public:
         const auto& tcompid = message.getHeader().getField(FIX::FIELD::TargetCompID);
 
         if (scompid == m_context.SenderCompID && tcompid == m_context.TargetCompID) {
-            // log << level::info << hmark << iam << '[' << fixdump(message.toString()) << ']' << std::endl;
+            log << level::debug << hmark << '[' << fixdump(message.toString()) << ']' << std::endl;
             return { message };
         }
         return {};

@@ -2,7 +2,7 @@
     //--- Logger settings
     Log:
     {
-        Level: "Info",
+        Level: "Trace",
         XFile: "log.txt"
     }
 

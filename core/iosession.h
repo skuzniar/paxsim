@@ -53,32 +53,32 @@ public:
 private:
     bool notify_read(RWBuffer& ibuff, RWBuffer& obuff)
     {
-        // log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        // log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
         bool  action = true;
         auto* begpos = ibuff.rpos();
         do {
             begpos = ibuff.rpos();
             action = m_handler.notify(ibuff, obuff);
         } while (action && begpos != ibuff.rpos());
-        log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << action << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << action << std::endl;
         return action;
     }
 
     bool notify_write(RWBuffer& ibuff, RWBuffer& obuff)
     {
-        // log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        // log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
         bool  action = true;
         auto* begpos = obuff.rpos();
         do {
             action = m_handler.notify(ibuff, obuff);
         } while (action && begpos != obuff.rpos());
-        log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << action << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << action << std::endl;
         return action;
     }
 
     void do_read(std::shared_ptr<IOSession> s)
     {
-        log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
         m_pending_read = true;
         m_socket.async_read_some(boost::asio::buffer(m_ibuff.wpos(), m_ibuff.wsize()),
                                  [s, this](boost::system::error_code e, std::size_t length) {
@@ -99,7 +99,7 @@ private:
 
     void do_write(std::shared_ptr<IOSession> s)
     {
-        log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
         m_pending_write = true;
         m_socket.async_write_some(boost::asio::buffer(m_obuff.rpos(), m_obuff.rsize()),
                                   [s, this](boost::system::error_code e, std::size_t length) {
@@ -146,7 +146,7 @@ private:
     {
         auto nexttp = std::min(m_timeout_timepoint, m_control_timepoint);
         if (nexttp != timepoint::max()) {
-            log << level::trace << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+            log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
             m_timer.expires_at(nexttp);
             if (nexttp == m_timeout_timepoint) {
                 m_timer.async_wait([this, s](const boost::system::error_code& e) { on_timeout(s, e); });

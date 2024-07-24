@@ -20,8 +20,6 @@ using json = Json::Value;
 template<typename Context>
 class Controller
 {
-    static constexpr const char* iam = "Controller";
-
 public:
     Controller(Context& context)
       : m_context(context)

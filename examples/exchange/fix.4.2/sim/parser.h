@@ -19,8 +19,6 @@ using paxsim::core::log;
 //---------------------------------------------------------------------------------------------------------------------
 class Parser
 {
-    static constexpr const char* iam = "Parser    ";
-
 public:
     template<typename Context>
     Parser(Context& context)
@@ -31,31 +29,33 @@ public:
     {
         static std::regex rx("^8=(FIX[.0-9]*)[\x01]9=([0-9]+)[\x01]");
 
-        std::cmatch match;
-        std::regex_search(ibuf, ibuf + size, match, rx);
+        if (size > 0) {
+            std::cmatch match;
+            std::regex_search(ibuf, ibuf + size, match, rx);
 
-        if (match.size() == 3) {
-            std::size_t offset = atol(match[2].str().c_str()) + match[0].length();
-            if (offset < size) {
-                static std::regex rx("10=([0-9]+)[\x01]");
+            if (match.size() == 3) {
+                std::size_t offset = atol(match[2].str().c_str()) + match[0].length();
+                if (offset < size) {
+                    static std::regex rx("10=([0-9]+)[\x01]");
 
-                std::cmatch match;
-                std::regex_search(ibuf + offset, ibuf + size, match, rx);
-                if (match.size() == 2) {
-                    auto length = offset + match[0].length();
-                    log << level::info << in << iam << '[' << fixdump(ibuf, length) << ']' << std::endl;
-                    return { true, length, std::string(ibuf, length) };
+                    std::cmatch match;
+                    std::regex_search(ibuf + offset, ibuf + size, match, rx);
+                    if (match.size() == 2) {
+                        auto length = offset + match[0].length();
+                        log << level::info << in << '[' << fixdump(ibuf, length) << ']' << std::endl;
+                        return { true, length, std::string(ibuf, length) };
+                    }
                 }
             }
+
+            // TODO - Fail if not a partial message
+
+            log << level::debug << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << "size=" << size
+                << std::endl;
         }
-
-        // TODO - Fail if not a partial message
-
-        log << level::debug << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << "size=" << size
-            << std::endl;
         return { true, 0, {} };
     }
 };
 
-} // namespace fix42
+} // namespace fix42::sim
 #endif

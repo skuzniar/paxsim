@@ -19,7 +19,7 @@ class Counter
 public:
     std::vector<std::optional<std::string>> process(const std::string& message)
     {
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << " Counting" << ' ' << '['
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << " Counting" << ' ' << '['
             << hexdump(message.data(), message.size()) << ']' << std::endl;
 
         auto result = '[' + std::to_string(++m_counter) + ']' + " " + message;

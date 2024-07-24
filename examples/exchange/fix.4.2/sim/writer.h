@@ -19,8 +19,6 @@ using paxsim::core::log;
 //---------------------------------------------------------------------------------------------------------------------
 class Writer
 {
-    static constexpr const char* iam = "Writer    ";
-
 public:
     template<typename Context>
     Writer(Context& context)
@@ -33,10 +31,10 @@ public:
         assert(string.size() < size);
 
         std::memcpy(obuf, string.data(), string.size());
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << '[' << hexdump(obuf, string.size())
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << '[' << hexdump(obuf, string.size())
             << ']' << std::endl;
 
-        log << level::info << out << iam << '[' << fixdump(string) << ']' << std::endl;
+        log << level::info << out << '[' << fixdump(string) << ']' << std::endl;
         return { true, string.size() };
     }
 };

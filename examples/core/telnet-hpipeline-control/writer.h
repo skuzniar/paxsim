@@ -22,7 +22,7 @@ public:
 
         std::memcpy(obuf, message.data(), message.size());
         obuf[message.size()] = '\n';
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << '['
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << '['
             << hexdump(obuf, message.size() + 1) << ']' << std::endl;
 
         log << level::info << out << '[' << hexdump(message.data(), message.size()) << ']' << std::endl;

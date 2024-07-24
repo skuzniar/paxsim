@@ -31,7 +31,7 @@ public:
         // Upcase first letter
         *message.begin() = std::toupper(*message.begin());
 
-        log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << '['
+        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << '['
             << hexdump(message.data(), message.size()) << ']' << std::endl;
         return { { message } };
     }

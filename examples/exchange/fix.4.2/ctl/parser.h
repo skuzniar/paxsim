@@ -18,8 +18,6 @@ using json = Json::Value;
 //---------------------------------------------------------------------------------------------------------------------
 class Parser
 {
-    static constexpr const char* iam = "Parser    ";
-
 public:
     template<typename Context>
     Parser(Context& context)
@@ -34,7 +32,7 @@ public:
             json        command;
             std::string error;
             if (Json5::parse(is, command, &error)) {
-                // log << level::info << in << iam << '[' << command << ']' << std::endl;
+                log << level::debug << in << '[' << command << ']' << std::endl;
                 return { true, size, command };
             }
             log << level::error << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << "Error parsing command input."

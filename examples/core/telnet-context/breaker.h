@@ -30,7 +30,7 @@ public:
 
         // Demonstrate break. We will finish message processing and then stop the session.
         if (message.find("break") != std::string::npos || message.find("Break") != std::string::npos) {
-            log << level::debug << _file_ << ':' << _line_ << ' ' << __func__ << " Breaking" << ' ' << '['
+            log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << " Breaking" << ' ' << '['
                 << hexdump(message.data(), message.size()) << ']' << std::endl;
             return { {} };
         }
