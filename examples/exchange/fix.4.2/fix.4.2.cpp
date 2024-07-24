@@ -8,6 +8,7 @@
 #include "sim/parser.h"
 #include "sim/session.h"
 #include "sim/orderbook.h"
+#include "sim/orderbookaction.h"
 #include "sim/pass.h"
 #include "sim/writer.h"
 #include "sim/controller.h"
@@ -124,7 +125,7 @@ main(int argc, char* argv[])
         signals.async_wait([&](auto, auto) { iocontx.stop(); });
 
         // Session pipeline
-        using SESHandler   = core::VPipeline<sim::Session, core::HPipeline<sim::OrderBook, sim::Pass>>;
+        using SESHandler   = core::VPipeline<sim::Session, core::HPipeline<sim::OrderBook, sim::OrderBookAction, sim::Pass>>;
         using SESIOHandler = core::IOHandler<sim::Parser, SESHandler, sim::Writer, sim::Controller>;
 
         // Control pipeline

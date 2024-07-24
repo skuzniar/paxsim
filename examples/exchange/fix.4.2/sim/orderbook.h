@@ -16,8 +16,6 @@
 #include "core/types.h"
 #include "types.h"
 
-#include "control/command.h"
-
 #include <map>
 #include <vector>
 #include <optional>
@@ -31,7 +29,6 @@ using namespace paxsim::core;
 using paxsim::core::log;
 
 using json    = Json::Value;
-using Command = paxsim::control::Command;
 
 //---------------------------------------------------------------------------------------------------------------------
 // Fix protocol Order Book Context. Provides storage for orders and control commands.
@@ -49,7 +46,7 @@ struct OrderBookContext
 //---------------------------------------------------------------------------------------------------------------------
 // Fix protocol Order Book module.
 //---------------------------------------------------------------------------------------------------------------------
-class OrderBook : public tag::Control
+class OrderBook
 {
 public:
     template<typename Context>
@@ -74,25 +71,6 @@ public:
         }
         // TODO - other types
         return {};
-    }
-
-    std::vector<std::optional<FIX::Message>> execute(const Command& command)
-    {
-        if (const auto* cmd = std::get_if<paxsim::control::order::Command>(&command)) {
-            log << level::debug << ctlmark << '[' << *cmd << ']' << std::endl;
-            if (const auto* act = std::get_if<paxsim::control::order::Fill>(&cmd->action)) {
-                return execute(cmd->selector, *act);
-            }
-            if (const auto* act = std::get_if<paxsim::control::order::Cancel>(&cmd->action)) {
-                return execute(cmd->selector, *act);
-            }
-        }
-        return {};
-    }
-
-    static timepoint control_at()
-    {
-        return std::chrono::steady_clock::now() + std::chrono::seconds(1);
     }
 
 private:
@@ -260,16 +238,6 @@ private:
         message.getHeader().set(FIX::TargetCompID(m_SContext.TargetCompID));
         message.getHeader().set(FIX::MsgSeqNum(m_SContext.OSequence++));
         message.getHeader().set(FIX::SendingTime::now());
-    }
-
-    std::vector<std::optional<FIX::Message>> execute(const paxsim::control::order::Selector& sel, const paxsim::control::order::Fill& fill)
-    {
-        return {};
-    }
-
-    std::vector<std::optional<FIX::Message>> execute(const paxsim::control::order::Selector& sel, const paxsim::control::order::Cancel& cancel)
-    {
-        return {};
     }
 
 private:
