@@ -15,7 +15,7 @@ using paxsim::core::log;
 using json = Json::Value;
 
 //---------------------------------------------------------------------------------------------------------------------
-// JSON protocol Controller. Posts the control message to the associated context.
+// JSON protocol Controller. Receives parsed Json message and posts it into the associated context.
 //---------------------------------------------------------------------------------------------------------------------
 template<typename Context>
 class Controller
@@ -30,7 +30,6 @@ public:
 
     std::vector<std::optional<json>> process(const json& message)
     {
-        // log << level::info << ctlmark << iam << '[' << hexdump(message.data(), message.size()) << ']' << std::endl;
         auto response = m_context.post(message);
         if (response.empty()) {
             return {};

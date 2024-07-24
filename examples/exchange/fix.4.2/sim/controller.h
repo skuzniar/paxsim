@@ -4,6 +4,8 @@
 #include "core/streamlog.h"
 #include "core/types.h"
 
+#include "control/command.h"
+
 #include <string>
 #include <vector>
 #include <optional>
@@ -13,13 +15,14 @@
 namespace fix42::sim {
 
 using namespace paxsim::core;
+using namespace paxsim::control;
 
 using paxsim::core::log;
 
 using json = Json::Value;
 
 //---------------------------------------------------------------------------------------------------------------------
-// Fix protocol Order Book Context. Provides storage for orders and control commands.
+// Controller Context. Provides connection between Controller and Simulator sessions.
 //---------------------------------------------------------------------------------------------------------------------
 struct ControllerContext
 {
@@ -30,19 +33,21 @@ struct ControllerContext
     // Controll commands
     std::string post(const json& message)
     {
-        log << level::info << vmark << '[' << message << ']' << std::endl;
-        Queue = message;
-        return "{}";
+        // log << level::info << vmark << '[' << message << ']' << std::endl;
+        command = message;
+        return {};
     }
 
-    json Queue;
+    std::optional<json> command;
 };
 
 //---------------------------------------------------------------------------------------------------------------------
-// Controller is a source of controller commands.
+// Controller is a source of control commands. Controller attempts to convert Json objects into valid control commands.
 //---------------------------------------------------------------------------------------------------------------------
 class Controller
 {
+    static constexpr const char* iam = "Controller";
+
 public:
     Controller(ControllerContext& context)
       : m_context(context)
@@ -54,13 +59,19 @@ public:
         return std::chrono::steady_clock::now() + std::chrono::seconds(1);
     }
 
-    std::vector<json> commands()
+    // std::vector<paxsim::control::Command> commands()
+    std::vector<paxsim::control::Command> commands()
     {
-        if (!m_context.Queue.empty()) {
-            log << level::info << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << m_context.Queue << std::endl;
-            std::vector<json> ret{ m_context.Queue };
-            m_context.Queue.clear();
-            return ret;
+        if (m_context.command) {
+            try {
+                auto command = paxsim::control::Factory::command(m_context.command.value());
+                m_context.command.reset();
+                return std::vector{ command };
+            } catch (const std::exception& e) {
+                log << level::error << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << m_context.command.value()
+                    << std::endl;
+                log << "Error converting Json into command. Failure: " << e.what() << '.' << '\n';
+            }
         }
         return {};
     }

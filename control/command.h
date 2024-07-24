@@ -1,20 +1,23 @@
 #ifndef Paxsim_Control_Command_dot_h
 #define Paxsim_Control_Command_dot_h
 
+#include "session/command.h"
 #include "order/command.h"
 #include "execution/command.h"
 
 #include <string>
 #include <iostream>
+#include <variant>
 
 namespace paxsim::control {
 
 //----------------------------------------------------------------------------------------------------------------------
-// Control Command operates on a specific part of the simulator. Control Command Target designates this part. Here we
+// Control Commands operate on a specific part of the simulator. Control Command Target designates this part. Here we
 // name these parts. Add more targets as needed.
 //----------------------------------------------------------------------------------------------------------------------
 enum class Target
 {
+    Session,
     Order,
     Execution
 };
@@ -29,6 +32,7 @@ inline Target
 from_string(const std::string& v)
 {
     // clang-format off
+    if (v == "Session")   { return Target::Session; }
     if (v == "Order")     { return Target::Order; }
     if (v == "Execution") { return Target::Execution; }
     throw std::runtime_error("Value " + v + " is outside of Target enumeration range.");
@@ -36,7 +40,7 @@ from_string(const std::string& v)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// Generic Control Command. It is a collection module commands. Add more commands as needed.
+// Generic Control Command. It is a collection of module commands. Add more commands as needed.
 //----------------------------------------------------------------------------------------------------------------------
 template<typename... Cmds>
 struct Commands : public std::variant<Cmds...>
@@ -56,10 +60,10 @@ struct Commands : public std::variant<Cmds...>
     }
 };
 
-using Command = Commands<order::Command, execution::Command>;
+using Command = Commands<session::Command, order::Command, execution::Command>;
 
 //----------------------------------------------------------------------------------------------------------------------
-// Command Factory creates commands. Here we impose a requirements on the definition type.
+// Command Factory. Here we create all known module commands.
 //----------------------------------------------------------------------------------------------------------------------
 struct Factory
 {
@@ -67,6 +71,9 @@ struct Factory
     static Command command(const Def& def)
     {
         std::string target = def["Target"].template as<std::string>();
+        if (target == "Session") {
+            return session::Command(def["Selector"], def["Action"]);
+        }
         if (target == "Order") {
             return order::Command(def["Selector"], def["Action"]);
         }

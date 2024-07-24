@@ -28,16 +28,18 @@ public:
 
     std::tuple<bool, std::size_t, json> parse(const char* ibuf, std::size_t size)
     {
-        std::istringstream is(ibuf, size);
+        if (size > 0) {
+            std::istringstream is(ibuf, size);
 
-        json        cmd;
-        std::string err;
-        if (Json5::parse(is, cmd, &err)) {
-            log << level::info << in << iam << '[' << cmd << ']' << std::endl;
-            return { true, size, cmd };
+            json        command;
+            std::string error;
+            if (Json5::parse(is, command, &error)) {
+                // log << level::info << in << iam << '[' << command << ']' << std::endl;
+                return { true, size, command };
+            }
+            log << level::error << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << "Error parsing command input."
+                << " Input: " << std::string_view(ibuf, size) << " Error: " << error << std::endl;
         }
-        log << level::error << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << "Error parsing command input."
-            << std::endl;
         return { true, 0, {} };
     }
 };

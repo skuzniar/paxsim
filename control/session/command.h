@@ -1,44 +1,30 @@
-#ifndef Paxsim_Control_Execution_Command_dot_h
-#define Paxsim_Control_Execution_Command_dot_h
+#ifndef Paxsim_Control_Session_Command_dot_h
+#define Paxsim_Control_Session_Command_dot_h
 
 #include <string>
 #include <iostream>
 #include <variant>
 
-namespace paxsim::control::execution {
+namespace paxsim::control::session {
 
 //----------------------------------------------------------------------------------------------------------------------
-// Execution Selector. Used to identify executions which will be targeted by the action.
+// Session Selector. TODO - Not sure how we can address session components.
 //----------------------------------------------------------------------------------------------------------------------
 struct Selector
 {
+    Selector() = default;
+
     template<typename Def>
     explicit Selector(const Def& def)
     {
-        if (const auto& val = def["Id"]) {
-            params.id = val.template as<std::string>();
-        }
-        if (const auto& val = def["Quantity"]) {
-            params.quantity = val.template as<int>();
-        }
-        if (const auto& val = def["Price"]) {
-            params.price = val.template as<double>();
-        }
     }
 
     struct Params
-    {
-        std::string id;
-        int         quantity = 0;
-        double      price    = 0.0;
-    };
+    {};
 
     friend std::ostream& operator<<(std::ostream& s, const Params& o)
     {
         // clang-forFillmat off
-        s << "Id: " << o.id << ' ';
-        s << "Quantity: " << o.quantity << ' ';
-        s << "Price: " << o.price;
         // clang-format on
         return s;
     }
@@ -56,14 +42,14 @@ struct Selector
 };
 
 //----------------------------------------------------------------------------------------------------------------------
-// Bust action. Applied to selected executions.
+// Stop action. Will cause session termination
 //----------------------------------------------------------------------------------------------------------------------
-struct Bust
+struct Stop
 {
-    Bust() = default;
+    Stop() = default;
 
     template<typename Def>
-    explicit Bust(const Def& def)
+    explicit Stop(const Def& def)
     {
         if (const auto& val = def["Text"]) {
             params.text = val.template as<std::string>();
@@ -83,10 +69,10 @@ struct Bust
         return s;
     }
 
-    friend std::ostream& operator<<(std::ostream& s, const Bust& o)
+    friend std::ostream& operator<<(std::ostream& s, const Stop& o)
     {
         // clang-format off
-        s << "Bust: ";
+        s << "Stop: ";
         s << '{' << o.params << '}';
         // clang-format on
         return s;
@@ -96,16 +82,22 @@ struct Bust
 };
 
 //----------------------------------------------------------------------------------------------------------------------
-// Execution Command. Consists of a Selector and a union of all possible Actions. Add actions as needed.
+// Session Command. Consists of a Selector and a union of all possible Actions. Add actions as needed.
 //----------------------------------------------------------------------------------------------------------------------
 struct Command
 {
+    // TODO - For testing.
+    Command()
+      : action(Stop())
+    {
+    }
+
     template<typename Def>
     Command(const Def& sel, const Def& act)
       : selector(sel)
     {
-        if (const auto& def = act["Bust"]) {
-            this->action = Bust(def);
+        if (const auto& def = act["Stop"]) {
+            this->action = Stop(def);
         } else {
             throw std::runtime_error("Unknown action.");
         }
@@ -124,9 +116,9 @@ struct Command
 
 private:
     Selector           selector;
-    std::variant<Bust> action;
+    std::variant<Stop> action;
 };
 
-} // namespace paxsim::control::execution
+} // namespace paxsim::control::session
 
 #endif

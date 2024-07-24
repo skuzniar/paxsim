@@ -16,6 +16,8 @@
 #include "core/types.h"
 #include "types.h"
 
+#include "control/command.h"
+
 #include <map>
 #include <vector>
 #include <optional>
@@ -28,7 +30,8 @@ using namespace paxsim::core;
 
 using paxsim::core::log;
 
-using json = Json::Value;
+using json    = Json::Value;
+using Command = paxsim::control::Command;
 
 //---------------------------------------------------------------------------------------------------------------------
 // Fix protocol Order Book Context. Provides storage for orders and control commands.
@@ -75,12 +78,16 @@ public:
         return {};
     }
 
-    std::vector<std::optional<FIX::Message>> execute(const json& command)
+    std::vector<std::optional<FIX::Message>> execute(const Command& command)
     {
-
-        // Demonstrate restart using controller command
-        if (command["command"] == "stop") {
-            return { {} };
+        if (const auto* cmd = std::get_if<paxsim::control::order::Command>(&command)) {
+            log << level::info << ctlmark << iam << '[' << *cmd << ']' << std::endl;
+            if (const auto* act = std::get_if<paxsim::control::order::Fill>(&cmd->action)) {
+                return execute(cmd->selector, *act);
+            }
+            if (const auto* act = std::get_if<paxsim::control::order::Cancel>(&cmd->action)) {
+                return execute(cmd->selector, *act);
+            }
         }
         return {};
     }
@@ -203,6 +210,51 @@ private:
         return { report };
     }
 
+    std::vector<std::optional<FIX::Message>> process(const FIX42::OrderCancelRequest& message)
+    {
+        const auto& origid = message.getField(FIX::FIELD::OrigClOrdID);
+
+        auto it = m_OContext.OrderBook.find(origid);
+        if (it == m_OContext.OrderBook.end()) {
+            FIX42::OrderCancelReject reject;
+            set_header(reject);
+
+            reject.set(FIX::OrderID("NONE"));
+            reject.set(FIX::ClOrdID(message.getField(FIX::FIELD::ClOrdID)));
+            reject.set(FIX::OrigClOrdID(origid));
+            reject.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(Order::Status::Rejected)));
+            reject.set(FIX::CxlRejResponseTo(FIX::CxlRejResponseTo_ORDER_CANCEL_REQUEST));
+            reject.set(FIX::CxlRejReason(FIX::CxlRejReason_UNKNOWN_ORDER));
+            reject.set(FIX::Text("Client order ID: " + origid + " not found."));
+
+            log << level::info << hmark << iam << '[' << fixdump(reject.toString()) << ']' << std::endl;
+            return { reject };
+        }
+
+        // auto result = this->accept(mi, m_fixmsg);
+        auto order = Order(it->second, message);
+
+        FIX42::ExecutionReport report;
+        set_header(report);
+
+        report.set(FIX::ClOrdID(order.clientOrderID()));
+        report.set(FIX::Symbol(order.symbol()));
+        report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
+        report.set(FIX::OrderID(order.exchangeOrderID()));
+        report.set(FIX::ExecID(order.executionID()));
+        report.set(FIX::ExecType(FIX::ExecType_CANCELED));
+        report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
+        report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
+        report.set(FIX::OrderQty(order.orderQuantity()));
+        report.set(FIX::LeavesQty(order.leavesQuantity()));
+        report.set(FIX::CumQty(order.fillsQuantity()));
+        report.set(FIX::Price(order.price()));
+        report.set(FIX::AvgPx(order.avgPrice()));
+
+        log << level::info << hmark << iam << '[' << fixdump(report.toString()) << ']' << std::endl;
+        return { report };
+    }
+
     template<typename Msg>
     void set_header(Msg& message)
     {
@@ -210,6 +262,16 @@ private:
         message.getHeader().set(FIX::TargetCompID(m_SContext.TargetCompID));
         message.getHeader().set(FIX::MsgSeqNum(m_SContext.OSequence++));
         message.getHeader().set(FIX::SendingTime::now());
+    }
+
+    std::vector<std::optional<FIX::Message>> execute(const paxsim::control::order::Selector& sel, const paxsim::control::order::Fill& fill)
+    {
+        return {};
+    }
+
+    std::vector<std::optional<FIX::Message>> execute(const paxsim::control::order::Selector& sel, const paxsim::control::order::Cancel& cancel)
+    {
+        return {};
     }
 
 private:

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <variant>
 
 namespace paxsim::control::order {
 
@@ -153,7 +154,7 @@ struct Command
         } else if (const auto& def = act["Cancel"]) {
             this->action = Cancel(def);
         } else {
-            throw std::runtime_error("Unknown action: ???");
+            throw std::runtime_error("Unknown action.");
         }
     }
 
@@ -168,7 +169,6 @@ struct Command
         return s;
     }
 
-private:
     Selector                   selector;
     std::variant<Fill, Cancel> action;
 };
