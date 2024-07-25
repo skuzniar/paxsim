@@ -27,7 +27,7 @@ public:
     std::tuple<bool, std::size_t, json> parse(const char* ibuf, std::size_t size)
     {
         if (size > 0) {
-            std::istringstream is(ibuf, size);
+            std::istringstream is(std::string(ibuf, size));
 
             json        command;
             std::string error;
