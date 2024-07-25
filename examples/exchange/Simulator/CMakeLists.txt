@@ -10,9 +10,10 @@ find_package(QuickFix REQUIRED)
 find_package(JsonCpp REQUIRED)
 find_package(Json5Cpp REQUIRED)
 
-add_executable(Simulator 
+add_executable(Simulator) 
+
+target_sources(Simulator PRIVATE 
     Simulator.cpp
-    Fix42.cpp
     )
 
 target_include_directories(Simulator PRIVATE 
@@ -30,3 +31,4 @@ target_link_libraries(Simulator PRIVATE
     Threads::Threads
     )
 
+add_subdirectory(Fix42) 

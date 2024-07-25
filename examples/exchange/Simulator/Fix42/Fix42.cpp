@@ -4,17 +4,17 @@
 #include "core/hpipeline.h"
 #include "core/vpipeline.h"
 
-#include "Fix42/Trading/Parser.h"
-#include "Fix42/Trading/Session.h"
-#include "Fix42/Trading/OrderBook.h"
-#include "Fix42/Trading/OrderBookAction.h"
-#include "Fix42/Trading/Pass.h"
-#include "Fix42/Trading/Writer.h"
-#include "Fix42/Trading/Controller.h"
+#include "Trading/Parser.h"
+#include "Trading/Session.h"
+#include "Trading/OrderBook.h"
+#include "Trading/OrderBookAction.h"
+#include "Trading/Pass.h"
+#include "Trading/Writer.h"
+#include "Trading/Controller.h"
 
-#include "Fix42/Control/Parser.h"
-#include "Fix42/Control/Controller.h"
-#include "Fix42/Control/Writer.h"
+#include "Control/Parser.h"
+#include "Control/Controller.h"
+#include "Control/Writer.h"
 
 #include "Fix42.h"
 
