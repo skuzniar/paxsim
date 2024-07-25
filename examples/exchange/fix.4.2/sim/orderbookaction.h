@@ -28,7 +28,7 @@ using paxsim::core::log;
 using json = Json::Value;
 
 //---------------------------------------------------------------------------------------------------------------------
-// Fix protocol Order Book Action module. Relative or Order Book. Onle deals with Control Actions.
+// Order Book Action module. A relative of Order Book. Deals with Order Control Actions.
 //---------------------------------------------------------------------------------------------------------------------
 class OrderBookAction : public tag::Control
 {
@@ -75,14 +75,33 @@ private:
         message.getHeader().set(FIX::SendingTime::now());
     }
 
-    std::vector<std::optional<FIX::Message>> execute(const order::Selector& sel, const order::Fill& fill)
+    std::vector<std::optional<FIX::Message>> execute(const order::Selector& selector, const order::Fill& fill)
     {
-        return {};
+        std::vector<std::optional<FIX::Message>> result;
+
+        for (const auto& [id, order] : m_OContext.OrderBook) {
+            if (matches(order, selector)) {
+                log << level::debug << ctlmark << "Filling: " << order << std::endl;
+            }
+        }
+        return result;
     }
 
-    std::vector<std::optional<FIX::Message>> execute(const order::Selector& sel, const order::Cancel& cancel)
+    std::vector<std::optional<FIX::Message>> execute(const order::Selector& selector, const order::Cancel& cancel)
     {
-        return {};
+        std::vector<std::optional<FIX::Message>> result;
+
+        for (const auto& [id, order] : m_OContext.OrderBook) {
+            if (matches(order, selector)) {
+                log << level::debug << ctlmark << "Canceling: " << order << std::endl;
+            }
+        }
+        return result;
+    }
+
+    bool matches(const Order& order, const order::Selector& selector)
+    {
+        return true;
     }
 
 private:
