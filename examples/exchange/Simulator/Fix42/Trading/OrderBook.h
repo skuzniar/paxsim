@@ -168,6 +168,7 @@ private:
         set_header(report);
 
         report.set(FIX::ClOrdID(order.clientOrderID()));
+        report.set(FIX::OrigClOrdID(origid));
         report.set(FIX::Symbol(order.symbol()));
         report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
         report.set(FIX::OrderID(order.exchangeOrderID()));
@@ -213,6 +214,7 @@ private:
         set_header(report);
 
         report.set(FIX::ClOrdID(order.clientOrderID()));
+        report.set(FIX::OrigClOrdID(origid));
         report.set(FIX::Symbol(order.symbol()));
         report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
         report.set(FIX::OrderID(order.exchangeOrderID()));
