@@ -1,5 +1,5 @@
-#ifndef Paxsim_Examples_Fix42_Sim_Order_dot_h
-#define Paxsim_Examples_Fix42_Sim_Order_dot_h
+#ifndef Paxsim_Examples_Fix42_Order_dot_h
+#define Paxsim_Examples_Fix42_Order_dot_h
 
 #include "quickfix/fix42/NewOrderSingle.h"
 
@@ -8,7 +8,7 @@
 #include <chrono>
 #include <iostream>
 
-namespace fix42::sim {
+namespace Fix42 {
 
 //-----------------------------------------------------------------------------------------------------------------
 // Exchange order. Keeps track of order state and executions.
@@ -40,9 +40,8 @@ public:
     // Auto-generated using nvim-cppgen
     friend std::ostream& operator<<(std::ostream& s, Status o)
     {
-        switch(o)
-        {
-            // clang-format off
+        switch (o) {
+                // clang-format off
             case Status::New:             s << "New";             break;
             case Status::PartiallyFilled: s << "PartiallyFilled"; break;
             case Status::Filled:          s << "Filled";          break;
@@ -58,7 +57,7 @@ public:
             case Status::Expired:         s << "Expired";         break;
             case Status::Accepted:        s << "Accepted";        break;
             case Status::PendingReplace:  s << "PendingReplace";  break;
-            // clang-format on
+                // clang-format on
         };
         return s;
     }
@@ -79,9 +78,8 @@ public:
     // Auto-generated using nvim-cppgen
     friend std::ostream& operator<<(std::ostream& s, Side o)
     {
-        switch(o)
-        {
-            // clang-format off
+        switch (o) {
+                // clang-format off
             case Side::Buy:             s << "Buy";             break;
             case Side::Sell:            s << "Sell";            break;
             case Side::BuyMinus:        s << "BuyMinus";        break;
@@ -91,7 +89,7 @@ public:
             case Side::Undisclosed:     s << "Undisclosed";     break;
             case Side::Cross:           s << "Cross";           break;
             case Side::CrossShort:      s << "CrossShort";      break;
-            // clang-format on
+                // clang-format on
         };
         return s;
     }
@@ -122,9 +120,8 @@ public:
     // Auto-generated using nvim-cppgen
     friend std::ostream& operator<<(std::ostream& s, Type o)
     {
-        switch(o)
-        {
-            // clang-format off
+        switch (o) {
+                // clang-format off
             case Type::Market:                s << "Market";                break;
             case Type::Limit:                 s << "Limit";                 break;
             case Type::Stop:                  s << "Stop";                  break;
@@ -144,7 +141,7 @@ public:
             case Type::ForexPreviouslyQuoted: s << "ForexPreviouslyQuoted"; break;
             case Type::Funari:                s << "Funari";                break;
             case Type::Pegged:                s << "Pegged";                break;
-            // clang-format on
+                // clang-format on
         };
         return s;
     }
@@ -404,7 +401,8 @@ Order::Order(const FIX42::NewOrderSingle& message)
 Order::Order(const Order& order, const FIX42::NewOrderSingle& message)
   : m_client_order_id(message.getField(FIX::FIELD::ClOrdID))
   , m_symbol(message.isSetField(FIX::FIELD::Symbol) ? message.getField(FIX::FIELD::Symbol) : order.symbol())
-  , m_side(message.isSetField(FIX::FIELD::Side) ? from_string<Order::Side>(message.getField(FIX::FIELD::Side)) : order.side())
+  , m_side(message.isSetField(FIX::FIELD::Side) ? from_string<Order::Side>(message.getField(FIX::FIELD::Side))
+                                                : order.side())
   , m_type(message.isSetField(FIX::FIELD::OrdType) ? from_string<Order::Type>(message.getField(FIX::FIELD::OrdType))
                                                    : order.type())
   , m_order_quantity(message.isSetField(FIX::FIELD::OrderQty) ? atoi(message.getField(FIX::FIELD::OrderQty).c_str())
@@ -413,6 +411,6 @@ Order::Order(const Order& order, const FIX42::NewOrderSingle& message)
 {
 }
 
-} // namespace fix42::sim
+} // namespace Fix42
 
 #endif

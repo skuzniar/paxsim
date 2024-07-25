@@ -18,7 +18,7 @@
 
 #include <json5cpp.h>
 
-namespace fix42::sim {
+namespace Fix42::Trading {
 
 using namespace paxsim::core;
 using namespace paxsim::control;
@@ -109,5 +109,5 @@ private:
     SessionContext&   m_SContext;
 };
 
-} // namespace fix42::sim
+} // namespace Fix42::Trading
 #endif

@@ -10,17 +10,20 @@ find_package(QuickFix REQUIRED)
 find_package(JsonCpp REQUIRED)
 find_package(Json5Cpp REQUIRED)
 
-add_executable(Fix42 Fix42.cpp)
+add_executable(Simulator 
+    Simulator.cpp
+    Fix42.cpp
+    )
 
-target_include_directories(Fix42 PRIVATE 
+target_include_directories(Simulator PRIVATE 
     ${QUICKFIX_INCLUDE_DIR}
     ${JSONCPP_INCLUDE_DIR}
     ${JSON5CPP_INCLUDE_DIR}
     ../../..
-    ../../../examples
+    Fix42
     )
 
-target_link_libraries(Fix42 PRIVATE 
+target_link_libraries(Simulator PRIVATE 
     ${QUICKFIX_LIBRARIES}
     ${JSONCPP_LIBRARIES}
     Boost::boost

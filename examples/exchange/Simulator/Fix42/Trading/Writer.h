@@ -9,7 +9,7 @@
 #include <string>
 #include <cassert>
 
-namespace fix42::sim {
+namespace Fix42::Trading {
 
 using namespace paxsim::core;
 

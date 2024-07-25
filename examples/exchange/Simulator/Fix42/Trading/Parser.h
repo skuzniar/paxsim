@@ -9,7 +9,7 @@
 #include <string>
 #include <regex>
 
-namespace fix42::sim {
+namespace Fix42::Trading {
 
 using namespace paxsim::core;
 
@@ -58,5 +58,5 @@ public:
     }
 };
 
-} // namespace fix42::sim
+} // namespace Fix42::Trading
 #endif

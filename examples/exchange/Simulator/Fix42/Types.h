@@ -4,7 +4,7 @@
 #include <ostream>
 #include <iostream>
 
-namespace fix42::sim {
+namespace Fix42 {
 
 namespace detail {
 
@@ -64,6 +64,6 @@ template<typename T>
 T
 from_string(std::string_view v);
 
-} // namespace fix42::sim
+} // namespace Fix42
 
 #endif

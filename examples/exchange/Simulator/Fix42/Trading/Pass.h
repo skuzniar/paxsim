@@ -11,7 +11,7 @@
 #include <vector>
 #include <optional>
 
-namespace fix42::sim {
+namespace Fix42::Trading {
 
 using namespace paxsim::core;
 
@@ -44,5 +44,5 @@ private:
     SessionContext& m_context;
 };
 
-} // namespace fix42::sim
+} // namespace Fix42::Trading
 #endif

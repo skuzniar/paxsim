@@ -16,7 +16,7 @@
 #include <vector>
 #include <optional>
 
-namespace fix42::sim {
+namespace Fix42::Trading {
 
 using namespace paxsim::core;
 using paxsim::core::log;
@@ -285,5 +285,5 @@ private:
     SessionContext& m_context;
 };
 
-} // namespace fix42::sim
+} // namespace Fix42::Trading
 #endif

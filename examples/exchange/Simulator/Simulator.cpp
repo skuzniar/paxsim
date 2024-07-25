@@ -1,21 +1,6 @@
-#include "core/acceptor.h"
-#include "core/context.h"
-#include "core/iohandler.h"
-#include "core/hpipeline.h"
-#include "core/vpipeline.h"
 #include "core/streamlog.h"
 
-#include "Trading/Parser.h"
-#include "Trading/Session.h"
-#include "Trading/OrderBook.h"
-#include "Trading/OrderBookAction.h"
-#include "Trading/Pass.h"
-#include "Trading/Writer.h"
-#include "Trading/Controller.h"
-
-#include "Control/Parser.h"
-#include "Control/Controller.h"
-#include "Control/Writer.h"
+#include "Fix42.h"
 
 #include <boost/asio.hpp>
 #include <json5cpp.h>
@@ -23,7 +8,8 @@
 #include <fstream>
 
 using namespace paxsim;
-using namespace fix42;
+
+using namespace Fix42;
 
 using json = Json::Value;
 
@@ -58,11 +44,12 @@ main(int argc, char* argv[])
         }
     }
 
-    // Parse configuration file
     if (config.empty()) {
         std::cerr << "Empty configuration file." << '\n';
         return 1;
     }
+
+    // Parse configuration file
     auto ifs = std::ifstream(config);
     if (!ifs) {
         std::cerr << "Unable to open configuration file: " << config << '\n';
@@ -109,44 +96,16 @@ main(int argc, char* argv[])
             core::log.is(file.asString());
         }
 
-        const auto& sescfg = cfg["Session"];
-        const auto& ctlcfg = cfg["Control"];
+        boost::asio::io_context iocontext;
+        boost::asio::signal_set signals(iocontext, SIGINT, SIGTERM);
+        signals.async_wait([&](auto, auto) { iocontext.stop(); });
 
-        int sesport = sescfg["Port"].asInt();
-        int ctlport = ctlcfg["Port"].asInt();
+        // This is a blocking call
+        Fix42::simulate(cfg, iocontext);
 
-        if (sesport == 0 || ctlport == 0) {
-            std::cerr << "Invalid configuration. Empty session and/or control port." << '\n';
-            return 1;
-        }
-
-        boost::asio::io_context iocontx;
-        boost::asio::signal_set signals(iocontx, SIGINT, SIGTERM);
-        signals.async_wait([&](auto, auto) { iocontx.stop(); });
-
-        // Session pipeline
-        using SESHandler   = core::VPipeline<sim::Session, core::HPipeline<sim::OrderBook, sim::OrderBookAction, sim::Pass>>;
-        using SESIOHandler = core::IOHandler<sim::Parser, SESHandler, sim::Writer, sim::Controller>;
-
-        // Control pipeline
-        using CTLHandler   = core::VPipeline<ctl::Controller<sim::ControllerContext>>;
-        using CTLIOHandler = core::IOHandler<ctl::Parser, CTLHandler, ctl::Writer>;
-
-        using Context = core::Context<sim::SessionContext, sim::OrderBookContext, sim::ControllerContext>;
-
-        Context context(cfg);
-
-        auto sesAcceptor = core::Acceptor<SESIOHandler, Context>(context, sesport, iocontx);
-        auto ctlAcceptor = core::Acceptor<CTLIOHandler, Context>(context, ctlport, iocontx);
-
-        sesAcceptor.listen();
-        ctlAcceptor.listen();
-
-        iocontx.run();
-
-        std::cout << "Server done." << '\n';
+        std::cout << "Simulator done." << '\n';
     } catch (const std::exception& e) {
-        std::cerr << "Server failure: " << e.what() << '.' << '\n';
+        std::cerr << "Simulator failure: " << e.what() << '.' << '\n';
     }
 
     return 0;

@@ -12,7 +12,7 @@
 
 #include <json5cpp.h>
 
-namespace fix42::sim {
+namespace Fix42::Trading {
 
 using namespace paxsim::core;
 using namespace paxsim::control;
@@ -77,5 +77,5 @@ private:
     ControllerContext& m_context;
 };
 
-} // namespace fix42::sim
+} // namespace Fix42::Trading
 #endif

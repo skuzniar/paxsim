@@ -1,5 +1,5 @@
-#ifndef Paxsim_Examples_Fix42_Sim_OrderBook_dot_h
-#define Paxsim_Examples_Fix42_Sim_OrderBook_dot_h
+#ifndef Paxsim_Examples_Fix42_Trading_OrderBook_dot_h
+#define Paxsim_Examples_Fix42_Trading_OrderBook_dot_h
 
 #include "quickfix/Message.h"
 #include "quickfix/fix42/NewOrderSingle.h"
@@ -21,13 +21,13 @@
 
 #include <json5cpp.h>
 
-namespace fix42::sim {
+namespace Fix42::Trading {
 
 using namespace paxsim::core;
 
 using paxsim::core::log;
 
-using json    = Json::Value;
+using json = Json::Value;
 
 //---------------------------------------------------------------------------------------------------------------------
 // Fix protocol Order Book Context. Provides storage for orders and control commands.
@@ -244,5 +244,5 @@ private:
     SessionContext&   m_SContext;
 };
 
-} // namespace fix42::sim
+} // namespace Fix42::Trading
 #endif

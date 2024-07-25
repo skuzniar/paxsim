@@ -4,7 +4,7 @@
 #include "core/streamlog.h"
 #include <json5cpp.h>
 
-namespace fix42::ctl {
+namespace Fix42::Control {
 
 using namespace paxsim::core;
 
@@ -39,5 +39,5 @@ public:
     }
 };
 
-} // namespace fix42::ctl
+} // namespace Fix42::Control
 #endif

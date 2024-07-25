@@ -6,7 +6,7 @@
 #include <vector>
 #include <optional>
 
-namespace fix42::ctl {
+namespace Fix42::Control {
 
 using namespace paxsim::core;
 
@@ -39,5 +39,5 @@ private:
     Context& m_context;
 };
 
-} // namespace fix42::ctl
+} // namespace Fix42::Control
 #endif
