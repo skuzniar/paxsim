@@ -5,8 +5,8 @@
 
 #include "quickfix/fix42/ExecutionReport.h"
 
-#include "session.h"
-#include "orderbook.h"
+#include "Session.h"
+#include "OrderBook.h"
 
 #include "core/streamlog.h"
 #include "core/types.h"

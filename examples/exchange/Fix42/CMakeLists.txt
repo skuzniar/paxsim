@@ -10,9 +10,9 @@ find_package(QuickFix REQUIRED)
 find_package(JsonCpp REQUIRED)
 find_package(Json5Cpp REQUIRED)
 
-add_executable(fix.4.2 fix.4.2.cpp)
+add_executable(Fix42 Fix42.cpp)
 
-target_include_directories(fix.4.2 PRIVATE 
+target_include_directories(Fix42 PRIVATE 
     ${QUICKFIX_INCLUDE_DIR}
     ${JSONCPP_INCLUDE_DIR}
     ${JSON5CPP_INCLUDE_DIR}
@@ -20,7 +20,7 @@ target_include_directories(fix.4.2 PRIVATE
     ../../../examples
     )
 
-target_link_libraries(fix.4.2 PRIVATE 
+target_link_libraries(Fix42 PRIVATE 
     ${QUICKFIX_LIBRARIES}
     ${JSONCPP_LIBRARIES}
     Boost::boost

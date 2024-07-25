@@ -9,12 +9,11 @@
 #include "quickfix/fix42/ExecutionReport.h"
 #include "quickfix/fix42/OrderCancelReject.h"
 
-#include "session.h"
-#include "order.h"
+#include "Session.h"
+#include "Order.h"
+#include "Types.h"
 
 #include "core/streamlog.h"
-#include "core/types.h"
-#include "types.h"
 
 #include <map>
 #include <vector>

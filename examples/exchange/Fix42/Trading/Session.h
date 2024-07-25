@@ -9,7 +9,8 @@
 
 #include "quickfix/Message.h"
 #include "core/streamlog.h"
-#include "types.h"
+
+#include "Types.h"
 
 #include <json5cpp.h>
 #include <vector>

@@ -5,4 +5,4 @@ set(CMAKE_BUILD_TYPE Release)
 
 project(paxsim)
 
-add_subdirectory(fix.4.2)
+add_subdirectory(Fix42)

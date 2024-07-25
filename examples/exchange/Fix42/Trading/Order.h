@@ -2,7 +2,8 @@
 #define Paxsim_Examples_Fix42_Sim_Order_dot_h
 
 #include "quickfix/fix42/NewOrderSingle.h"
-#include "types.h"
+
+#include "Types.h"
 
 #include <chrono>
 #include <iostream>

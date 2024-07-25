@@ -3,7 +3,8 @@
 
 #include "quickfix/Message.h"
 #include "core/streamlog.h"
-#include "types.h"
+
+#include "Types.h"
 
 #include <string>
 #include <regex>

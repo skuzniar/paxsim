@@ -5,8 +5,8 @@
 
 #include "core/streamlog.h"
 
-#include "session.h"
-#include "types.h"
+#include "Session.h"
+#include "Types.h"
 
 #include <vector>
 #include <optional>

@@ -5,17 +5,17 @@
 #include "core/vpipeline.h"
 #include "core/streamlog.h"
 
-#include "sim/parser.h"
-#include "sim/session.h"
-#include "sim/orderbook.h"
-#include "sim/orderbookaction.h"
-#include "sim/pass.h"
-#include "sim/writer.h"
-#include "sim/controller.h"
+#include "Trading/Parser.h"
+#include "Trading/Session.h"
+#include "Trading/OrderBook.h"
+#include "Trading/OrderBookAction.h"
+#include "Trading/Pass.h"
+#include "Trading/Writer.h"
+#include "Trading/Controller.h"
 
-#include "ctl/parser.h"
-#include "ctl/controller.h"
-#include "ctl/writer.h"
+#include "Control/Parser.h"
+#include "Control/Controller.h"
+#include "Control/Writer.h"
 
 #include <boost/asio.hpp>
 #include <json5cpp.h>
