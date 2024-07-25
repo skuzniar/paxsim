@@ -57,12 +57,11 @@ public:
         return std::chrono::steady_clock::now() + std::chrono::seconds(1);
     }
 
-    // std::vector<paxsim::control::Command> commands()
-    std::vector<paxsim::control::Command> commands()
+    std::vector<Command> commands()
     {
         if (m_context.command) {
             try {
-                auto command = paxsim::control::Factory::command(m_context.command.value());
+                auto command = Factory::command(m_context.command.value());
                 m_context.command.reset();
                 return std::vector{ command };
             } catch (const std::exception& e) {

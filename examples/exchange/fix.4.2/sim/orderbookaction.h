@@ -21,11 +21,11 @@
 namespace fix42::sim {
 
 using namespace paxsim::core;
+using namespace paxsim::control;
 
 using paxsim::core::log;
 
-using json    = Json::Value;
-using Command = paxsim::control::Command;
+using json = Json::Value;
 
 //---------------------------------------------------------------------------------------------------------------------
 // Fix protocol Order Book Action module. Relative or Order Book. Onle deals with Control Actions.
@@ -40,7 +40,7 @@ public:
     {
     }
 
-    // TODO - Until we allow controll only modules, we need to implement this.
+    // TODO - Until we allow control-only modules, we need to implement this.
     std::vector<std::optional<FIX::Message>> process(const FIX::Message& message)
     {
         return {};
@@ -48,12 +48,12 @@ public:
 
     std::vector<std::optional<FIX::Message>> execute(const Command& command)
     {
-        if (const auto* cmd = std::get_if<paxsim::control::order::Command>(&command)) {
+        if (const auto* cmd = std::get_if<order::Command>(&command)) {
             log << level::debug << ctlmark << '[' << *cmd << ']' << std::endl;
-            if (const auto* act = std::get_if<paxsim::control::order::Fill>(&cmd->action)) {
+            if (const auto* act = std::get_if<order::Fill>(&cmd->action)) {
                 return execute(cmd->selector, *act);
             }
-            if (const auto* act = std::get_if<paxsim::control::order::Cancel>(&cmd->action)) {
+            if (const auto* act = std::get_if<order::Cancel>(&cmd->action)) {
                 return execute(cmd->selector, *act);
             }
         }
@@ -75,14 +75,12 @@ private:
         message.getHeader().set(FIX::SendingTime::now());
     }
 
-    std::vector<std::optional<FIX::Message>> execute(const paxsim::control::order::Selector& sel,
-                                                     const paxsim::control::order::Fill&     fill)
+    std::vector<std::optional<FIX::Message>> execute(const order::Selector& sel, const order::Fill& fill)
     {
         return {};
     }
 
-    std::vector<std::optional<FIX::Message>> execute(const paxsim::control::order::Selector& sel,
-                                                     const paxsim::control::order::Cancel&   cancel)
+    std::vector<std::optional<FIX::Message>> execute(const order::Selector& sel, const order::Cancel& cancel)
     {
         return {};
     }
