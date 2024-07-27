@@ -49,7 +49,7 @@ public:
     std::vector<std::optional<FIX::Message>> execute(const Command& command)
     {
         if (const auto* cmd = std::get_if<order::Command>(&command)) {
-            log << level::debug << ctlmark << '[' << *cmd << ']' << std::endl;
+            log << level::info << ctlmark << '[' << *cmd << ']' << std::endl;
             if (const auto* act = std::get_if<order::Fill>(&cmd->action)) {
                 return execute(cmd->selector, *act);
             }
@@ -79,9 +79,30 @@ private:
     {
         std::vector<std::optional<FIX::Message>> result;
 
-        for (const auto& [id, order] : m_OContext.OrderBook) {
+        for (auto& [_, order] : m_OContext.OrderBook) {
             if (matches(order, selector)) {
-                log << level::debug << ctlmark << "Filling: " << order << std::endl;
+
+                order.execute(fill.params.quantity, fill.params.price);
+
+                FIX42::ExecutionReport report;
+                set_header(report);
+
+                report.set(FIX::ClOrdID(order.clientOrderID()));
+                report.set(FIX::Symbol(order.symbol()));
+                report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
+                report.set(FIX::OrderID(order.exchangeOrderID()));
+                report.set(FIX::ExecID(order.executionID()));
+                report.set(FIX::ExecType(order.leavesQuantity() == 0 ? FIX::ExecType_FILL : FIX::ExecType_PARTIAL_FILL));
+                report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
+                report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
+                report.set(FIX::OrderQty(order.orderQuantity()));
+                report.set(FIX::LeavesQty(order.leavesQuantity()));
+                report.set(FIX::CumQty(order.fillsQuantity()));
+                report.set(FIX::Price(order.price()));
+                report.set(FIX::AvgPx(order.avgPrice()));
+
+                log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
+                result.emplace_back(report);
             }
         }
         return result;
@@ -91,9 +112,33 @@ private:
     {
         std::vector<std::optional<FIX::Message>> result;
 
-        for (const auto& [id, order] : m_OContext.OrderBook) {
+        for (auto it = m_OContext.OrderBook.cbegin(); it != m_OContext.OrderBook.cend();) {
+            const auto& [id, order] = *it;
             if (matches(order, selector)) {
-                log << level::debug << ctlmark << "Canceling: " << order << std::endl;
+                FIX42::ExecutionReport report;
+                set_header(report);
+
+                report.set(FIX::ClOrdID(order.clientOrderID()));
+                report.set(FIX::Symbol(order.symbol()));
+                report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
+                report.set(FIX::OrderID(order.exchangeOrderID()));
+                report.set(FIX::ExecID(order.executionID()));
+                report.set(FIX::ExecType(FIX::ExecType_CANCELED));
+                report.set(FIX::ExecTransType(FIX::ExecTransType_CANCEL));
+                report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
+                report.set(FIX::OrderQty(order.orderQuantity()));
+                report.set(FIX::LeavesQty(order.leavesQuantity()));
+                report.set(FIX::CumQty(order.fillsQuantity()));
+                report.set(FIX::Price(order.price()));
+                report.set(FIX::AvgPx(order.avgPrice()));
+
+                report.set(FIX::Text(cancel.params.text));
+
+                log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
+                result.emplace_back(report);
+                it = m_OContext.OrderBook.erase(it);
+            } else {
+                ++it;
             }
         }
         return result;
@@ -101,7 +146,10 @@ private:
 
     bool matches(const Order& order, const order::Selector& selector)
     {
-        return true;
+        if (!selector.params.id.empty()) {
+            return (order.clientOrderID() == selector.params.id) or selector.params.id == "*";
+        }
+        return (order.orderQuantity() == selector.params.quantity and order.price() == selector.params.price);
     }
 
 private:

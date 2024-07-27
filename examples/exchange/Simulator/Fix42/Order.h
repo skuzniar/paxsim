@@ -177,7 +177,7 @@ public:
         return 'O' + std::to_string(m_exchorder_id);
     }
 
-    std::string executionID()
+    std::string executionID() const
     {
         return 'E' + std::to_string(create_id());
     }
@@ -232,12 +232,12 @@ public:
         return m_price;
     }
 
-    virtual void setQuantity(int quantity)
+    void setQuantity(int quantity)
     {
         m_order_quantity = quantity < m_fills_quantity ? m_fills_quantity : quantity;
     }
 
-    virtual void execute(int quantity, double price)
+    void execute(int quantity, double price)
     {
         assert(m_cumquantity + quantity <= m_ordquantity);
         m_avgprice = (m_avgprice * m_fills_quantity + price * quantity) / (m_fills_quantity + quantity);

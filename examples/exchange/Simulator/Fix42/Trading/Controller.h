@@ -54,7 +54,7 @@ public:
 
     static timepoint control_at()
     {
-        return std::chrono::steady_clock::now() + std::chrono::seconds(1);
+        return std::chrono::steady_clock::now() + std::chrono::milliseconds(100);
     }
 
     std::vector<Command> commands()
@@ -65,9 +65,8 @@ public:
                 m_context.command.reset();
                 return std::vector{ command };
             } catch (const std::exception& e) {
-                log << level::error << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << m_context.command.value()
-                    << std::endl;
-                log << "Error converting Json into command. Failure: " << e.what() << '.' << '\n';
+                m_context.command.reset();
+                log << level::error << "Error converting Json into command. Failure: " << e.what() << '.' << std::endl;
             }
         }
         return {};
