@@ -83,13 +83,11 @@ private:
             auto it = m_OContext.orderBook.rbegin();
             if (it != m_OContext.orderBook.rend()) {
                 result.emplace_back(execute(it->second, fill));
-                m_OContext.orderBook.erase(it->first);
             }
         } else if (!selector.params.id.empty() and selector.params.id != "*") {
             auto it = m_OContext.orderBook.find(selector.params.id);
             if (it != m_OContext.orderBook.end()) {
                 result.emplace_back(execute(it->second, fill));
-                m_OContext.orderBook.erase(it);
             }
         } else {
             for (auto& [_, order] : m_OContext.orderBook) {
@@ -173,8 +171,8 @@ private:
         report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
         report.set(FIX::OrderID(order.exchangeOrderID()));
         report.set(FIX::ExecID(order.executionID()));
-        report.set(FIX::ExecType(FIX::ExecType_NEW));
-        report.set(FIX::ExecTransType(FIX::ExecTransType_CANCEL));
+        report.set(FIX::ExecType(FIX::ExecType_CANCELED));
+        report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
         report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
         report.set(FIX::OrderQty(order.orderQuantity()));
         report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
