@@ -82,7 +82,7 @@ private:
         for (auto& [_, order] : m_OContext.orderBook) {
             if (matches(order, selector)) {
 
-                order.execute(fill.params.quantity, fill.params.price);
+                m_OContext.executionBook.emplace(order, fill.params.quantity, fill.params.price);
 
                 FIX42::ExecutionReport report;
                 set_header(report);

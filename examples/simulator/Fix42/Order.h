@@ -227,12 +227,6 @@ public:
         m_order_quantity = quantity;
     }
 
-    void execute(int quantity, double price)
-    {
-        assert(m_cumquantity + quantity <= m_ordquantity);
-        m_order_quantity -= quantity;
-    }
-
     // Auto-generated using nvim-cppgen
     friend std::ostream& operator<<(std::ostream& s, const Order& o)
     {
