@@ -56,6 +56,7 @@ struct OrderBookContext
                   Execution,
                       boost::multi_index::indexed_by <
                           boost::multi_index::ordered_unique     < boost::multi_index::tag<struct idx_exe_id>, boost::multi_index::const_mem_fun<Execution, Execution::ID,      &Execution::executionID>>,
+                          boost::multi_index::ordered_unique     < boost::multi_index::tag<struct idx_ref_id>, boost::multi_index::const_mem_fun<Execution, Execution::ID,      &Execution::referenceID>>,
                           boost::multi_index::ordered_non_unique < boost::multi_index::tag<struct idx_ord_id>, boost::multi_index::const_mem_fun<Execution, Execution::OrderID, &Execution::orderID>>
                       >
                   >;

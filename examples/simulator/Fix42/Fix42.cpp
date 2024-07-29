@@ -8,6 +8,8 @@
 #include "Trading/Session.h"
 #include "Trading/OrderBookHandler.h"
 #include "Trading/OrderBookControl.h"
+#include "Trading/ExecutionBookHandler.h"
+#include "Trading/ExecutionBookControl.h"
 #include "Trading/Pass.h"
 #include "Trading/Writer.h"
 #include "Trading/Controller.h"
@@ -45,7 +47,10 @@ simulate(const json& cfg, boost::asio::io_context& iocontext)
 
     // Session pipeline
     using SESHandler =
-        core::VPipeline<Trading::Session, core::HPipeline<Trading::OrderBookHandler, Trading::OrderBookControl, Trading::Pass>>;
+        core::VPipeline<Trading::Session, 
+            core::HPipeline<Trading::OrderBookHandler, Trading::OrderBookControl, 
+                            Trading::ExecutionBookHandler, Trading::ExecutionBookControl, 
+                            Trading::Pass>>;
     using SESIOHandler = core::IOHandler<Trading::Parser, SESHandler, Trading::Writer, Trading::Controller>;
 
     // Control pipeline
