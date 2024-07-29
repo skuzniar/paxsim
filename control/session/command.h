@@ -24,8 +24,6 @@ struct Selector
 
     friend std::ostream& operator<<(std::ostream& s, const Params& o)
     {
-        // clang-forFillmat off
-        // clang-format on
         return s;
     }
 

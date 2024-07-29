@@ -1,5 +1,5 @@
-#ifndef Paxsim_Examples_Fix42_Trading_OrderBook_dot_h
-#define Paxsim_Examples_Fix42_Trading_OrderBook_dot_h
+#ifndef Paxsim_Examples_Fix42_Trading_OrderBookHandler_dot_h
+#define Paxsim_Examples_Fix42_Trading_OrderBookHandler_dot_h
 
 #include "quickfix/Message.h"
 #include "quickfix/fix42/NewOrderSingle.h"
@@ -10,7 +10,9 @@
 #include "quickfix/fix42/OrderCancelReject.h"
 
 #include "Session.h"
+
 #include "Order.h"
+#include "Execution.h"
 #include "Types.h"
 
 #include "core/streamlog.h"
@@ -18,6 +20,11 @@
 #include <map>
 #include <vector>
 #include <optional>
+
+#include <boost/multi_index_container.hpp>
+#include <boost/multi_index/mem_fun.hpp>
+#include <boost/multi_index/member.hpp>
+#include <boost/multi_index/ordered_index.hpp>
 
 #include <json5cpp.h>
 
@@ -30,7 +37,7 @@ using paxsim::core::log;
 using json = Json::Value;
 
 //---------------------------------------------------------------------------------------------------------------------
-// Fix protocol Order Book Context. Provides storage for orders and control commands.
+// Order Book Context. Provides storage for orders and control commands.
 //---------------------------------------------------------------------------------------------------------------------
 struct OrderBookContext
 {
@@ -39,17 +46,48 @@ struct OrderBookContext
     }
 
     // Collection of orders
-    std::map<Order::ID, Order> OrderBook;
+    using OrderBook = std::map<Order::ID, Order>;
+    OrderBook orderBook;
+
+    // Collection of executions
+
+    // clang-format off
+    using ExecutionBook = boost::multi_index::multi_index_container <
+                  Execution,
+                      boost::multi_index::indexed_by <
+                          boost::multi_index::ordered_unique     < boost::multi_index::tag<struct idx_exe_id>, boost::multi_index::const_mem_fun<Execution, Execution::ID,      &Execution::executionID>>,
+                          boost::multi_index::ordered_non_unique < boost::multi_index::tag<struct idx_ord_id>, boost::multi_index::const_mem_fun<Execution, Execution::OrderID, &Execution::orderID>>
+                      >
+                  >;
+    // clang-format on
+    ExecutionBook executionBook;
+
+    std::pair<unsigned, double> fills(const Order& order) const
+    {
+        const auto& oidx = executionBook.template get<idx_ord_id>();
+
+        unsigned qty = 0;
+        double   avg = 0;
+
+        auto range = oidx.equal_range(order.id());
+        for (auto itr = range.first; itr != range.second; ++itr) {
+            if (itr->active()) {
+                qty += itr->quantity();
+                avg += itr->quantity() * itr->price();
+            }
+        }
+        return {qty, avg / qty };
+    }
 };
 
 //---------------------------------------------------------------------------------------------------------------------
 // Fix protocol Order Book module.
 //---------------------------------------------------------------------------------------------------------------------
-class OrderBook
+class OrderBookHandler
 {
 public:
     template<typename Context>
-    OrderBook(Context& context)
+    OrderBookHandler(Context& context)
       : m_OContext(context)
       , m_SContext(context)
     {
@@ -78,7 +116,7 @@ private:
         // auto result = this->accept(mi, m_fixmsg);
         auto order = Order(message);
 
-        if (!m_OContext.OrderBook.insert({ order.clientOrderID(), order }).second) {
+        if (!m_OContext.orderBook.insert({ order.id(), order }).second) {
             log << level::error << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' '
                 << "Duplicate client order ID: " << order.clientOrderID() << std::endl;
 
@@ -94,10 +132,10 @@ private:
             reject.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
             reject.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(Order::Status::Rejected)));
             reject.set(FIX::OrderQty(order.orderQuantity()));
-            reject.set(FIX::LeavesQty(order.leavesQuantity()));
-            reject.set(FIX::CumQty(order.fillsQuantity()));
+            reject.set(FIX::LeavesQty(order.orderQuantity()));
+            reject.set(FIX::CumQty(0));
             reject.set(FIX::Price(order.price()));
-            reject.set(FIX::AvgPx(order.avgPrice()));
+            reject.set(FIX::AvgPx(0));
             reject.set(FIX::OrdRejReason(FIX::OrdRejReason_DUPLICATE_ORDER));
             reject.set(FIX::Text("Duplicate client order ID: " + order.clientOrderID()));
 
@@ -117,10 +155,10 @@ private:
         report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
         report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
         report.set(FIX::OrderQty(order.orderQuantity()));
-        report.set(FIX::LeavesQty(order.leavesQuantity()));
-        report.set(FIX::CumQty(order.fillsQuantity()));
+        report.set(FIX::LeavesQty(order.orderQuantity()));
+        report.set(FIX::CumQty(0));
         report.set(FIX::Price(order.price()));
-        report.set(FIX::AvgPx(order.avgPrice()));
+        report.set(FIX::AvgPx(0));
 
         log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
         return { report };
@@ -130,8 +168,8 @@ private:
     {
         const auto& origid = message.getField(FIX::FIELD::OrigClOrdID);
 
-        auto it = m_OContext.OrderBook.find(origid);
-        if (it == m_OContext.OrderBook.end()) {
+        auto it = m_OContext.orderBook.find(origid);
+        if (it == m_OContext.orderBook.end()) {
             FIX42::OrderCancelReject reject;
             set_header(reject);
 
@@ -150,7 +188,7 @@ private:
         // auto result = this->accept(mi, m_fixmsg);
         auto order = Order(it->second, message);
 
-        if (!m_OContext.OrderBook.insert({ order.clientOrderID(), order }).second) {
+        if (!m_OContext.orderBook.insert({ order.clientOrderID(), order }).second) {
             FIX42::OrderCancelReject reject;
             set_header(reject);
 
@@ -167,6 +205,8 @@ private:
         FIX42::ExecutionReport report;
         set_header(report);
 
+        auto [fillqty, avgpx] = m_OContext.fills(order);
+
         report.set(FIX::ClOrdID(order.clientOrderID()));
         report.set(FIX::OrigClOrdID(origid));
         report.set(FIX::Symbol(order.symbol()));
@@ -177,10 +217,10 @@ private:
         report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
         report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
         report.set(FIX::OrderQty(order.orderQuantity()));
-        report.set(FIX::LeavesQty(order.leavesQuantity()));
-        report.set(FIX::CumQty(order.fillsQuantity()));
+        report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
+        report.set(FIX::CumQty(fillqty));
         report.set(FIX::Price(order.price()));
-        report.set(FIX::AvgPx(order.avgPrice()));
+        report.set(FIX::AvgPx(avgpx));
 
         log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
         return { report };
@@ -190,8 +230,8 @@ private:
     {
         const auto& origid = message.getField(FIX::FIELD::OrigClOrdID);
 
-        auto it = m_OContext.OrderBook.find(origid);
-        if (it == m_OContext.OrderBook.end()) {
+        auto it = m_OContext.orderBook.find(origid);
+        if (it == m_OContext.orderBook.end()) {
             FIX42::OrderCancelReject reject;
             set_header(reject);
 
@@ -213,6 +253,8 @@ private:
         FIX42::ExecutionReport report;
         set_header(report);
 
+        auto [fillqty, avgpx] = m_OContext.fills(order);
+
         report.set(FIX::ClOrdID(order.clientOrderID()));
         report.set(FIX::OrigClOrdID(origid));
         report.set(FIX::Symbol(order.symbol()));
@@ -223,10 +265,10 @@ private:
         report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
         report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
         report.set(FIX::OrderQty(order.orderQuantity()));
-        report.set(FIX::LeavesQty(order.leavesQuantity()));
-        report.set(FIX::CumQty(order.fillsQuantity()));
+        report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
+        report.set(FIX::CumQty(fillqty));
         report.set(FIX::Price(order.price()));
-        report.set(FIX::AvgPx(order.avgPrice()));
+        report.set(FIX::AvgPx(avgpx));
 
         log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
         return { report };

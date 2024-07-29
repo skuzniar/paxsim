@@ -11,7 +11,7 @@
 namespace Fix42 {
 
 //-----------------------------------------------------------------------------------------------------------------
-// Exchange order. Keeps track of order state and executions.
+// Exchange order. Keeps track of order state.
 //-----------------------------------------------------------------------------------------------------------------
 class Order
 {
@@ -167,6 +167,11 @@ public:
 
     Order(const Order& order, const FIX42::NewOrderSingle& message);
 
+    ID id() const
+    {
+        return clientOrderID();
+    }
+
     ID clientOrderID() const
     {
         return m_client_order_id;
@@ -174,10 +179,10 @@ public:
 
     std::string exchangeOrderID() const
     {
-        return 'O' + std::to_string(m_exchorder_id);
+        return 'O' + std::to_string(m_exchng_order_id);
     }
 
-    std::string executionID() const
+    static std::string executionID()
     {
         return 'E' + std::to_string(create_id());
     }
@@ -212,21 +217,6 @@ public:
         return m_order_quantity;
     }
 
-    unsigned fillsQuantity() const
-    {
-        return m_fills_quantity;
-    }
-
-    unsigned leavesQuantity() const
-    {
-        return m_order_quantity - m_fills_quantity;
-    }
-
-    double avgPrice() const
-    {
-        return m_avgprice;
-    }
-
     double price() const
     {
         return m_price;
@@ -234,19 +224,13 @@ public:
 
     void setQuantity(int quantity)
     {
-        m_order_quantity = quantity < m_fills_quantity ? m_fills_quantity : quantity;
+        m_order_quantity : quantity;
     }
 
     void execute(int quantity, double price)
     {
         assert(m_cumquantity + quantity <= m_ordquantity);
-        m_avgprice = (m_avgprice * m_fills_quantity + price * quantity) / (m_fills_quantity + quantity);
         m_order_quantity -= quantity;
-        m_fills_quantity += quantity;
-
-        if (m_fills_quantity > 0) {
-            m_status = m_fills_quantity < m_order_quantity ? Status::PartiallyFilled : Status::Filled;
-        }
     }
 
     // Auto-generated using nvim-cppgen
@@ -254,16 +238,14 @@ public:
     {
         // clang-format off
         s << "[Order]=";
-        s << "ExchorderId: "   << o.m_exchorder_id    << ' ';
+        s << "ExchngOrderId: " << o.m_exchng_order_id << ' ';
         s << "ClientOrderId: " << o.m_client_order_id << ' ';
         s << "Symbol: "        << o.m_symbol          << ' ';
         s << "Side: "          << o.m_side            << ' ';
         s << "Type: "          << o.m_type            << ' ';
         s << "Status: "        << o.m_status          << ' ';
         s << "OrderQuantity: " << o.m_order_quantity  << ' ';
-        s << "FillsQuantity: " << o.m_fills_quantity  << ' ';
-        s << "Price: "         << o.m_price           << ' ';
-        s << "Avgprice: "      << o.m_avgprice;
+        s << "Price: "         << o.m_price;
         // clang-format on
         return s;
     }
@@ -277,16 +259,14 @@ private:
     }
 
 private:
-    uint64_t    m_exchorder_id = create_id();
+    uint64_t    m_exchng_order_id = create_id();
     ID          m_client_order_id;
     std::string m_symbol;
     Side        m_side;
     Type        m_type;
     Status      m_status         = Status::New;
     unsigned    m_order_quantity = 0;
-    unsigned    m_fills_quantity = 0;
     double      m_price          = 0;
-    double      m_avgprice       = 0;
 };
 
 // Auto-generated using nvim-cppgen

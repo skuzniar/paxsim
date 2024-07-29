@@ -35,7 +35,7 @@ struct Selector
 
     friend std::ostream& operator<<(std::ostream& s, const Params& o)
     {
-        // clang-forFillmat off
+        // clang-format off
         s << "Id: " << o.id << ' ';
         s << "Quantity: " << o.quantity << ' ';
         s << "Price: " << o.price;

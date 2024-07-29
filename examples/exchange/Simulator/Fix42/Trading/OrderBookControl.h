@@ -1,12 +1,12 @@
-#ifndef Paxsim_Examples_Fix42_Sim_OrderBookAction_dot_h
-#define Paxsim_Examples_Fix42_Sim_OrderBookAction_dot_h
+#ifndef Paxsim_Examples_Fix42_Sim_OrderBookControl_dot_h
+#define Paxsim_Examples_Fix42_Sim_OrderBookControl_dot_h
 
 #include "quickfix/Message.h"
 
 #include "quickfix/fix42/ExecutionReport.h"
 
 #include "Session.h"
-#include "OrderBook.h"
+#include "OrderBookHandler.h"
 
 #include "core/streamlog.h"
 #include "core/types.h"
@@ -28,13 +28,13 @@ using paxsim::core::log;
 using json = Json::Value;
 
 //---------------------------------------------------------------------------------------------------------------------
-// Order Book Action module. A relative of Order Book. Deals with Order Control Actions.
+// Order Book Control module. A relative of Order Book Handler. Deals with Order Book Commands.
 //---------------------------------------------------------------------------------------------------------------------
-class OrderBookAction : public tag::Control
+class OrderBookControl : public tag::Control
 {
 public:
     template<typename Context>
-    OrderBookAction(Context& context)
+    OrderBookControl(Context& context)
       : m_OContext(context)
       , m_SContext(context)
     {
@@ -79,7 +79,7 @@ private:
     {
         std::vector<std::optional<FIX::Message>> result;
 
-        for (auto& [_, order] : m_OContext.OrderBook) {
+        for (auto& [_, order] : m_OContext.orderBook) {
             if (matches(order, selector)) {
 
                 order.execute(fill.params.quantity, fill.params.price);
@@ -87,19 +87,22 @@ private:
                 FIX42::ExecutionReport report;
                 set_header(report);
 
+                auto [fillqty, avgpx] = m_OContext.fills(order);
+
                 report.set(FIX::ClOrdID(order.clientOrderID()));
                 report.set(FIX::Symbol(order.symbol()));
                 report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
                 report.set(FIX::OrderID(order.exchangeOrderID()));
                 report.set(FIX::ExecID(order.executionID()));
-                report.set(FIX::ExecType(order.leavesQuantity() == 0 ? FIX::ExecType_FILL : FIX::ExecType_PARTIAL_FILL));
+                report.set(
+                    FIX::ExecType(order.orderQuantity() == fillqty ? FIX::ExecType_FILL : FIX::ExecType_PARTIAL_FILL));
                 report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
                 report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
                 report.set(FIX::OrderQty(order.orderQuantity()));
-                report.set(FIX::LeavesQty(order.leavesQuantity()));
-                report.set(FIX::CumQty(order.fillsQuantity()));
+                report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
+                report.set(FIX::CumQty(fillqty));
                 report.set(FIX::Price(order.price()));
-                report.set(FIX::AvgPx(order.avgPrice()));
+                report.set(FIX::AvgPx(avgpx));
 
                 log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
                 result.emplace_back(report);
@@ -112,11 +115,13 @@ private:
     {
         std::vector<std::optional<FIX::Message>> result;
 
-        for (auto it = m_OContext.OrderBook.cbegin(); it != m_OContext.OrderBook.cend();) {
+        for (auto it = m_OContext.orderBook.cbegin(); it != m_OContext.orderBook.cend();) {
             const auto& [id, order] = *it;
             if (matches(order, selector)) {
                 FIX42::ExecutionReport report;
                 set_header(report);
+
+                auto [fillqty, avgpx] = m_OContext.fills(order);
 
                 report.set(FIX::ClOrdID(order.clientOrderID()));
                 report.set(FIX::Symbol(order.symbol()));
@@ -127,16 +132,16 @@ private:
                 report.set(FIX::ExecTransType(FIX::ExecTransType_CANCEL));
                 report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
                 report.set(FIX::OrderQty(order.orderQuantity()));
-                report.set(FIX::LeavesQty(order.leavesQuantity()));
-                report.set(FIX::CumQty(order.fillsQuantity()));
+                report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
+                report.set(FIX::CumQty(fillqty));
                 report.set(FIX::Price(order.price()));
-                report.set(FIX::AvgPx(order.avgPrice()));
+                report.set(FIX::AvgPx(avgpx));
 
                 report.set(FIX::Text(cancel.params.text));
 
                 log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
                 result.emplace_back(report);
-                it = m_OContext.OrderBook.erase(it);
+                it = m_OContext.orderBook.erase(it);
             } else {
                 ++it;
             }
