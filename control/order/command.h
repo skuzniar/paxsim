@@ -26,6 +26,11 @@ struct Selector
         }
     }
 
+    bool empty() const
+    {
+        return params.id.empty() and params.quantity == 0 and params.price == 0.0;
+    }
+
     struct Params
     {
         std::string id;

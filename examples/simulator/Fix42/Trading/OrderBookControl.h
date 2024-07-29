@@ -79,74 +79,113 @@ private:
     {
         std::vector<std::optional<FIX::Message>> result;
 
-        for (auto& [_, order] : m_OContext.orderBook) {
-            if (matches(order, selector)) {
-
-                m_OContext.executionBook.emplace(order, fill.params.quantity, fill.params.price);
-
-                FIX42::ExecutionReport report;
-                set_header(report);
-
-                auto [fillqty, avgpx] = m_OContext.fills(order);
-
-                report.set(FIX::ClOrdID(order.clientOrderID()));
-                report.set(FIX::Symbol(order.symbol()));
-                report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
-                report.set(FIX::OrderID(order.exchangeOrderID()));
-                report.set(FIX::ExecID(order.executionID()));
-                report.set(
-                    FIX::ExecType(order.orderQuantity() == fillqty ? FIX::ExecType_FILL : FIX::ExecType_PARTIAL_FILL));
-                report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
-                report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
-                report.set(FIX::OrderQty(order.orderQuantity()));
-                report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
-                report.set(FIX::CumQty(fillqty));
-                report.set(FIX::Price(order.price()));
-                report.set(FIX::AvgPx(avgpx));
-
-                log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
-                result.emplace_back(report);
+        if (selector.empty()) {
+            auto it = m_OContext.orderBook.rbegin();
+            if (it != m_OContext.orderBook.rend()) {
+                result.emplace_back(execute(it->second, fill));
+                m_OContext.orderBook.erase(it->first);
+            }
+        } else if (!selector.params.id.empty() and selector.params.id != "*") {
+            auto it = m_OContext.orderBook.find(selector.params.id);
+            if (it != m_OContext.orderBook.end()) {
+                result.emplace_back(execute(it->second, fill));
+                m_OContext.orderBook.erase(it);
+            }
+        } else {
+            for (auto& [_, order] : m_OContext.orderBook) {
+                if (matches(order, selector)) {
+                    auto [fillqty, avgpx] = m_OContext.fills(order);
+                    if (order.orderQuantity() - fillqty >= fill.params.quantity) {
+                        result.emplace_back(execute(order, fill));
+                    }
+                }
             }
         }
         return result;
+    }
+
+    std::optional<FIX::Message> execute(const Order& order, const order::Fill& fill)
+    {
+        m_OContext.executionBook.emplace(order, fill.params.quantity, fill.params.price);
+
+        FIX42::ExecutionReport report;
+        set_header(report);
+
+        auto [fillqty, avgpx] = m_OContext.fills(order);
+
+        report.set(FIX::ClOrdID(order.clientOrderID()));
+        report.set(FIX::Symbol(order.symbol()));
+        report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
+        report.set(FIX::OrderID(order.exchangeOrderID()));
+        report.set(FIX::ExecID(order.executionID()));
+        report.set(FIX::ExecType(order.orderQuantity() == fillqty ? FIX::ExecType_FILL : FIX::ExecType_PARTIAL_FILL));
+        report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
+        report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
+        report.set(FIX::OrderQty(order.orderQuantity()));
+        report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
+        report.set(FIX::CumQty(fillqty));
+        report.set(FIX::Price(order.price()));
+        report.set(FIX::AvgPx(avgpx));
+
+        log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
+        return { report };
     }
 
     std::vector<std::optional<FIX::Message>> execute(const order::Selector& selector, const order::Cancel& cancel)
     {
         std::vector<std::optional<FIX::Message>> result;
 
-        for (auto it = m_OContext.orderBook.cbegin(); it != m_OContext.orderBook.cend();) {
-            const auto& [id, order] = *it;
-            if (matches(order, selector)) {
-                FIX42::ExecutionReport report;
-                set_header(report);
-
-                auto [fillqty, avgpx] = m_OContext.fills(order);
-
-                report.set(FIX::ClOrdID(order.clientOrderID()));
-                report.set(FIX::Symbol(order.symbol()));
-                report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
-                report.set(FIX::OrderID(order.exchangeOrderID()));
-                report.set(FIX::ExecID(order.executionID()));
-                report.set(FIX::ExecType(FIX::ExecType_CANCELED));
-                report.set(FIX::ExecTransType(FIX::ExecTransType_CANCEL));
-                report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
-                report.set(FIX::OrderQty(order.orderQuantity()));
-                report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
-                report.set(FIX::CumQty(fillqty));
-                report.set(FIX::Price(order.price()));
-                report.set(FIX::AvgPx(avgpx));
-
-                report.set(FIX::Text(cancel.params.text));
-
-                log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
-                result.emplace_back(report);
-                it = m_OContext.orderBook.erase(it);
-            } else {
-                ++it;
+        if (selector.empty()) {
+            auto it = m_OContext.orderBook.rbegin();
+            if (it != m_OContext.orderBook.rend()) {
+                result.emplace_back(execute(it->second, cancel));
+                m_OContext.orderBook.erase(it->first);
+            }
+        } else if (!selector.params.id.empty() and selector.params.id != "*") {
+            auto it = m_OContext.orderBook.find(selector.params.id);
+            if (it != m_OContext.orderBook.end()) {
+                result.emplace_back(execute(it->second, cancel));
+                m_OContext.orderBook.erase(it);
+            }
+        } else {
+            for (auto it = m_OContext.orderBook.cbegin(); it != m_OContext.orderBook.cend();) {
+                const auto& [id, order] = *it;
+                if (matches(order, selector)) {
+                    result.emplace_back(execute(order, cancel));
+                    it = m_OContext.orderBook.erase(it);
+                } else {
+                    ++it;
+                }
             }
         }
         return result;
+    }
+
+    std::optional<FIX::Message> execute(const Order& order, const order::Cancel& cancel)
+    {
+        FIX42::ExecutionReport report;
+        set_header(report);
+
+        auto [fillqty, avgpx] = m_OContext.fills(order);
+
+        report.set(FIX::ClOrdID(order.clientOrderID()));
+        report.set(FIX::Symbol(order.symbol()));
+        report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
+        report.set(FIX::OrderID(order.exchangeOrderID()));
+        report.set(FIX::ExecID(order.executionID()));
+        report.set(FIX::ExecType(FIX::ExecType_NEW));
+        report.set(FIX::ExecTransType(FIX::ExecTransType_CANCEL));
+        report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
+        report.set(FIX::OrderQty(order.orderQuantity()));
+        report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
+        report.set(FIX::CumQty(fillqty));
+        report.set(FIX::Price(order.price()));
+        report.set(FIX::AvgPx(avgpx));
+
+        report.set(FIX::Text(cancel.params.text));
+
+        log << level::debug << hmark << '[' << fixdump(report.toString()) << ']' << std::endl;
+        return { report };
     }
 
     bool matches(const Order& order, const order::Selector& selector)

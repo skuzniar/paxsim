@@ -72,18 +72,22 @@ private:
         message.getHeader().set(FIX::SendingTime::now());
     }
 
-    std::vector<std::optional<FIX::Message>> execute(const execution::Selector& selector, const execution::Bust& fill)
+    std::vector<std::optional<FIX::Message>> execute(const execution::Selector& selector, const execution::Bust& bust)
     {
         std::vector<std::optional<FIX::Message>> result;
 
-        for (auto it = m_OContext.executionBook.cbegin(); it != m_OContext.executionBook.cend();) {
-            const auto& execution = *it;
+        for (auto& execution : m_OContext.executionBook) {
             if (matches(execution, selector)) {
                 log << level::info << hmark << "Bust handling not implemented." << std::endl;
-                ++it;
+                //result.emplace_back(execute(execution, bust));
             }
         }
         return result;
+    }
+
+    std::optional<FIX::Message> execute(const Execution& execution, const execution::Bust& bust)
+    {
+        return {};
     }
 
     bool matches(const Execution& execution, const execution::Selector& selector)

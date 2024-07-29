@@ -36,6 +36,8 @@ using paxsim::core::log;
 
 using json = Json::Value;
 
+namespace bmi = boost::multi_index;
+
 //---------------------------------------------------------------------------------------------------------------------
 // Order Book Context. Provides storage for orders and control commands.
 //---------------------------------------------------------------------------------------------------------------------
@@ -52,12 +54,12 @@ struct OrderBookContext
     // Collection of executions
 
     // clang-format off
-    using ExecutionBook = boost::multi_index::multi_index_container <
+    using ExecutionBook = bmi::multi_index_container <
                   Execution,
-                      boost::multi_index::indexed_by <
-                          boost::multi_index::ordered_unique     < boost::multi_index::tag<struct idx_exe_id>, boost::multi_index::const_mem_fun<Execution, Execution::ID,      &Execution::executionID>>,
-                          boost::multi_index::ordered_unique     < boost::multi_index::tag<struct idx_ref_id>, boost::multi_index::const_mem_fun<Execution, Execution::ID,      &Execution::referenceID>>,
-                          boost::multi_index::ordered_non_unique < boost::multi_index::tag<struct idx_ord_id>, boost::multi_index::const_mem_fun<Execution, Execution::OrderID, &Execution::orderID>>
+                      bmi::indexed_by <
+                          bmi::ordered_unique     < bmi::tag<struct idx_exe_id>, bmi::const_mem_fun<Execution, Execution::ID,      &Execution::executionID>>,
+                          bmi::ordered_non_unique < bmi::tag<struct idx_ref_id>, bmi::const_mem_fun<Execution, Execution::ID,      &Execution::referenceID>>,
+                          bmi::ordered_non_unique < bmi::tag<struct idx_ord_id>, bmi::const_mem_fun<Execution, Execution::OrderID, &Execution::orderID>>
                       >
                   >;
     // clang-format on
@@ -77,7 +79,7 @@ struct OrderBookContext
                 avg += itr->quantity() * itr->price();
             }
         }
-        return {qty, avg / qty };
+        return {qty, avg > 0 ? avg / qty : 0 };
     }
 };
 
