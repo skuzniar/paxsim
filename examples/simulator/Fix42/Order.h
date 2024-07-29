@@ -224,7 +224,7 @@ public:
 
     void setQuantity(int quantity)
     {
-        m_order_quantity : quantity;
+        m_order_quantity = quantity;
     }
 
     void execute(int quantity, double price)

@@ -20,7 +20,7 @@ target_include_directories(Simulator PRIVATE
     ${QUICKFIX_INCLUDE_DIR}
     ${JSONCPP_INCLUDE_DIR}
     ${JSON5CPP_INCLUDE_DIR}
-    ../../..
+    ../..
     Fix42
     )
 
