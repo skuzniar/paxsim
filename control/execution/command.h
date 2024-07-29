@@ -18,27 +18,17 @@ struct Selector
         if (const auto& val = def["Id"]) {
             params.id = val.template as<std::string>();
         }
-        if (const auto& val = def["Quantity"]) {
-            params.quantity = val.template as<int>();
-        }
-        if (const auto& val = def["Price"]) {
-            params.price = val.template as<double>();
-        }
     }
 
     struct Params
     {
         std::string id;
-        int         quantity = 0;
-        double      price    = 0.0;
     };
 
     friend std::ostream& operator<<(std::ostream& s, const Params& o)
     {
         // clang-format off
-        s << "Id: " << o.id << ' ';
-        s << "Quantity: " << o.quantity << ' ';
-        s << "Price: " << o.price;
+        s << "Id: " << o.id;
         // clang-format on
         return s;
     }
@@ -122,7 +112,6 @@ struct Command
         return s;
     }
 
-private:
     Selector           selector;
     std::variant<Bust> action;
 };
