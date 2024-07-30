@@ -99,7 +99,7 @@ private:
 
         log << level::debug << vmark << '[' << fixdump(reject.toString()) << ']' << std::endl;
         m_command.reset();
-        return { message };
+        return { reject };
     }
 
     std::vector<std::optional<FIX::Message>> process(const FIX42::OrderCancelReplaceRequest& message)
@@ -126,7 +126,7 @@ private:
 
         log << level::debug << hmark << '[' << fixdump(reject.toString()) << ']' << std::endl;
         m_command.reset();
-        return { message };
+        return { reject };
     }
 
     std::vector<std::optional<FIX::Message>> process(const FIX42::OrderCancelRequest& message)
@@ -153,7 +153,7 @@ private:
 
         log << level::debug << hmark << '[' << fixdump(reject.toString()) << ']' << std::endl;
         m_command.reset();
-        return { message };
+        return { reject };
     }
 
     template<typename Msg>

@@ -4,7 +4,7 @@
     {
         Reject: 
         {
-            Code: 42,
+            Code: 4,
             Text: "Rejecting the incoming message."
         }
     }

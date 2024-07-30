@@ -79,7 +79,7 @@ struct OrderBookContext
                 avg += itr->quantity() * itr->price();
             }
         }
-        return {qty, avg > 0 ? avg / qty : 0 };
+        return { qty, avg > 0 ? avg / qty : 0 };
     }
 };
 
@@ -109,7 +109,12 @@ public:
         if (msgtype == FIX::MsgType_OrderCancelRequest) {
             return process(FIX42::OrderCancelRequest(message));
         }
-        // TODO - other types
+
+        // We know there is a filter above. If it produced outgoing message we must let it through
+        if (msgtype == FIX::MsgType_ExecutionReport) {
+            return { message };
+        }
+
         return {};
     }
 
@@ -281,6 +286,14 @@ private:
         message.getHeader().set(FIX::TargetCompID(m_SContext.TargetCompID));
         message.getHeader().set(FIX::MsgSeqNum(m_SContext.OSequence++));
         message.getHeader().set(FIX::SendingTime::now());
+    }
+
+    bool outgoing(const FIX::Message& message)
+    {
+        const auto& scompid = message.getHeader().getField(FIX::FIELD::SenderCompID);
+        const auto& tcompid = message.getHeader().getField(FIX::FIELD::TargetCompID);
+
+        return scompid == m_SContext.SenderCompID && tcompid == m_SContext.TargetCompID;
     }
 
 private:
