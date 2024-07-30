@@ -1,0 +1,10 @@
+{
+    Target: "Order",
+    Action: 
+    {
+        Cancel: 
+        {
+            Text: "Canceling order. Because we feel like."
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    Target: "Order",
+    Action: 
+    {
+        Reject: 
+        {
+            Code: 42,
+            Text: "Rejecting the incoming message."
+        }
+    }
+}

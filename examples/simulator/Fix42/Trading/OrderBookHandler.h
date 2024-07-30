@@ -116,7 +116,6 @@ public:
 private:
     std::vector<std::optional<FIX::Message>> process(const FIX42::NewOrderSingle& message)
     {
-        // auto result = this->accept(mi, m_fixmsg);
         auto order = Order(message);
 
         if (!m_OContext.orderBook.insert({ order.id(), order }).second) {
@@ -188,7 +187,6 @@ private:
             return { reject };
         }
 
-        // auto result = this->accept(mi, m_fixmsg);
         auto order = Order(it->second, message);
 
         if (!m_OContext.orderBook.insert({ order.clientOrderID(), order }).second) {
@@ -250,7 +248,6 @@ private:
             return { reject };
         }
 
-        // auto result = this->accept(mi, m_fixmsg);
         auto order = Order(it->second, message);
 
         FIX42::ExecutionReport report;

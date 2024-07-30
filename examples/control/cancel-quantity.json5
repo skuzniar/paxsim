@@ -1,0 +1,16 @@
+{
+    Target: "Order",
+    Selector: 
+    {
+        //Id: "*", 
+        Quantity: 1300, 
+        Price: 65.85
+    },
+    Action: 
+    {
+        Cancel: 
+        {
+            Text: "Canceling order. Because we feel like."
+        }
+    }
+}
