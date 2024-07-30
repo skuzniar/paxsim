@@ -14,6 +14,10 @@
 #include <boost/asio.hpp>
 #include <iostream>
 
+namespace paxsim::core {
+logstream log(std::clog);
+}
+
 using namespace paxsim;
 using namespace paxsim::core; // For log
 

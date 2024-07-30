@@ -184,7 +184,8 @@ struct logstream : public std::ostream
     std::ofstream ofs;
 };
 
-static logstream log(std::clog);
+// Must be defined in the user code
+extern logstream log;
 
 namespace detail {
 

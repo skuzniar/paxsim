@@ -7,6 +7,10 @@
 #include <iostream>
 #include <fstream>
 
+namespace paxsim::core {
+logstream log(std::clog);
+}
+
 using namespace paxsim;
 
 using namespace Fix42;
