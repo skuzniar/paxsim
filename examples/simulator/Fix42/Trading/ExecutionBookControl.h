@@ -49,17 +49,12 @@ public:
     std::vector<std::optional<FIX::Message>> execute(const Command& command)
     {
         if (const auto* cmd = std::get_if<execution::Command>(&command)) {
-            log << level::info << ctlmark << '[' << *cmd << ']' << std::endl;
             if (const auto* act = std::get_if<execution::Bust>(&cmd->action)) {
+                log << level::info << ctlmark << '[' << *cmd << ']' << std::endl;
                 return execute(cmd->selector, *act);
             }
         }
         return {};
-    }
-
-    static timepoint control_at()
-    {
-        return std::chrono::steady_clock::now() + std::chrono::seconds(1);
     }
 
 private:
@@ -79,7 +74,7 @@ private:
         for (auto& execution : m_OContext.executionBook) {
             if (matches(execution, selector)) {
                 log << level::info << hmark << "Bust handling not implemented." << std::endl;
-                //result.emplace_back(execute(execution, bust));
+                // result.emplace_back(execute(execution, bust));
             }
         }
         return result;

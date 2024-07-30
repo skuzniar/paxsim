@@ -49,20 +49,16 @@ public:
     std::vector<std::optional<FIX::Message>> execute(const Command& command)
     {
         if (const auto* cmd = std::get_if<order::Command>(&command)) {
-            log << level::info << ctlmark << '[' << *cmd << ']' << std::endl;
             if (const auto* act = std::get_if<order::Fill>(&cmd->action)) {
+                log << level::info << ctlmark << '[' << *cmd << ']' << std::endl;
                 return execute(cmd->selector, *act);
             }
             if (const auto* act = std::get_if<order::Cancel>(&cmd->action)) {
+                log << level::info << ctlmark << '[' << *cmd << ']' << std::endl;
                 return execute(cmd->selector, *act);
             }
         }
         return {};
-    }
-
-    static timepoint control_at()
-    {
-        return std::chrono::steady_clock::now() + std::chrono::seconds(1);
     }
 
 private:
