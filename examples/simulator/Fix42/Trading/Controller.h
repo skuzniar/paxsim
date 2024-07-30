@@ -8,7 +8,7 @@
 
 #include <string>
 #include <vector>
-#include <optional>
+#include <queue>
 
 #include <json5cpp.h>
 
@@ -33,12 +33,12 @@ struct ControllerContext
     // Controll commands
     std::string post(const json& message)
     {
-        // log << level::info << vmark << '[' << message << ']' << std::endl;
-        command = message;
+        //log << level::info << vmark << '[' << message << ']' << std::endl;
+        commands.push(message);
         return {};
     }
 
-    std::optional<json> command;
+    std::queue<json> commands;
 };
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -59,17 +59,17 @@ public:
 
     std::vector<Command> commands()
     {
-        if (m_context.command) {
+        std::vector<Command> result;
+        while (!m_context.commands.empty() and result.size() < 100) {
             try {
-                auto command = Factory::command(m_context.command.value());
-                m_context.command.reset();
-                return std::vector{ command };
+                result.emplace_back(Factory::command(m_context.commands.front()));
+                m_context.commands.pop();
             } catch (const std::exception& e) {
-                m_context.command.reset();
+                m_context.commands.pop();
                 log << level::error << "Error converting Json into command. Failure: " << e.what() << '.' << std::endl;
             }
         }
-        return {};
+        return result;
     }
 
 private:

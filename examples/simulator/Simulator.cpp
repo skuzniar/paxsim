@@ -69,7 +69,6 @@ main(int argc, char* argv[])
 
         if (const auto& level = cfglog["Level"]) {
             switch (std::tolower(level.asString()[0])) {
-                default:
                 case 't':
                     core::log << core::threshold::trace;
                     break;
@@ -77,6 +76,7 @@ main(int argc, char* argv[])
                     core::log << core::threshold::debug;
                     break;
                 case 'i':
+                default:
                     core::log << core::threshold::info;
                     break;
                 case 'w':
