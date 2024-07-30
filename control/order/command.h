@@ -12,6 +12,8 @@ namespace paxsim::control::order {
 //----------------------------------------------------------------------------------------------------------------------
 struct Selector
 {
+    Selector() = default;
+
     template<typename Def>
     explicit Selector(const Def& def)
     {
@@ -146,6 +148,52 @@ struct Cancel
 };
 
 //----------------------------------------------------------------------------------------------------------------------
+// Reject action. Applied to messages rather than orders.
+//----------------------------------------------------------------------------------------------------------------------
+struct Reject
+{
+    Reject() = default;
+
+    template<typename Def>
+    explicit Reject(const Def& def)
+    {
+        if (const auto& val = def["Code"]) {
+            params.code = val.template as<int>();
+        }
+        if (const auto& val = def["Text"]) {
+            params.text = val.template as<std::string>();
+        }
+    }
+
+    struct Params
+    {
+        int         code = 0;
+        std::string text;
+    };
+
+    // Auto-generated using nvim-cppgen
+    friend std::ostream& operator<<(std::ostream& s, const Params& o)
+    {
+        // clang-format off
+        s << "Code: " << o.code << ' ';
+        s << "Text: " << o.text;
+        // clang-format on
+        return s;
+    }
+
+    friend std::ostream& operator<<(std::ostream& s, const Reject& o)
+    {
+        // clang-format off
+        s << "Reject: ";
+        s << '{' << o.params << '}';
+        // clang-format on
+        return s;
+    }
+
+    Params params;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
 // Order Command. Consists of a Selector and a union of all possible Actions. Add actions as needed.
 //----------------------------------------------------------------------------------------------------------------------
 struct Command
@@ -158,6 +206,8 @@ struct Command
             this->action = Fill(def);
         } else if (const auto& def = act["Cancel"]) {
             this->action = Cancel(def);
+        } else if (const auto& def = act["Reject"]) {
+            this->action = Reject(def);
         } else {
             throw std::runtime_error("Unknown action.");
         }
@@ -174,8 +224,8 @@ struct Command
         return s;
     }
 
-    Selector                   selector;
-    std::variant<Fill, Cancel> action;
+    Selector                           selector;
+    std::variant<Fill, Cancel, Reject> action;
 };
 
 } // namespace paxsim::control::order
