@@ -88,7 +88,7 @@ private:
             for (auto& [_, order] : m_OContext.orderBook) {
                 if (matches(order, selector)) {
                     auto [fillqty, avgpx] = m_OContext.fills(order);
-                    if (order.orderQuantity() - fillqty >= fill.params.quantity) {
+                    if (order.quantity() - fillqty >= fill.params.quantity) {
                         result.emplace_back(execute(order, fill));
                     }
                 }
@@ -111,11 +111,11 @@ private:
         report.set(FIX::Side(std::underlying_type_t<Order::Side>(order.side())));
         report.set(FIX::OrderID(order.exchangeOrderID()));
         report.set(FIX::ExecID(order.executionID()));
-        report.set(FIX::ExecType(order.orderQuantity() == fillqty ? FIX::ExecType_FILL : FIX::ExecType_PARTIAL_FILL));
+        report.set(FIX::ExecType(order.quantity() == fillqty ? FIX::ExecType_FILL : FIX::ExecType_PARTIAL_FILL));
         report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
         report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
-        report.set(FIX::OrderQty(order.orderQuantity()));
-        report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
+        report.set(FIX::OrderQty(order.quantity()));
+        report.set(FIX::LeavesQty(order.quantity() - fillqty));
         report.set(FIX::CumQty(fillqty));
         report.set(FIX::Price(order.price()));
         report.set(FIX::AvgPx(avgpx));
@@ -169,8 +169,8 @@ private:
         report.set(FIX::ExecType(FIX::ExecType_CANCELED));
         report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
         report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
-        report.set(FIX::OrderQty(order.orderQuantity()));
-        report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
+        report.set(FIX::OrderQty(order.quantity()));
+        report.set(FIX::LeavesQty(order.quantity() - fillqty));
         report.set(FIX::CumQty(fillqty));
         report.set(FIX::Price(order.price()));
         report.set(FIX::AvgPx(avgpx));
@@ -186,7 +186,7 @@ private:
         if (!selector.params.id.empty()) {
             return (order.clientOrderID() == selector.params.id) or selector.params.id == "*";
         }
-        return (order.orderQuantity() == selector.params.quantity and order.price() == selector.params.price);
+        return (order.quantity() == selector.params.quantity and order.price() == selector.params.price);
     }
 
 private:

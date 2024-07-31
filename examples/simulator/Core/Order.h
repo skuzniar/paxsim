@@ -5,8 +5,6 @@
 #include <chrono>
 #include <iostream>
 
-#include <quickfix/Message.h>
-
 #include "Utils.h"
 
 namespace Simulator::Core {
@@ -164,9 +162,20 @@ public:
     };
     */
 
-    Order(const FIX::Message& message);
-
-    Order(const Order& order, const FIX::Message& message);
+    Order(ID                 client_order_id,
+          const std::string& symbol,
+          Side               side,
+          Type               type,
+          unsigned           quantity,
+          double             price)
+      : m_client_order_id(client_order_id)
+      , m_symbol(symbol)
+      , m_side(side)
+      , m_type(type)
+      , m_quantity(quantity)
+      , m_price(price)
+    {
+    }
 
     ID id() const
     {
@@ -213,9 +222,9 @@ public:
         m_status = s;
     }
 
-    unsigned orderQuantity() const
+    unsigned quantity() const
     {
-        return m_order_quantity;
+        return m_quantity;
     }
 
     double price() const
@@ -225,7 +234,7 @@ public:
 
     void setQuantity(int quantity)
     {
-        m_order_quantity = quantity;
+        m_quantity = quantity;
     }
 
     // Auto-generated using nvim-cppgen
@@ -239,7 +248,7 @@ public:
         s << "Side: "          << o.m_side            << ' ';
         s << "Type: "          << o.m_type            << ' ';
         s << "Status: "        << o.m_status          << ' ';
-        s << "OrderQuantity: " << o.m_order_quantity  << ' ';
+        s << "Quantity: "      << o.m_quantity        << ' ';
         s << "Price: "         << o.m_price;
         // clang-format on
         return s;
@@ -259,9 +268,9 @@ private:
     std::string m_symbol;
     Side        m_side;
     Type        m_type;
-    Status      m_status         = Status::New;
-    unsigned    m_order_quantity = 0;
-    double      m_price          = 0;
+    Status      m_status   = Status::New;
+    unsigned    m_quantity = 0;
+    double      m_price    = 0;
 };
 
 // Auto-generated using nvim-cppgen
@@ -360,30 +369,6 @@ from_string<Order::Type>(std::string_view v)
         throw std::runtime_error("Value " + std::to_string(i) + " is outside of Order::Type enumeration range.");
     }
     return static_cast<Order::Type>(i);
-}
-
-// Moved outside of the class and after conversion specialization
-Order::Order(const FIX::Message& message)
-  : m_client_order_id(message.getField(FIX::FIELD::ClOrdID))
-  , m_symbol(message.getField(FIX::FIELD::Symbol))
-  , m_side(from_string<Order::Side>(message.getField(FIX::FIELD::Side)))
-  , m_type(from_string<Order::Type>(message.getField(FIX::FIELD::OrdType)))
-  , m_order_quantity(atoi(message.getField(FIX::FIELD::OrderQty).c_str()))
-  , m_price(atof(message.getField(FIX::FIELD::Price).c_str()))
-{
-}
-
-Order::Order(const Order& order, const FIX::Message& message)
-  : m_client_order_id(message.getField(FIX::FIELD::ClOrdID))
-  , m_symbol(message.isSetField(FIX::FIELD::Symbol) ? message.getField(FIX::FIELD::Symbol) : order.symbol())
-  , m_side(message.isSetField(FIX::FIELD::Side) ? from_string<Order::Side>(message.getField(FIX::FIELD::Side))
-                                                : order.side())
-  , m_type(message.isSetField(FIX::FIELD::OrdType) ? from_string<Order::Type>(message.getField(FIX::FIELD::OrdType))
-                                                   : order.type())
-  , m_order_quantity(message.isSetField(FIX::FIELD::OrderQty) ? atoi(message.getField(FIX::FIELD::OrderQty).c_str())
-                                                              : order.orderQuantity())
-  , m_price(message.isSetField(FIX::FIELD::Price) ? atof(message.getField(FIX::FIELD::Price).c_str()) : order.price())
-{
 }
 
 } // namespace Simulator::Core

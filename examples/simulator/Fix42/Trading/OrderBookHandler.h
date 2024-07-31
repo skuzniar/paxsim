@@ -15,6 +15,8 @@
 #include "Core/Execution.h"
 #include "Core/Utils.h"
 
+#include "Fix42/Common/Factory.h"
+
 #include <paxsim/core/streamlog.h>
 
 #include <map>
@@ -121,7 +123,7 @@ public:
 private:
     std::vector<std::optional<FIX::Message>> process(const FIX42::NewOrderSingle& message)
     {
-        auto order = Order(message);
+        auto order = Common::Factory::order(message);
 
         if (!m_OContext.orderBook.insert({ order.id(), order }).second) {
             log << level::error << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' '
@@ -138,8 +140,8 @@ private:
             reject.set(FIX::ExecType(FIX::ExecType_REJECTED));
             reject.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
             reject.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(Order::Status::Rejected)));
-            reject.set(FIX::OrderQty(order.orderQuantity()));
-            reject.set(FIX::LeavesQty(order.orderQuantity()));
+            reject.set(FIX::OrderQty(order.quantity()));
+            reject.set(FIX::LeavesQty(order.quantity()));
             reject.set(FIX::CumQty(0));
             reject.set(FIX::Price(order.price()));
             reject.set(FIX::AvgPx(0));
@@ -161,8 +163,8 @@ private:
         report.set(FIX::ExecType(FIX::ExecType_NEW));
         report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
         report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
-        report.set(FIX::OrderQty(order.orderQuantity()));
-        report.set(FIX::LeavesQty(order.orderQuantity()));
+        report.set(FIX::OrderQty(order.quantity()));
+        report.set(FIX::LeavesQty(order.quantity()));
         report.set(FIX::CumQty(0));
         report.set(FIX::Price(order.price()));
         report.set(FIX::AvgPx(0));
@@ -192,7 +194,7 @@ private:
             return { reject };
         }
 
-        auto order = Order(it->second, message);
+        auto order = Common::Factory::order(it->second, message);
 
         if (!m_OContext.orderBook.insert({ order.clientOrderID(), order }).second) {
             FIX42::OrderCancelReject reject;
@@ -222,8 +224,8 @@ private:
         report.set(FIX::ExecType(FIX::ExecType_REPLACED));
         report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
         report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
-        report.set(FIX::OrderQty(order.orderQuantity()));
-        report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
+        report.set(FIX::OrderQty(order.quantity()));
+        report.set(FIX::LeavesQty(order.quantity() - fillqty));
         report.set(FIX::CumQty(fillqty));
         report.set(FIX::Price(order.price()));
         report.set(FIX::AvgPx(avgpx));
@@ -253,7 +255,7 @@ private:
             return { reject };
         }
 
-        auto order = Order(it->second, message);
+        auto order = Common::Factory::order(it->second, message);
 
         FIX42::ExecutionReport report;
         set_header(report);
@@ -269,8 +271,8 @@ private:
         report.set(FIX::ExecType(FIX::ExecType_CANCELED));
         report.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
         report.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(order.status())));
-        report.set(FIX::OrderQty(order.orderQuantity()));
-        report.set(FIX::LeavesQty(order.orderQuantity() - fillqty));
+        report.set(FIX::OrderQty(order.quantity()));
+        report.set(FIX::LeavesQty(order.quantity() - fillqty));
         report.set(FIX::CumQty(fillqty));
         report.set(FIX::Price(order.price()));
         report.set(FIX::AvgPx(avgpx));

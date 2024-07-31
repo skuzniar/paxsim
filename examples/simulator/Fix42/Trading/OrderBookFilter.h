@@ -7,6 +7,8 @@
 #include "Session.h"
 #include "OrderBookHandler.h"
 
+#include "Fix42/Common/Factory.h"
+
 #include <paxsim/core/streamlog.h>
 #include <paxsim/core/types.h>
 
@@ -78,7 +80,7 @@ private:
         set_header(reject);
 
         // For simplicity
-        auto order = Order(message);
+        auto order = Common::Factory::order(message);
 
         reject.set(FIX::ClOrdID(order.clientOrderID()));
         reject.set(FIX::Symbol(order.symbol()));
@@ -88,8 +90,8 @@ private:
         reject.set(FIX::ExecType(FIX::ExecType_REJECTED));
         reject.set(FIX::ExecTransType(FIX::ExecTransType_NEW));
         reject.set(FIX::OrdStatus(std::underlying_type_t<Order::Status>(Order::Status::Rejected)));
-        reject.set(FIX::OrderQty(order.orderQuantity()));
-        reject.set(FIX::LeavesQty(order.orderQuantity()));
+        reject.set(FIX::OrderQty(order.quantity()));
+        reject.set(FIX::LeavesQty(order.quantity()));
         reject.set(FIX::CumQty(0));
         reject.set(FIX::Price(order.price()));
         reject.set(FIX::AvgPx(0));
