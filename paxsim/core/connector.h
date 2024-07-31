@@ -1,8 +1,8 @@
 #ifndef Paxsim_Core_Connector_dot_h
 #define Paxsim_Core_Connector_dot_h
 
-#include "iosession.h"
-#include "streamlog.h"
+#include <paxsim/core/iosession.h>
+#include <paxsim/core/streamlog.h>
 
 #include <type_traits>
 #include <boost/asio.hpp>

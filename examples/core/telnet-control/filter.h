@@ -3,8 +3,8 @@
 
 #include "context.h"
 
-#include "core/streamlog.h"
-#include "core/types.h"
+#include "paxsim/core/streamlog.h"
+#include "paxsim/core/types.h"
 #include <string>
 #include <vector>
 #include <optional>

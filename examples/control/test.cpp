@@ -1,4 +1,4 @@
-#include "control/command.h"
+#include "paxsim/control/command.h"
 
 #include <json5cpp.h>
 #include <fstream>

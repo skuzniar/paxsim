@@ -1,9 +1,9 @@
 #ifndef Paxsim_Core_Acceptor_dot_h
 #define Paxsim_Core_Acceptor_dot_h
 
-#include "core/iosession.h"
-#include "core/streamlog.h"
-#include "core/types.h"
+#include <paxsim/core/iosession.h>
+#include <paxsim/core/streamlog.h>
+#include <paxsim/core/types.h>
 
 #include <boost/asio.hpp>
 

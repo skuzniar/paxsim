@@ -1,11 +1,11 @@
-#ifndef Paxsim_Examples_Fix42_Execution_dot_h
-#define Paxsim_Examples_Fix42_Execution_dot_h
+#ifndef Simulator_Core_Execution_dot_h
+#define Simulator_Core_Execution_dot_h
 
 #include "Order.h"
 
 #include <iostream>
 
-namespace Fix42 {
+namespace Simulator::Core {
 
 //-----------------------------------------------------------------------------------------------------------------
 // Order Execution. Keeps track of the quantity, price and the state of the execution.
@@ -90,6 +90,6 @@ public:
     double   m_price    = 0;
 };
 
-} // namespace Fix42
+} // namespace Simulator::Core
 
 #endif

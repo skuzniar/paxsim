@@ -7,4 +7,4 @@ project(paxsim)
 
 add_subdirectory(core)
 add_subdirectory(control)
-add_subdirectory(simulator)
+add_subdirectory(Simulator)

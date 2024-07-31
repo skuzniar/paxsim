@@ -2,8 +2,8 @@
     //--- Logger settings
     Log:
     {
-        Level: "Debug (Trace|Debug|Info|Warning|Error|Fatal)",
-        XFile: "log.txt"
+        Level: "Info (Trace|Debug|Info|Warning|Error|Fatal)",
+        //File: "log.txt"
     }
 
     //--- Main trading session settings

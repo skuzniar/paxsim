@@ -21,7 +21,7 @@ target_include_directories(Simulator PRIVATE
     ${JSONCPP_INCLUDE_DIR}
     ${JSON5CPP_INCLUDE_DIR}
     ../..
-    Fix42
+    .
     )
 
 target_link_libraries(Simulator PRIVATE 

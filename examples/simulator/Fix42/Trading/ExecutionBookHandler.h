@@ -1,10 +1,9 @@
-#ifndef Paxsim_Examples_Fix42_Trading_ExecutionBookHandler_dot_h
-#define Paxsim_Examples_Fix42_Trading_ExecutionBookHandler_dot_h
+#ifndef Simulator_Fix42_Trading_ExecutionBookHandler_dot_h
+#define Simulator_Fix42_Trading_ExecutionBookHandler_dot_h
 
 #include "OrderBookHandler.h"
-#include "Types.h"
 
-#include "core/streamlog.h"
+#include <paxsim/core/streamlog.h>
 
 #include <vector>
 #include <optional>

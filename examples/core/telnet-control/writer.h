@@ -3,7 +3,7 @@
 
 #include "context.h"
 
-#include "core/streamlog.h"
+#include "paxsim/core/streamlog.h"
 #include <string>
 #include <cassert>
 

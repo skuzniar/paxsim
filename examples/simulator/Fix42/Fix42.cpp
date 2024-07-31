@@ -1,8 +1,8 @@
-#include "core/acceptor.h"
-#include "core/context.h"
-#include "core/iohandler.h"
-#include "core/hpipeline.h"
-#include "core/vpipeline.h"
+#include <paxsim/core/acceptor.h>
+#include <paxsim/core/context.h>
+#include <paxsim/core/iohandler.h>
+#include <paxsim/core/hpipeline.h>
+#include <paxsim/core/vpipeline.h>
 
 #include "Trading/Parser.h"
 #include "Trading/Session.h"
@@ -15,9 +15,9 @@
 #include "Trading/Writer.h"
 #include "Trading/Controller.h"
 
-#include "Control/Parser.h"
-#include "Control/Controller.h"
-#include "Control/Writer.h"
+#include "Command/Parser.h"
+#include "Command/Controller.h"
+#include "Command/Writer.h"
 
 #include "Fix42.h"
 
@@ -49,25 +49,24 @@ simulate(const json& cfg, boost::asio::io_context& iocontext)
     // Order Book Filter followed by Order Book Handler
     using OBKHandler = core::VPipeline<Trading::OrderBookFilter, Trading::OrderBookHandler>;
 
-    // Session pipeline
-    using SESHandler   = core::VPipeline<Trading::Session,
+    // Trading pipeline
+    using TRDHandler   = core::VPipeline<Trading::Session,
                                          core::HPipeline<OBKHandler,
                                                          Trading::OrderBookControl,
                                                          Trading::ExecutionBookHandler,
                                                          Trading::ExecutionBookControl,
                                                          Trading::Pass>>;
-    using SESIOHandler = core::IOHandler<Trading::Parser, SESHandler, Trading::Writer, Trading::Controller>;
+    using TRDIOHandler = core::IOHandler<Trading::Parser, TRDHandler, Trading::Writer, Trading::Controller>;
 
-    // Control pipeline
-    using CTLHandler   = core::VPipeline<Control::Controller<Trading::ControllerContext>>;
-    using CTLIOHandler = core::IOHandler<Control::Parser, CTLHandler, Control::Writer>;
+    // Command pipeline
+    using CMDIOHandler = core::IOHandler<Command::Parser, Command::Controller, Command::Writer>;
 
     using Context = core::Context<Trading::SessionContext, Trading::OrderBookContext, Trading::ControllerContext>;
 
     Context context(cfg);
 
-    auto sesAcceptor = core::Acceptor<SESIOHandler, Context>(context, sesport, iocontext);
-    auto ctlAcceptor = core::Acceptor<CTLIOHandler, Context>(context, ctlport, iocontext);
+    auto sesAcceptor = core::Acceptor<TRDIOHandler, Context>(context, sesport, iocontext);
+    auto ctlAcceptor = core::Acceptor<CMDIOHandler, Context>(context, ctlport, iocontext);
 
     sesAcceptor.listen();
     ctlAcceptor.listen();

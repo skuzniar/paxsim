@@ -1,9 +1,9 @@
 #ifndef Paxsim_Core_IOSession_dot_h
 #define Paxsim_Core_IOSession_dot_h
 
-#include "core/types.h"
-#include "core/rwbuffer.h"
-#include "core/streamlog.h"
+#include <paxsim/core/types.h>
+#include <paxsim/core/rwbuffer.h>
+#include <paxsim/core/streamlog.h>
 
 #include <boost/asio.hpp>
 #include <boost/asio/steady_timer.hpp>

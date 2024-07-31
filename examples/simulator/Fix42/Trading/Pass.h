@@ -1,12 +1,11 @@
-#ifndef Paxsim_Examples_Fix42_Sim_Pass_dot_h
-#define Paxsim_Examples_Fix42_Sim_Pass_dot_h
+#ifndef Simulator_Fix42_Trading_Pass_dot_h
+#define Simulator_Fix42_Trading_Pass_dot_h
 
-#include "quickfix/Message.h"
+#include <quickfix/Message.h>
 
-#include "core/streamlog.h"
+#include <paxsim/core/streamlog.h>
 
 #include "Session.h"
-#include "Types.h"
 
 #include <vector>
 #include <optional>

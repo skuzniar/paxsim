@@ -1,8 +1,8 @@
 #ifndef Paxsim_Core_VPipeline_dot_h
 #define Paxsim_Core_VPipeline_dot_h
 
-#include "core/types.h"
-#include "core/streamlog.h"
+#include <paxsim/core/types.h>
+#include <paxsim/core/streamlog.h>
 
 #include <cassert>
 #include <tuple>

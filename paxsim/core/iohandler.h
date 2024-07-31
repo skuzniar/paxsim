@@ -1,9 +1,9 @@
 #ifndef Paxsim_Core_IOHandler_dot_h
 #define Paxsim_Core_IOHandler_dot_h
 
-#include "core/streamlog.h"
-#include "core/rwbuffer.h"
-#include "core/types.h"
+#include <paxsim/core/streamlog.h>
+#include <paxsim/core/rwbuffer.h>
+#include <paxsim/core/types.h>
 
 #include <cassert>
 #include <type_traits>

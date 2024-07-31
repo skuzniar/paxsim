@@ -1,8 +1,8 @@
-#include "core/acceptor.h"
-#include "core/iohandler.h"
-#include "core/hpipeline.h"
-#include "core/vpipeline.h"
-#include "core/streamlog.h"
+#include "paxsim/core/acceptor.h"
+#include "paxsim/core/iohandler.h"
+#include "paxsim/core/hpipeline.h"
+#include "paxsim/core/vpipeline.h"
+#include "paxsim/core/streamlog.h"
 
 #include "context.h"
 

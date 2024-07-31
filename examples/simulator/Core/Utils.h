@@ -1,10 +1,10 @@
-#ifndef Paxsim_Examples_Fix42_Sim_Types_dot_h
-#define Paxsim_Examples_Fix42_Sim_Types_dot_h
+#ifndef Simulator_Core_Utils_dot_h
+#define Simulator_Core_Utils_dot_h
 
 #include <ostream>
 #include <iostream>
 
-namespace Fix42 {
+namespace Simulator::Core {
 
 namespace detail {
 
@@ -64,6 +64,6 @@ template<typename T>
 T
 from_string(std::string_view v);
 
-} // namespace Fix42
+} // namespace Simulator::Core
 
 #endif

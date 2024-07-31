@@ -1,17 +1,15 @@
-#ifndef Paxsim_Examples_Fix42_Sim_ExecutionBookControl_dot_h
-#define Paxsim_Examples_Fix42_Sim_ExecutionBookControl_dot_h
+#ifndef Simulator_Fix42_Trading_ExecutionBookControl_dot_h
+#define Simulator_Fix42_Trading_ExecutionBookControl_dot_h
 
-#include "quickfix/Message.h"
-
-#include "quickfix/fix42/ExecutionReport.h"
+#include <quickfix/Message.h>
+#include <quickfix/fix42/ExecutionReport.h>
 
 #include "Session.h"
 #include "OrderBookHandler.h"
 
-#include "core/streamlog.h"
-#include "core/types.h"
-
-#include "control/command.h"
+#include <paxsim/core/streamlog.h>
+#include <paxsim/core/types.h>
+#include <paxsim/control/command.h>
 
 #include <vector>
 #include <optional>

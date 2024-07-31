@@ -1,6 +1,6 @@
-#include "core/acceptor.h"
-#include "core/iohandler.h"
-#include "core/streamlog.h"
+#include "paxsim/core/acceptor.h"
+#include "paxsim/core/iohandler.h"
+#include "paxsim/core/streamlog.h"
 
 #include "parser.h"
 #include "handler.h"

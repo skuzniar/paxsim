@@ -1,14 +1,15 @@
-#ifndef Paxsim_Examples_Fix42_Order_dot_h
-#define Paxsim_Examples_Fix42_Order_dot_h
+#ifndef Simulator_Core_Order_dot_h
+#define Simulator_Core_Order_dot_h
 
-#include "quickfix/fix42/NewOrderSingle.h"
-
-#include "Types.h"
-
+#include <string>
 #include <chrono>
 #include <iostream>
 
-namespace Fix42 {
+#include <quickfix/Message.h>
+
+#include "Utils.h"
+
+namespace Simulator::Core {
 
 //-----------------------------------------------------------------------------------------------------------------
 // Exchange order. Keeps track of order state.
@@ -163,9 +164,9 @@ public:
     };
     */
 
-    Order(const FIX42::NewOrderSingle& message);
+    Order(const FIX::Message& message);
 
-    Order(const Order& order, const FIX42::NewOrderSingle& message);
+    Order(const Order& order, const FIX::Message& message);
 
     ID id() const
     {
@@ -362,7 +363,7 @@ from_string<Order::Type>(std::string_view v)
 }
 
 // Moved outside of the class and after conversion specialization
-Order::Order(const FIX42::NewOrderSingle& message)
+Order::Order(const FIX::Message& message)
   : m_client_order_id(message.getField(FIX::FIELD::ClOrdID))
   , m_symbol(message.getField(FIX::FIELD::Symbol))
   , m_side(from_string<Order::Side>(message.getField(FIX::FIELD::Side)))
@@ -372,7 +373,7 @@ Order::Order(const FIX42::NewOrderSingle& message)
 {
 }
 
-Order::Order(const Order& order, const FIX42::NewOrderSingle& message)
+Order::Order(const Order& order, const FIX::Message& message)
   : m_client_order_id(message.getField(FIX::FIELD::ClOrdID))
   , m_symbol(message.isSetField(FIX::FIELD::Symbol) ? message.getField(FIX::FIELD::Symbol) : order.symbol())
   , m_side(message.isSetField(FIX::FIELD::Side) ? from_string<Order::Side>(message.getField(FIX::FIELD::Side))
@@ -385,6 +386,6 @@ Order::Order(const Order& order, const FIX42::NewOrderSingle& message)
 {
 }
 
-} // namespace Fix42
+} // namespace Simulator::Core
 
 #endif

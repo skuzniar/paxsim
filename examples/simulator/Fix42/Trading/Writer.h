@@ -1,10 +1,11 @@
-#ifndef Paxsim_Examples_Fix42_Sim_Writer_dot_h
-#define Paxsim_Examples_Fix42_Sim_Writer_dot_h
+#ifndef Simulator_Fix42_Trading_Writer_dot_h
+#define Simulator_Fix42_Trading_Writer_dot_h
 
-#include "quickfix/Message.h"
-#include "core/streamlog.h"
+#include <quickfix/Message.h>
 
-#include "Types.h"
+#include <paxsim/core/streamlog.h>
+
+#include "Core/Utils.h"
 
 #include <string>
 #include <cassert>
@@ -12,6 +13,7 @@
 namespace Fix42::Trading {
 
 using namespace paxsim::core;
+using namespace Simulator::Core;
 
 using paxsim::core::log;
 

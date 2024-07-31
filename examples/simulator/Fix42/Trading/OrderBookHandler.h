@@ -1,21 +1,21 @@
-#ifndef Paxsim_Examples_Fix42_Trading_OrderBookHandler_dot_h
-#define Paxsim_Examples_Fix42_Trading_OrderBookHandler_dot_h
+#ifndef Simulator_Fix42_Trading_OrderBookHandler_dot_h
+#define Simulator_Fix42_Trading_OrderBookHandler_dot_h
 
-#include "quickfix/Message.h"
-#include "quickfix/fix42/NewOrderSingle.h"
-#include "quickfix/fix42/OrderCancelReplaceRequest.h"
-#include "quickfix/fix42/OrderCancelRequest.h"
+#include <quickfix/Message.h>
+#include <quickfix/fix42/NewOrderSingle.h>
+#include <quickfix/fix42/OrderCancelReplaceRequest.h>
+#include <quickfix/fix42/OrderCancelRequest.h>
 
-#include "quickfix/fix42/ExecutionReport.h"
-#include "quickfix/fix42/OrderCancelReject.h"
+#include <quickfix/fix42/ExecutionReport.h>
+#include <quickfix/fix42/OrderCancelReject.h>
 
 #include "Session.h"
 
-#include "Order.h"
-#include "Execution.h"
-#include "Types.h"
+#include "Core/Order.h"
+#include "Core/Execution.h"
+#include "Core/Utils.h"
 
-#include "core/streamlog.h"
+#include <paxsim/core/streamlog.h>
 
 #include <map>
 #include <vector>
@@ -111,7 +111,7 @@ public:
         }
 
         // We know there is a filter above. If it produced outgoing message we must let it through
-        if (msgtype == FIX::MsgType_ExecutionReport) {
+        if (msgtype == FIX::MsgType_ExecutionReport or msgtype == FIX::MsgType_OrderCancelReject) {
             return { message };
         }
 

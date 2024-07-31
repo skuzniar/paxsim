@@ -1,12 +1,13 @@
-#ifndef Paxsim_Examples_Fix42_Ctl_Parser_dot_h
-#define Paxsim_Examples_Fix42_Ctl_Parser_dot_h
+#ifndef Simulator_Control_Parser_dot_h
+#define Simulator_Control_Parser_dot_h
 
-#include "core/streamlog.h"
+#include <paxsim/core/streamlog.h>
+
 #include <json5cpp.h>
 #include <sstream>
 #include <regex>
 
-namespace Fix42::Control {
+namespace Simulator::Control {
 
 using namespace paxsim::core;
 
@@ -73,5 +74,5 @@ private:
     }
 };
 
-} // namespace Fix42::Control
+} // namespace Simulator::Control
 #endif

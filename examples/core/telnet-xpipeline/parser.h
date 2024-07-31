@@ -1,7 +1,7 @@
 #ifndef Paxsim_Examples_Telnet_Parser_dot_h
 #define Paxsim_Examples_Telnet_Parser_dot_h
 
-#include "core/streamlog.h"
+#include "paxsim/core/streamlog.h"
 #include <string>
 
 namespace text {

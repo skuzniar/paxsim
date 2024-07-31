@@ -1,8 +1,8 @@
 #ifndef Paxsim_Examples_Telnet_Counter_dot_h
 #define Paxsim_Examples_Telnet_Counter_dot_h
 
-#include "core/streamlog.h"
-#include "core/types.h"
+#include "paxsim/core/streamlog.h"
+#include "paxsim/core/types.h"
 #include <string>
 #include <vector>
 #include <optional>

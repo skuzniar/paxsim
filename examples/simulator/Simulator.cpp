@@ -1,6 +1,6 @@
-#include "core/streamlog.h"
+#include <paxsim/core/streamlog.h>
 
-#include "Fix42.h"
+#include "Fix42/Fix42.h"
 
 #include <boost/asio.hpp>
 #include <json5cpp.h>

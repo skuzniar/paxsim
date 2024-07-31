@@ -1,9 +1,9 @@
 #ifndef Paxsim_Control_Command_dot_h
 #define Paxsim_Control_Command_dot_h
 
-#include "session/command.h"
-#include "order/command.h"
-#include "execution/command.h"
+#include <paxsim/control/session/command.h>
+#include <paxsim/control/order/command.h>
+#include <paxsim/control/execution/command.h>
 
 #include <string>
 #include <iostream>

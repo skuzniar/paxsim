@@ -1,16 +1,16 @@
-#ifndef Paxsim_Examples_Fix42_Sim_Session_dot_h
-#define Paxsim_Examples_Fix42_Sim_Session_dot_h
+#ifndef Simulator_Fix42_Trading_Session_dot_h
+#define Simulator_Fix42_Trading_Session_dot_h
 
-#include "quickfix/fix42/Heartbeat.h"
-#include "quickfix/fix42/ResendRequest.h"
-#include "quickfix/fix42/SequenceReset.h"
-#include "quickfix/fix42/Logon.h"
-#include "quickfix/fix42/Logout.h"
+#include <quickfix/fix42/Heartbeat.h>
+#include <quickfix/fix42/ResendRequest.h>
+#include <quickfix/fix42/SequenceReset.h>
+#include <quickfix/fix42/Logon.h>
+#include <quickfix/fix42/Logout.h>
+#include <quickfix/Message.h>
 
-#include "quickfix/Message.h"
-#include "core/streamlog.h"
+#include <paxsim/core/streamlog.h>
 
-#include "Types.h"
+#include "Core/Utils.h"
 
 #include <json5cpp.h>
 #include <vector>
@@ -20,6 +20,8 @@ namespace Fix42::Trading {
 
 using namespace paxsim::core;
 using paxsim::core::log;
+
+using namespace Simulator::Core;
 
 using json = Json::Value;
 

@@ -1,10 +1,10 @@
-#ifndef Paxsim_Examples_Fix42_Ctl_Writer_dot_h
-#define Paxsim_Examples_Fix42_Ctl_Writer_dot_h
+#ifndef Simulator_Control_Writer_dot_h
+#define Simulator_Control_Writer_dot_h
 
-#include "core/streamlog.h"
+#include <paxsim/core/streamlog.h>
 #include <json5cpp.h>
 
-namespace Fix42::Control {
+namespace Simulator::Control {
 
 using namespace paxsim::core;
 
@@ -39,5 +39,5 @@ public:
     }
 };
 
-} // namespace Fix42::Control
+} // namespace Simulator::Control
 #endif
