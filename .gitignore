@@ -39,3 +39,15 @@
 
 # debug information files
 *.dwo
+
+# Python
+*__pycache__/
+*.py[cod]
+*$py.class.pyc
+
+# Apple
+.DS_Store
+
+# CMake
+build/
+
