@@ -464,7 +464,7 @@ strip_path(const char* path)
 #define _file_ PaxSim::Core::detail::strip_path(__FILE__)
 #define _line_ __LINE__
 
-#define _here_ ts << ' ' << _file_ << ':' << _line_
+#define here ' ' << _file_ << ':' << _line_
 
 } // namespace PaxSim::Core
 

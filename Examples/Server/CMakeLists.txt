@@ -17,13 +17,13 @@ find_package(QuickFix REQUIRED)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 
-add_executable(Simulator 
-    Simulator.cpp 
+add_executable(Server 
+    Server.cpp 
 )
 
 add_subdirectory(Fix)
 
-target_include_directories(Simulator PRIVATE 
+target_include_directories(Server PRIVATE 
     . 
     ../..
     ${LUA_INCLUDE_DIR}
@@ -31,7 +31,7 @@ target_include_directories(Simulator PRIVATE
     ${QUICKFIX_INCLUDE_DIR}
 )
 
-target_link_libraries(Simulator PRIVATE 
+target_link_libraries(Server PRIVATE 
     ${LUA_LIBRARIES} 
     ${QUICKFIX_LIBRARIES}
     Boost::boost 

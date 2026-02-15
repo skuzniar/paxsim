@@ -1,4 +1,4 @@
-target_sources(Simulator 
+target_sources(Server 
     PRIVATE
         Fix42.cpp
     PUBLIC
@@ -7,9 +7,8 @@ target_sources(Simulator
 
 set(CMAKE_CXX_FLAGS "-Wno-unknown-attributes")
 
-target_include_directories(Simulator PRIVATE 
+target_include_directories(Server PRIVATE 
     . 
-    ../../..
     ${LUA_INCLUDE_DIR}
     ${SOL2_INCLUDE_DIR}
     ${QUICKFIX_INCLUDE_DIR}

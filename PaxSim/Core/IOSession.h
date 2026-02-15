@@ -19,24 +19,6 @@ template<typename IOHandler>
 class IOSession
 {
 public:
-    explicit IOSession(IOContext& iocontx)
-      : m_handler(m_ibuf, m_obuf)
-      , m_socket(iocontx.context())
-      , m_timer(iocontx.context())
-
-    {
-        log << level::info << status << __func__ << '@' << this << std::endl;
-    }
-
-    template<typename Context>
-    IOSession(Context& context, IOContext& iocontx)
-      : m_handler(m_ibuf, m_obuf, context)
-      , m_socket(iocontx.context())
-      , m_timer(iocontx.context())
-    {
-        log << level::info << status << __func__ << '@' << this << std::endl;
-    }
-
     IOSession(IOContext& iocontx, boost::asio::ip::tcp::socket socket)
       : m_handler(m_ibuf, m_obuf)
       , m_socket(std::move(socket))
@@ -66,8 +48,9 @@ public:
 
     void start(std::shared_ptr<IOSession> s)
     {
-        start_io(s);
-        start_timer(s);
+        if (start_io(s)) {
+            start_timer(s);
+        }
     }
 
     /*
@@ -117,46 +100,45 @@ private:
     {
         log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
         m_pending_read = true;
-        m_socket.async_read_some(boost::asio::buffer(m_ibuf.wpos(), m_ibuf.wsize()),
-                                 [s, this](boost::system::error_code e, std::size_t length) {
-                                     m_pending_read = false;
-                                     if (!e) {
-                                         m_ibuf.produced(length);
-                                         if (!notify_read()) {
-                                             log << level::info << status << "Notify read failure." << std::endl;
-                                             m_failed_read = true;
-                                         }
-                                     } else {
-                                         log << level::error << "Read failure : " << e.message() << std::endl;
-                                         m_failed_read = true;
-                                     }
-                                     start_io(s);
-                                 });
+        m_socket.async_read_some(boost::asio::buffer(m_ibuf.wpos(), m_ibuf.wsize()), [s, this](boost::system::error_code e, std::size_t length) {
+            m_pending_read = false;
+            if (!e) {
+                m_ibuf.produced(length);
+                if (!notify_read()) {
+                    log << level::error << status << "Notify read failure." << std::endl;
+                    m_failed_read = true;
+                }
+            } else {
+                log << level::error << "Read failure : " << e.message() << std::endl;
+                m_failed_read = true;
+            }
+            start_io(s);
+        });
     }
 
     void do_write(std::shared_ptr<IOSession> s)
     {
         log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
         m_pending_write = true;
-        m_socket.async_write_some(boost::asio::buffer(m_obuf.rpos(), m_obuf.rsize()),
-                                  [s, this](boost::system::error_code e, std::size_t length) {
-                                      m_pending_write = false;
-                                      if (!e) {
-                                          m_obuf.consumed(length);
-                                          if (!notify_write()) {
-                                              log << level::info << status << "Notify write failure." << std::endl;
-                                              m_failed_write = true;
-                                          }
-                                      } else {
-                                          log << level::error << "Write failure: " << e.message() << std::endl;
-                                          m_failed_write = true;
-                                      }
-                                      start_io(s);
-                                  });
+        m_socket.async_write_some(boost::asio::buffer(m_obuf.rpos(), m_obuf.rsize()), [s, this](boost::system::error_code e, std::size_t length) {
+            m_pending_write = false;
+            if (!e) {
+                m_obuf.consumed(length);
+                if (!notify_write()) {
+                    log << level::info << status << "Notify write failure." << std::endl;
+                    m_failed_write = true;
+                }
+            } else {
+                log << level::error << "Write failure: " << e.message() << std::endl;
+                m_failed_write = true;
+            }
+            start_io(s);
+        });
     }
 
-    void start_io(std::shared_ptr<IOSession> s)
+    bool start_io(std::shared_ptr<IOSession> s)
     {
+        log << level::trace << ts << here << ' ' << __func__ << std::endl;
         if (!m_pending_read && !m_failed_read) {
             if (m_ibuf.above_hw_mark()) {
                 m_ibuf.reset();
@@ -177,25 +159,25 @@ private:
         if (!m_pending_read && !m_pending_write && (m_failed_read || m_failed_write)) {
             m_timer.cancel();
         }
+        return m_pending_read || m_pending_write;
     }
 
     void start_timer(std::shared_ptr<IOSession> s)
     {
         if (m_timepoint != timepoint::max()) {
-            log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
             m_timer.expires_at(m_timepoint);
             m_timer.async_wait([this, s](const boost::system::error_code& e) { on_timeout(s, e); });
         }
     }
-
     void on_timeout(std::shared_ptr<IOSession> s, const boost::system::error_code& e)
     {
-        if (e != boost::asio::error::operation_aborted) {
+        log << level::trace << ts << here << ' ' << __func__ << ' ' << e << std::endl;
+        if (e == boost::system::error_code()) {
             try {
                 m_timepoint = m_handler.timeout(std::chrono::steady_clock::now());
-                log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
-                start_io(s);
-                start_timer(s);
+                if (start_io(s)) {
+                    start_timer(s);
+                }
             } catch (const std::exception& ex) {
                 log << level::error << "Timeout failure." << std::endl;
                 // TODO - flush output buffer

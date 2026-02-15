@@ -1,8 +1,9 @@
 Config = {
-    Simulator = {
+    Server = {
         Type = "Fix42",
         Log = {
             Level = "info",
+            --File = "server.log",
         },
     },
     Session = {

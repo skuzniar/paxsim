@@ -42,7 +42,7 @@ public:
         }
 
         m_context.iAdvance();
-        log << level::debug << _here_ << ' ' << m_context.iSequence() << ':' << msg.getHeader().getField(FIX::FIELD::MsgSeqNum) << std::endl;
+        log << level::debug << ts << here << ' ' << m_context.iSequence() << ':' << msg.getHeader().getField(FIX::FIELD::MsgSeqNum) << std::endl;
 
         // TODO - Check incoming sequence number
 
@@ -88,7 +88,7 @@ private:
             throw std::runtime_error("Missing Sending Time.");
         }
 
-        if (m_state == State::Startup && msgtype != FIX::MsgType_Logon) {
+        if (m_context.state() == Context::Session::State::Startup && msgtype != FIX::MsgType_Logon) {
             throw std::runtime_error("Logon must be the first message.");
         }
     }
@@ -96,8 +96,8 @@ private:
     template<typename Next>
     bool process(const Factory::Logon& msg, Next& next)
     {
-        if (m_state != State::Startup) {
-            std::string error = "Unexpected Logon message at this time.";
+        if (m_context.state() != Context::Session::State::Startup) {
+            std::string error = "Unexpected Logon message at this time. " + to_string(m_context.state());
             next.put(m_factory.logout(error));
             return false;
         }
@@ -117,13 +117,15 @@ private:
         }
         m_context.HBInterval = heartbtint;
 
-        const auto& seqreset = msg.getField(FIX::FIELD::ResetSeqNumFlag);
-        if (seqreset == "Y") {
-            m_context.reset();
+        if (msg.isSetField(FIX::FIELD::ResetSeqNumFlag)) {
+            const auto& seqreset = msg.getField(FIX::FIELD::ResetSeqNumFlag);
+            if (seqreset == "Y") {
+                m_context.reset();
+            }
         }
 
         next.put(m_factory.logon());
-        m_state = State::Normal;
+        m_context.state(Context::Session::State::Normal);
         return false;
     }
 
@@ -131,7 +133,7 @@ private:
     bool process(const Factory::Logout&, Next& next)
     {
         next.put(m_factory.logout());
-        m_state = State::Startup;
+        m_context.state(Context::Session::State::Startup);
         return false;
     }
 
@@ -143,16 +145,6 @@ private:
     }
 
 private:
-    // Session state
-    enum class State
-    {
-        Startup,
-        Normal,
-        Recovery
-    };
-
-    State m_state = State::Startup;
-
     Context::Session& m_context;
     Factory           m_factory;
 };

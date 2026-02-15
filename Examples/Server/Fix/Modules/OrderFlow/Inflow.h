@@ -60,7 +60,7 @@ private:
         auto o = m_factory.order(msg);
         if (!m_orderbook.orders.insert(o).second) {
             std::string error = "Duplicate client order ID: " + o.clientOrderID();
-            log << level::error << _here_ << ' ' << error << std::endl;
+            log << level::error << ts << here << ' ' << error << std::endl;
             return next.put(m_factory.reject(msg, FIX::OrdRejReason_DUPLICATE_ORDER, error));
         }
         return next.put(m_factory.accept(msg, o));
@@ -74,7 +74,7 @@ private:
         auto itr = idx.find(msg.getField(FIX::FIELD::OrigClOrdID));
         if (itr == idx.end()) {
             std::string error = "Unknown client order ID: " + msg.getField(FIX::FIELD::OrigClOrdID);
-            log << level::error << _here_ << ' ' << error << std::endl;
+            log << level::error << ts << here << ' ' << error << std::endl;
             return next.put(m_factory.reject(msg, FIX::OrdRejReason_UNKNOWN_ORDER, error));
         }
 
@@ -82,7 +82,7 @@ private:
         idx.erase(itr);
         if (!m_orderbook.orders.insert(o).second) {
             std::string error = "Duplicate client order ID: " + o.clientOrderID();
-            log << level::error << _here_ << ' ' << error << std::endl;
+            log << level::error << ts << here << ' ' << error << std::endl;
             return next.put(m_factory.reject(msg, FIX::OrdRejReason_DUPLICATE_ORDER, error));
         }
         return next.put(m_factory.accept(msg, o));
@@ -95,7 +95,7 @@ private:
         auto  itr = idx.find(msg.getField(FIX::FIELD::OrigClOrdID));
         if (itr == idx.end()) {
             std::string error = "Unknown client order ID: " + msg.getField(FIX::FIELD::OrigClOrdID);
-            log << level::error << _here_ << ' ' << error << std::endl;
+            log << level::error << ts << here << ' ' << error << std::endl;
             return next.put(m_factory.reject(msg, FIX::OrdRejReason_UNKNOWN_ORDER, error));
         }
 

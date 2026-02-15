@@ -44,12 +44,14 @@ public:
     // Send heartbeat message if no other message was sent for the heartbeat interval
     timepoint timeout(timepoint now)
     {
-        if (now >= m_latest + std::chrono::seconds(m_context.HBInterval)) {
-            auto str = m_factory.heartbeat().toString();
-            std::memcpy(m_obuf->wpos(), str.data(), str.size());
-            m_obuf->produced(str.size());
-            m_latest = now;
-            log << level::info << out << '[' << fixdump(str) << ']' << std::endl;
+        if (m_context.state() == Context::Session::State::Normal) {
+            if (now >= m_latest + std::chrono::seconds(m_context.HBInterval)) {
+                auto str = m_factory.heartbeat().toString();
+                std::memcpy(m_obuf->wpos(), str.data(), str.size());
+                m_obuf->produced(str.size());
+                m_latest = now;
+                log << level::info << out << '[' << fixdump(str) << ']' << std::endl;
+            }
         }
         return m_latest + std::chrono::seconds(m_context.HBInterval);
     }
@@ -59,7 +61,7 @@ private:
     Context::Session& m_context;
     Factory           m_factory;
 
-    timepoint         m_latest = std::chrono::steady_clock::now();
+    timepoint m_latest = std::chrono::steady_clock::now();
 };
 
 } // namespace Fix::Modules::Writer

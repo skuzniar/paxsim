@@ -79,10 +79,10 @@ private:
         auto  itr = idx.find(execution.orderID());
         if (itr == idx.end()) {
             std::string error = "Unable to find order for client order ID: " + execution.orderID();
-            log << level::error << _here_ << ' ' << error << std::endl;
+            log << level::error << ts << here << ' ' << error << std::endl;
             return;
         }
-        log << level::error << _here_ << ' ' << "Correcting " << execution << std::endl;
+        log << level::error << ts << here << ' ' << "Correcting " << execution << std::endl;
         return correct(execution, correction, *itr, next);
     }
 
@@ -105,7 +105,7 @@ private:
             double   oldprx = correction["Price"];
             unsigned newqty = correction["NewQuantity"];
             double   newprx = correction["NewPrice"];
-            log << level::debug << _here_ << ' ' << oldqty << '@' << oldprx << std::endl;
+            log << level::debug << ts << here << ' ' << oldqty << '@' << oldprx << std::endl;
             m_corrections.push_back({ oldqty, oldprx, newqty, newprx });
         }
     }

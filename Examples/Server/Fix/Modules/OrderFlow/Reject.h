@@ -66,7 +66,7 @@ private:
             if (message.empty()) {
                 message = "Order quantity: " + std::to_string(quantity) + " triggered reject";
             }
-            log << level::info << _here_ << ' ' << code << ' ' << message << std::endl;
+            log << level::info << ts << here << ' ' << code << ' ' << message << std::endl;
             next.put(m_factory.reject(msg, code, message));
             return false;
         }
@@ -87,7 +87,7 @@ private:
             if (message.empty()) {
                 message = "Order quantity: " + std::to_string(quantity) + " triggered reject";
             }
-            log << level::info << _here_ << ' ' << code << ' ' << message << std::endl;
+            log << level::info << ts << here << ' ' << code << ' ' << message << std::endl;
 
             auto& idx = m_orderbook.orders.get<clordid>();
 
@@ -120,7 +120,7 @@ private:
                 if (message.empty()) {
                     message = "Order quantity: " + std::to_string(itr->quantity()) + " triggered reject";
                 }
-                log << level::info << _here_ << ' ' << code << ' ' << message << std::endl;
+                log << level::info << ts << here << ' ' << code << ' ' << message << std::endl;
 
                 next.put(m_factory.reject(msg, *itr, code, message));
                 return false;

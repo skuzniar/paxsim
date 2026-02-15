@@ -65,10 +65,10 @@ main(int argc, char* argv[])
         // Create configuration object by parsing the file
         Config config(cfgfile);
 
-        const auto& simcfg = config["Simulator"];
+        const auto& srvcfg = config["Server"];
 
         // Get the log level
-        const auto& cfglog = simcfg["Log"];
+        const auto& cfglog = srvcfg["Log"];
 
         if (const std::string& level = cfglog["Level"]; !level.empty()) {
             switch (std::tolower(level[0])) {
@@ -101,15 +101,15 @@ main(int argc, char* argv[])
         }
 
         // Run the simulator
-        const std::string& simtype = simcfg["Type"];
+        const std::string& simtype = srvcfg["Type"];
         if (simtype.empty()) {
-            std::cerr << "Missing simulator type ('Type') property in: " << cfgfile << '\n';
+            std::cerr << "Missing Server type ('Type') property in: " << cfgfile << '\n';
             return -1;
         }
 
         simulate(simtype, config);
     } catch (const std::exception& e) {
-        std::cerr << "Simulator failure: " << e.what() << '.' << '\n';
+        std::cerr << "Server failure: " << e.what() << '.' << '\n';
     }
 
     return 0;

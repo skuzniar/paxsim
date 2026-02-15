@@ -39,19 +39,19 @@ public:
     template<typename Msg, typename Next>
     bool put(Msg& msg, Next& next)
     {
-        log << level::trace << _here_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << here << ' ' << __func__ << std::endl;
 
         if constexpr (has_put_method<M, Msg, Next>) {
-            log << level::debug << _here_ << ' ' << "has" << ' ' << __func__ << std::endl;
+            log << level::debug << ts << here << ' ' << "has" << ' ' << __func__ << std::endl;
             if (m_head.put(msg, next)) {
                 if constexpr (has_put_method<Flareout<Ms...>, Msg, Next>) {
-                    log << level::debug << _here_ << ' ' << "has" << ' ' << __func__ << std::endl;
+                    log << level::debug << ts << here << ' ' << "has" << ' ' << __func__ << std::endl;
                     return m_tail.put(msg, next);
                 }
             }
         } else {
             if constexpr (has_put_method<Flareout<Ms...>, Msg, Next>) {
-                log << level::debug << _here_ << ' ' << "has" << ' ' << __func__ << std::endl;
+                log << level::debug << ts << here << ' ' << "has" << ' ' << __func__ << std::endl;
                 return m_tail.put(msg, next);
             }
         }
@@ -63,10 +63,10 @@ public:
     timepoint timeout(timepoint now, Next& next)
     {
         if (now >= m_hexp) {
-            log << level::trace << _here_ << ' ' << __func__ << std::endl;
+            log << level::trace << ts << here << ' ' << __func__ << std::endl;
 
             if constexpr (has_timeout_method<M, Next>) {
-                log << level::debug << _here_ << ' ' << "has" << ' ' << __func__ << std::endl;
+                log << level::debug << ts << here << ' ' << "has" << ' ' << __func__ << std::endl;
                 m_hexp = m_head.timeout(now, next);
             } else {
                 m_hexp = timepoint::max();
@@ -96,9 +96,9 @@ public:
     template<typename Msg, typename Next>
     bool put(Msg& msg, Next& next)
     {
-        log << level::trace << _here_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << here << ' ' << __func__ << std::endl;
         if constexpr (has_put_method<M, Msg, Next>) {
-            log << level::debug << _here_ << ' ' << "has" << ' ' << __func__ << std::endl;
+            log << level::debug << ts << here << ' ' << "has" << ' ' << __func__ << std::endl;
             return m_tail.put(msg, next);
         }
         return false;
@@ -109,9 +109,9 @@ public:
     timepoint timeout(timepoint now, Next& next)
     {
         if (now >= m_texp) {
-            log << level::trace << _here_ << ' ' << __func__ << std::endl;
+            log << level::trace << ts << here << ' ' << __func__ << std::endl;
             if constexpr (has_timeout_method<M, Next>) {
-                log << level::debug << _here_ << ' ' << "has" << ' ' << __func__ << std::endl;
+                log << level::debug << ts << here << ' ' << "has" << ' ' << __func__ << std::endl;
                 m_texp = m_tail.timeout(now, next);
             } else {
                 m_texp = timepoint::max();

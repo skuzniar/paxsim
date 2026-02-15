@@ -76,10 +76,10 @@ private:
         auto  itr = idx.find(execution.orderID());
         if (itr == idx.end()) {
             std::string error = "Unable to find order for client order ID: " + execution.orderID();
-            log << level::error << _here_ << ' ' << error << std::endl;
+            log << level::error << ts << here << ' ' << error << std::endl;
             return;
         }
-        log << level::error << _here_ << ' ' << "Cancelling " << execution << std::endl;
+        log << level::error << ts << here << ' ' << "Cancelling " << execution << std::endl;
         return cancel(execution, *itr, next);
     }
 
@@ -99,7 +99,7 @@ private:
 
             unsigned qty = cancellation["Quantity"];
             double   prx = cancellation["Price"];
-            log << level::debug << _here_ << ' ' << qty << '@' << prx << std::endl;
+            log << level::debug << ts << here << ' ' << qty << '@' << prx << std::endl;
             m_cancellations.push_back({ qty, prx });
         }
     }

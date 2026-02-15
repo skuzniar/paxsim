@@ -81,10 +81,10 @@ private:
         Execution exec = Execution(order, fill.quantity, fill.price);
         if (!m_executionbook.executions.insert(exec).second) {
             std::string error = "Unable to record the execution for order: " + order.clientOrderID();
-            log << level::error << _here_ << ' ' << error << std::endl;
+            log << level::error << ts << here << ' ' << error << std::endl;
             throw std::runtime_error(error);
         }
-        log << level::info << _here_ << ' ' << "Inserted execution:" << exec << " for order:" << order << std::endl;
+        log << level::info << ts << here << ' ' << "Inserted execution:" << exec << " for order:" << order << std::endl;
         next.put(m_factory.execution(exec, order));
     }
 
@@ -102,7 +102,7 @@ private:
 
                 unsigned qty = fill["Quantity"];
                 double   prx = fill["Price"];
-                log << level::debug << _here_ << ' ' << quantity << ' ' << qty << '@' << prx << std::endl;
+                log << level::debug << ts << here << ' ' << quantity << ' ' << qty << '@' << prx << std::endl;
                 m_fills[quantity].push_back({ qty, prx });
             }
         }

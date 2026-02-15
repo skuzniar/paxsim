@@ -3,6 +3,7 @@
 
 #include <string>
 #include <cstddef>
+#include <iostream>
 
 namespace Fix::Context {
 
@@ -11,6 +12,41 @@ namespace Fix::Context {
 //---------------------------------------------------------------------------------------------------------------------
 struct Session
 {
+    // Session state
+    enum class State
+    {
+        Startup,
+        Normal,
+        Recovery
+    };
+
+    friend  [[cppgen::auto]] std::string to_string(State o)
+    {
+        switch(o)
+        {
+            // clang-format off
+            case State::Startup:  return "Startup";  break;
+            case State::Normal:   return "Normal";   break;
+            case State::Recovery: return "Recovery"; break;
+            default: return std::to_string(static_cast<std::underlying_type_t<State>>(o)) + "Invalid State"; break;
+            // clang-format on
+        };
+    }
+
+    friend  [[cppgen::auto]] std::ostream& operator<<(std::ostream& s, State o)
+    {
+        switch(o)
+        {
+            // clang-format off
+            case State::Startup:  s << "Startup";  break;
+            case State::Normal:   s << "Normal";   break;
+            case State::Recovery: s << "Recovery"; break;
+            default: s << std::to_string(static_cast<std::underlying_type_t<State>>(o)) + "Invalid State"; break;
+            // clang-format on
+        };
+        return s;
+    }
+
     template<typename Config>
     explicit Session(Config& config)
     {
@@ -68,6 +104,17 @@ struct Session
     {
         ++OSequenceNumber;
     }
+
+    State state() const
+    {
+        return m_state;
+    }
+    void state(State s)
+    {
+        m_state = s;
+    }
+
+    State m_state = State::Startup;
 
     std::string TargetCompID;
     std::string SenderCompID;

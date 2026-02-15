@@ -30,40 +30,35 @@ public:
     {
     }
 
-    std::weak_ptr<IOSession<IOHandler>>
-    connect()
+    void connect()
     {
+        log << level::info << status << "Connecting..." << std::endl;
         return async_connect_one();
     }
 
 private:
-    std::weak_ptr<IOSession<IOHandler>>
-    async_connect_one()
+    void async_connect_one()
     {
-        if constexpr (std::is_same_v<Context, tag::Empty>) {
-            return async_connect_one(std::make_shared<IOSession<IOHandler>>(m_iocontx));
-        } else {
-            return async_connect_one(std::make_shared<IOSession<IOHandler>>(m_context, m_iocontx));
-        }
-    }
+        log << level::trace << ts << here << __func__ << std::endl;
+        auto socket = std::make_shared<boost::asio::ip::tcp::socket>(m_iocontx.context());
 
-    std::weak_ptr<IOSession<IOHandler>>
-    async_connect_one(std::shared_ptr<IOSession<IOHandler>> session)
-    {
-        boost::asio::async_connect(session->socket(), m_endpoints, [this, session](boost::system::error_code e, boost::asio::ip::tcp::endpoint ep) {
+        boost::asio::async_connect(*socket, m_endpoints, [this, s = socket](boost::system::error_code e, boost::asio::ip::tcp::endpoint ep) {
             if (!e) {
                 log << level::info << status << "Connected to " << ep << "..." << std::endl;
-                session->start(session);
+                if constexpr (std::is_same_v<Context, tag::Empty>) {
+                    auto session = std::make_shared<IOSession<IOHandler>>(m_iocontx, std::move(*s));
+                    session->start(session);
+                } else {
+                    auto session = std::make_shared<IOSession<IOHandler>>(m_context, m_iocontx, std::move(*s));
+                    session->start(session);
+                }
             } else {
-                log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << e << ' '
-                    << e.message() << std::endl;
+                log << level::info << ts << here << ' ' << __func__ << ' ' << e << ' ' << e.message() << std::endl;
             }
         });
-        return session;
     }
 
-    using context_t =
-        std::conditional_t<std::is_same_v<Context, tag::Empty>, tag::Empty, std::reference_wrapper<Context>>;
+    using context_t = std::conditional_t<std::is_same_v<Context, tag::Empty>, tag::Empty, std::reference_wrapper<Context>>;
 
     context_t                                    m_context;
     IOContext&                                   m_iocontx;
