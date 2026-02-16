@@ -43,7 +43,7 @@ main(int argc, char* argv[])
 
         using Handler = Core::Pipeline<Text::Handler>;
 
-        auto Acceptor = Core::Acceptor<Handler>(7777, context);
+        auto Acceptor = Core::Acceptor<Handler>(context, 7777);
         Acceptor.listen();
         context.run();
 

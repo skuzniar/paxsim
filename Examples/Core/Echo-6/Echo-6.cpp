@@ -9,7 +9,6 @@
 
 #include "Context.h"
 
-
 #include <boost/asio.hpp>
 #include <iostream>
 
@@ -47,7 +46,7 @@ main(int argc, char* argv[])
 
         Text::Context ctx;
 
-        auto Acceptor = Core::Acceptor<Handler, Text::Context>(ctx, 7777, context);
+        auto Acceptor = Core::Acceptor<Handler, Text::Context>(context, ctx, 7777);
         Acceptor.listen();
         context.run();
 

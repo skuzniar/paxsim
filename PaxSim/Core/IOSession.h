@@ -53,18 +53,6 @@ public:
         }
     }
 
-    /*
-    boost::asio::ip::tcp::socket& socket()
-    {
-        return m_socket;
-    }
-
-    IOHandler& iohandler()
-    {
-        return m_handler;
-    }
-    */
-
 private:
     bool ionotify()
     {
@@ -179,10 +167,13 @@ private:
                     start_timer(s);
                 }
             } catch (const std::exception& ex) {
-                log << level::error << "Timeout failure." << std::endl;
+                log << level::error << "Timeout callback failure." << std::endl;
                 // TODO - flush output buffer
                 m_socket.cancel();
             }
+        } else {
+            log << level::error << "Timeout wait failure." << ' ' << e << std::endl;
+            m_socket.cancel();
         }
     }
 

@@ -17,23 +17,22 @@ template<typename IOHandler, typename Context = tag::Empty>
 class Acceptor
 {
 public:
-    Acceptor(unsigned short port, IOContext& iocontx)
+    Acceptor(IOContext& iocontx, unsigned short port)
       : m_iocontx(iocontx)
       , m_acceptor{ m_iocontx.context(), { boost::asio::ip::tcp::v4(), port } }
     {
     }
 
-    Acceptor(Context& context, unsigned short port, IOContext& iocontx)
-      : m_context(context)
-      , m_iocontx(iocontx)
+    Acceptor(IOContext& iocontx, Context& context, unsigned short port)
+      : m_iocontx(iocontx)
+      , m_context(context)
       , m_acceptor{ m_iocontx.context(), { boost::asio::ip::tcp::v4(), port } }
     {
     }
 
     void listen()
     {
-        log << level::info << status << "Listening on port " << m_acceptor.local_endpoint().port() << "..."
-            << std::endl;
+        log << level::info << status << "Listening on port " << m_acceptor.local_endpoint().port() << "..." << std::endl;
         async_accept_one();
     }
 
@@ -50,19 +49,17 @@ private:
                     session->start(session);
                 }
             } else {
-                log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << ' ' << e << ' '
-                    << e.message() << std::endl;
+                log << level::trace << ts << here << ' ' << __func__ << ' ' << e << ' ' << e.message() << std::endl;
             }
 
             async_accept_one();
         });
     }
 
-    using context_t =
-        std::conditional_t<std::is_same_v<Context, tag::Empty>, tag::Empty, std::reference_wrapper<Context>>;
+    using context_t = std::conditional_t<std::is_same_v<Context, tag::Empty>, tag::Empty, std::reference_wrapper<Context>>;
 
-    context_t                      m_context;
     IOContext&                     m_iocontx;
+    context_t                      m_context;
     boost::asio::ip::tcp::acceptor m_acceptor;
 };
 

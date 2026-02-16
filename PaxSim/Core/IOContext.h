@@ -27,11 +27,13 @@ public:
 
     void run()
     {
+        std::cerr << "Starting..." << std::endl;
         m_context.run();
     }
 
     void stop()
     {
+        std::cerr << "Stopping..." << std::endl;
         m_context.stop();
     }
 
