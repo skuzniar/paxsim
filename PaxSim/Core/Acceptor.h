@@ -21,6 +21,7 @@ public:
       : m_iocontx(iocontx)
       , m_acceptor{ m_iocontx.context(), { boost::asio::ip::tcp::v4(), port } }
     {
+        m_iocontx.attach(this);
     }
 
     Acceptor(IOContext& iocontx, Context& context, unsigned short port)
@@ -28,6 +29,12 @@ public:
       , m_context(context)
       , m_acceptor{ m_iocontx.context(), { boost::asio::ip::tcp::v4(), port } }
     {
+        m_iocontx.attach(this);
+    }
+
+    ~Acceptor()
+    {
+        m_iocontx.detach(this);
     }
 
     void listen()

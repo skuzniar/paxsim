@@ -26,6 +26,7 @@ public:
       , m_retries(retries)
       , m_delay(delay)
     {
+        m_iocontx.attach(this);
     }
 
     Connector(IOContext& iocontx, Context& context, const std::string& host, unsigned short port, std::size_t retries = infinity, unsigned short delay = 1)
@@ -36,6 +37,12 @@ public:
       , m_retries(retries)
       , m_delay(delay)
     {
+        m_iocontx.attach(this);
+    }
+
+    ~Connector()
+    {
+        m_iocontx.detach(this);
     }
 
     void connect()
@@ -60,12 +67,15 @@ private:
                     auto session = std::make_shared<IOSession<IOHandler>>(m_context, m_iocontx, std::move(*s));
                     session->start(session);
                 }
+                m_iocontx.detach(this);
             } else {
                 log << level::info << status << "Failed to connect." << ' ' << e.message() << std::endl;
                 s->close();
                 if (m_retries-- > 0) {
                     m_rctimer.expires_at(std::chrono::steady_clock::now() + std::chrono::seconds(m_delay));
                     m_rctimer.async_wait([this](const boost::system::error_code& e) { async_connect_one(); });
+                } else {
+                    m_iocontx.detach(this);
                 }
             }
         });

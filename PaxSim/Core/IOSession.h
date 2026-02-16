@@ -20,20 +20,24 @@ class IOSession
 {
 public:
     IOSession(IOContext& iocontx, boost::asio::ip::tcp::socket socket)
-      : m_handler(m_ibuf, m_obuf)
+      : m_iocontx(iocontx)
+      , m_handler(m_ibuf, m_obuf)
       , m_socket(std::move(socket))
       , m_timer(iocontx.context())
     {
         log << level::info << status << __func__ << '@' << this << std::endl;
+        m_iocontx.attach(this);
     }
 
     template<typename Context>
     IOSession(Context& context, IOContext& iocontx, boost::asio::ip::tcp::socket socket)
-      : m_handler(m_ibuf, m_obuf, context)
+      : m_iocontx(iocontx)
+      , m_handler(m_ibuf, m_obuf, context)
       , m_socket(std::move(socket))
       , m_timer(iocontx.context())
     {
         log << level::info << status << __func__ << '@' << this << std::endl;
+        m_iocontx.attach(this);
     }
 
     ~IOSession()
@@ -44,6 +48,7 @@ public:
         } catch (...) {
             ;
         }
+        m_iocontx.detach(this);
     }
 
     void start(std::shared_ptr<IOSession> s)
@@ -66,7 +71,7 @@ private:
                 } while (m_ibuf.rsize() > 0 && begpos != m_ibuf.rpos());
             }
         } catch (const std::exception& ex) {
-            log << level::error << "IO failure: " << ex.what() << std::endl;
+            log << level::error << status << "IO failure: " << ex.what() << std::endl;
             return false;
         }
         return true;
@@ -74,19 +79,19 @@ private:
 
     bool notify_read()
     {
-        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << here << ' ' << __func__ << std::endl;
         return ionotify();
     }
 
     bool notify_write()
     {
-        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << here << ' ' << __func__ << std::endl;
         return ionotify();
     }
 
     void do_read(std::shared_ptr<IOSession> s)
     {
-        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << here << ' ' << __func__ << std::endl;
         m_pending_read = true;
         m_socket.async_read_some(boost::asio::buffer(m_ibuf.wpos(), m_ibuf.wsize()), [s, this](boost::system::error_code e, std::size_t length) {
             m_pending_read = false;
@@ -97,7 +102,7 @@ private:
                     m_failed_read = true;
                 }
             } else {
-                log << level::error << "Read failure : " << e.message() << std::endl;
+                log << level::error << status << "Read failure : " << e.message() << std::endl;
                 m_failed_read = true;
             }
             start_io(s);
@@ -106,7 +111,7 @@ private:
 
     void do_write(std::shared_ptr<IOSession> s)
     {
-        log << level::trace << ts << ' ' << _file_ << ':' << _line_ << ' ' << __func__ << std::endl;
+        log << level::trace << ts << here << ' ' << __func__ << std::endl;
         m_pending_write = true;
         m_socket.async_write_some(boost::asio::buffer(m_obuf.rpos(), m_obuf.rsize()), [s, this](boost::system::error_code e, std::size_t length) {
             m_pending_write = false;
@@ -117,7 +122,7 @@ private:
                     m_failed_write = true;
                 }
             } else {
-                log << level::error << "Write failure: " << e.message() << std::endl;
+                log << level::error << status << "Write failure: " << e.message() << std::endl;
                 m_failed_write = true;
             }
             start_io(s);
@@ -167,15 +172,17 @@ private:
                     start_timer(s);
                 }
             } catch (const std::exception& ex) {
-                log << level::error << "Timeout callback failure." << std::endl;
+                log << level::error << status << "Timeout callback failure." << std::endl;
                 // TODO - flush output buffer
                 m_socket.cancel();
             }
         } else {
-            log << level::error << "Timeout wait failure." << ' ' << e << std::endl;
+            log << level::error << status << "Timeout wait failure." << ' ' << e << std::endl;
             m_socket.cancel();
         }
     }
+
+    IOContext& m_iocontx;
 
     IRWBuffer m_ibuf;
     ORWBuffer m_obuf;
