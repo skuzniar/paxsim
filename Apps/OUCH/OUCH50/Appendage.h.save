@@ -1,0 +1,156 @@
+#ifndef Appendage_h
+#define Appendage_h
+
+#include "PacketHeader.h"
+
+namespace OUCH::OUCH50::appendage {
+
+#pragma pack(1)
+using ClearingAccount               = Appendage<1, Alpha<12>>;
+using ClearingAccountType           = Appendage<2, ClearingAccountType>;
+using ClearingFirm                  = Appendage<3, Alpha<4>>;
+using ClientReference               = Appendage<4, Alpha<15>>;
+using CrossType                     = Appendage<5, CrossType>;
+using DEAIndicator                  = Appendage<6, DEAIndicator>;
+using Display                       = Appendage<7, Display>;
+using DisplayPrice                  = Appendage<8, Price>;
+using DisplayQuantity               = Appendage<9, Int32>;
+using ExpireTime                    = Appendage<10, Int16>;
+using Firm                          = Appendage<11, Alpha<4>>;
+using LiquidityProvisionIndicator   = Appendage<12, LiquidityProvisionIndicator>;
+using MaxFloor                      = Appendage<13, Int32>;
+using MinimumQuantity               = Appendage<14, Int32>;
+using OrderReference                = Appendage<15, Alpha<10>>;
+using OriginalOrderEntryDate        = Appendage<16, Int32>;
+using OriginalOrderReferenceNumber  = Appendage<17, Int64>;
+using PegDifference                 = Appendage<18, Int32>;
+using PegType                       = Appendage<19, PegType>;
+using RandomReserve                 = Appendage<20, Int32>;
+using SecondaryOrderReferenceNumber = Appendage<21, Int64>;
+using STPAction                     = Appendage<22, STPAction>;
+using STPLevel                      = Appendage<23, STPLevel>;
+using STPTraderGroup                = Appendage<24, Alpha<2>>;
+using TimeInForce                   = Appendage<25, TimeInForce>;
+using TradingAtClosing              = Appendage<26, Alpha<1>>;
+using OrderCondition                = Appendage<27, OrderCondition>;
+using CumulativeQuantity            = Appendage<28, Int32>;
+using CustomerOrderCapacity         = Appendage<29, Alpha<1>>;
+#pragma pack()
+
+inline std::string
+to_json(const char* offset, std::size_t apsize, bool verbose)
+{
+    auto to_json_advance = [&](const auto tag, const auto& appendage) {
+        apsize -= appendage.size();
+        offset += appendage.size();
+        return std::string() + '"' + tag + '"' + ':' + to_json(appendage, verbose) + (apsize > 0 ? "," : "");
+    };
+
+    auto advance = [&](const auto& appendage) {
+        apsize -= appendage.size();
+        offset += appendage.size();
+    };
+
+    std::string result;
+
+    while (apsize > 0) {
+        const auto* h = reinterpret_cast<const AppendageHeader*>(offset);
+        switch (h->tag) {
+            case ClearingAccount::Tag:
+                result += to_json_advance("ClearingAccount", *reinterpret_cast<const ClearingAccount*>(offset));
+                break;
+            case ClearingAccountType::Tag:
+                result += to_json_advance("ClearingAccountType", *reinterpret_cast<const ClearingAccountType*>(offset));
+                break;
+            case ClearingFirm::Tag:
+                result += to_json_advance("ClearingFirm", *reinterpret_cast<const ClearingFirm*>(offset));
+                break;
+            case ClientReference::Tag:
+                result += to_json_advance("ClientReference", *reinterpret_cast<const ClientReference*>(offset));
+                break;
+            case CrossType::Tag:
+                result += to_json_advance("CrossType", *reinterpret_cast<const CrossType*>(offset));
+                break;
+            case DEAIndicator::Tag:
+                result += to_json_advance("DEAIndicator", *reinterpret_cast<const DEAIndicator*>(offset));
+                break;
+            case Display::Tag:
+                result += to_json_advance("Display", *reinterpret_cast<const Display*>(offset));
+                break;
+            case DisplayPrice::Tag:
+                result += to_json_advance("DisplayPrice", *reinterpret_cast<const DisplayPrice*>(offset));
+                break;
+            case DisplayQuantity::Tag:
+                result += to_json_advance("DisplayQuantity", *reinterpret_cast<const DisplayQuantity*>(offset));
+                break;
+            case ExpireTime::Tag:
+                result += to_json_advance("ExpireTime", *reinterpret_cast<const ExpireTime*>(offset));
+                break;
+            case Firm::Tag:
+                result += to_json_advance("Firm", *reinterpret_cast<const Firm*>(offset));
+                break;
+            case LiquidityProvisionIndicator::Tag:
+                result += to_json_advance("LiquidityProvisionIndicator", *reinterpret_cast<const LiquidityProvisionIndicator*>(offset));
+                break;
+            case MaxFloor::Tag:
+                result += to_json_advance("MaxFloor", *reinterpret_cast<const MaxFloor*>(offset));
+                break;
+            case MinimumQuantity::Tag:
+                result += to_json_advance("MinimumQuantity", *reinterpret_cast<const MinimumQuantity*>(offset));
+                break;
+            case OrderReference::Tag:
+                result += to_json_advance("OrderReference", *reinterpret_cast<const OrderReference*>(offset));
+                break;
+            case OriginalOrderEntryDate::Tag:
+                result += to_json_advance("OriginalOrderEntryDate", *reinterpret_cast<const OriginalOrderEntryDate*>(offset));
+                break;
+            case OriginalOrderReferenceNumber::Tag:
+                result += to_json_advance("OriginalOrderReferenceNumber", *reinterpret_cast<const OriginalOrderReferenceNumber*>(offset));
+                break;
+            case PegDifference::Tag:
+                result += to_json_advance("PegDifference", *reinterpret_cast<const PegDifference*>(offset));
+                break;
+            case PegType::Tag:
+                result += to_json_advance("PegType", *reinterpret_cast<const PegType*>(offset));
+                break;
+            case RandomReserve::Tag:
+                result += to_json_advance("RandomReserve", *reinterpret_cast<const RandomReserve*>(offset));
+                break;
+            case SecondaryOrderReferenceNumber::Tag:
+                result += to_json_advance("SecondaryOrderReferenceNumber", *reinterpret_cast<const SecondaryOrderReferenceNumber*>(offset));
+                break;
+            case STPAction::Tag:
+                result += to_json_advance("STPAction", *reinterpret_cast<const STPAction*>(offset));
+                break;
+            case STPLevel::Tag:
+                result += to_json_advance("STPLevel", *reinterpret_cast<const STPLevel*>(offset));
+                break;
+            case STPTraderGroup::Tag:
+                result += to_json_advance("STPTraderGroup", *reinterpret_cast<const STPTraderGroup*>(offset));
+                break;
+            case TimeInForce::Tag:
+                result += to_json_advance("TimeInForce", *reinterpret_cast<const TimeInForce*>(offset));
+                break;
+            case TradingAtClosing::Tag:
+                result += to_json_advance("TradingAtClosing", *reinterpret_cast<const TradingAtClosing*>(offset));
+                break;
+            case OrderCondition::Tag:
+                result += to_json_advance("OrderCondition", *reinterpret_cast<const OrderCondition*>(offset));
+                break;
+            case CumulativeQuantity::Tag:
+                result += to_json_advance("CumulativeQuantity", *reinterpret_cast<const CumulativeQuantity*>(offset));
+                break;
+            case CustomerOrderCapacity::Tag:
+                result += to_json_advance("CustomerOrderCapacity", *reinterpret_cast<const CustomerOrderCapacity*>(offset));
+                break;
+            default:
+                advance(*h);
+                break;
+        }
+    }
+    return '{' + result + '}';
+}
+
+} // namespace OUCH::OUCH50::appendage
+
+#endif
