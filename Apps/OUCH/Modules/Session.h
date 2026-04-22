@@ -23,9 +23,14 @@ class Session
 public:
     using State = Context::Session::State;
 
-    using LoginRequest  = Factory::LoginRequest;
-    using LogoutRequest = Factory::LogoutRequest;
-    using LoginAccepted = Factory::LoginAccepted;
+    using SequencedData   = Factory::SequencedData;
+    using UnsequencedData = Factory::UnsequencedData;
+
+    using LoginRequest         = Factory::LoginRequest;
+    using LogoutRequest        = Factory::LogoutRequest;
+    using LoginAccepted        = Factory::LoginAccepted;
+    using AccountQuery         = Factory::AccountQuery;
+    using AccountQueryResponse = Factory::AccountQueryResponse;
 
     template<typename Context>
     Session(const Config& config, Context& context)
@@ -48,9 +53,20 @@ public:
         if (msg.type == LoginAccepted::Type) {
             return process(reinterpret_cast<const LoginAccepted&>(msg), next);
         }
-
         if (msg.type == LogoutRequest::Type) {
             return process(reinterpret_cast<const LogoutRequest&>(msg), next);
+        }
+        if (msg.type == UnsequencedData::Type) {
+            const auto& header = reinterpret_cast<const UnsequencedData&>(msg);
+            if (header.type == AccountQuery::Type) {
+                return process(reinterpret_cast<const AccountQuery&>(msg), next);
+            }
+        }
+        if (msg.type == SequencedData::Type) {
+            const auto& header = reinterpret_cast<const SequencedData&>(msg);
+            if (header.type == AccountQueryResponse::Type) {
+                return process(reinterpret_cast<const AccountQueryResponse&>(msg), next);
+            }
         }
         return true;
     }
@@ -98,7 +114,7 @@ private:
         if (auto state = m_context.state(); state != State::LogonSent) {
             throw std::runtime_error("Unexpected Logon Accepted message at this time. " + to_string(m_context.state()));
         }
-
+        next.put(m_factory.accountQuery());
         m_context.state(State::Normal);
         return false;
     }
@@ -110,6 +126,23 @@ private:
 
         next.put(m_factory.logoutRequest());
         m_context.state(State::LogonWait);
+        return false;
+    }
+
+    template<typename Next>
+    bool process(const AccountQuery& msg, Next& next)
+    {
+        log << level::trace << ts << here << std::endl;
+
+        next.put(m_factory.accountQueryResponse());
+        return false;
+    }
+
+    template<typename Next>
+    bool process(const AccountQueryResponse& msg, Next& next)
+    {
+        log << level::trace << ts << here << std::endl;
+
         return false;
     }
 

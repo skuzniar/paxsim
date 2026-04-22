@@ -7,6 +7,8 @@
 #include "OUCH/OUCH50/LoginRequest.h"
 #include "OUCH/OUCH50/LoginAccepted.h"
 #include "OUCH/OUCH50/LogoutRequest.h"
+#include "OUCH/OUCH50/AccountQuery.h"
+#include "OUCH/OUCH50/AccountQueryResponse.h"
 
 namespace OUCH::Modules::Factory::OUCH50 {
 
@@ -18,10 +20,15 @@ using namespace OUCH::OUCH50;
 struct Session
 {
     using PacketHeader    = PacketHeader;
-    using ServerHeartbeat = ServerHeartbeat;
-    using LoginRequest    = LoginRequest;
-    using LoginAccepted   = LoginAccepted;
-    using LogoutRequest   = LogoutRequest;
+    using SequencedData   = SequencedData;
+    using UnsequencedData = UnsequencedData;
+
+    using ServerHeartbeat      = ServerHeartbeat;
+    using LoginRequest         = LoginRequest;
+    using LoginAccepted        = LoginAccepted;
+    using LogoutRequest        = LogoutRequest;
+    using AccountQuery         = AccountQuery;
+    using AccountQueryResponse = AccountQueryResponse;
 
     template<typename Context>
     explicit Session(Context& context)
@@ -52,6 +59,18 @@ struct Session
     PacketHeader& logoutRequest()
     {
         return *reinterpret_cast<PacketHeader*>(new (m_buff) LogoutRequest);
+    }
+
+    PacketHeader& accountQuery()
+    {
+        return *reinterpret_cast<PacketHeader*>(new (m_buff) AccountQuery);
+    }
+
+    PacketHeader& accountQueryResponse()
+    {
+        auto* response = new (m_buff) AccountQueryResponse;
+
+        return *reinterpret_cast<PacketHeader*>(response);
     }
 
 private:
