@@ -49,7 +49,7 @@ public:
             return logon(msg, next);
         }
 
-        m_context.iAdvance();
+        m_context.iSequenceAdvance();
         log << level::debug << ts << here << ' ' << m_context.iSequence() << ':' << msg[tag::MsgSeqNum] << std::endl;
 
         // TODO - Check incoming sequence number

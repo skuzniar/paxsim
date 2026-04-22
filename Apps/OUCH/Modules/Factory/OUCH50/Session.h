@@ -70,6 +70,9 @@ struct Session
     {
         auto* response = new (m_buff) AccountQueryResponse;
 
+        response->timestamp = Timestamp::now();
+        response->nextUserRefNum = m_session.iSequence();
+
         return *reinterpret_cast<PacketHeader*>(response);
     }
 

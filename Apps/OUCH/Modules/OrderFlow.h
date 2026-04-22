@@ -5,6 +5,7 @@
 
 #include "Common/Config.h"
 
+#include "OUCH/Context/Session.h"
 #include "OUCH/Context/OrderBook.h"
 
 namespace OUCH::Modules {
@@ -28,7 +29,8 @@ public:
 
     template<typename Context>
     OrderFlow(const Config& config, Context& context)
-      : m_orderbook(context)
+      : m_session(context)
+      , m_orderbook(context)
       , m_factory(context)
     {
     }
@@ -59,10 +61,18 @@ private:
     bool process(const EnterOrder& msg, Next& next)
     {
         log << level::trace << ts << here << std::endl;
-        auto o = m_factory.order(msg);
-        if (m_orderbook.orders.insert(o).second) {
-            return next.put(m_factory.accept(msg, o));
+
+        if (msg.userRefNum > m_session.iSequence()) {
+            m_session.iSequence(msg.userRefNum);
+
+            auto o = m_factory.order(msg);
+            if (m_orderbook.orders.insert(o).second) {
+                return next.put(m_factory.accept(msg, o));
+            }
+            log << level::error << ts << here << ' ' << "Unable to enter order with client order ID: " << Factory::clordID(msg) << std::endl;
+            return next.put(m_factory.reject(msg, { 99 }));
         }
+        log << level::info << ts << here << ' ' << "Ignoring order with user reference number: " << msg.userRefNum << std::endl;
         return false;
     }
 
@@ -70,20 +80,26 @@ private:
     bool process(const ReplaceOrder& msg, Next& next)
     {
         log << level::trace << ts << here << std::endl;
-        auto& idx = m_orderbook.orders.get<Context::OrderBook::clordid>();
 
-        auto itr = idx.find(Factory::clordID(msg));
-        if (itr == idx.end()) {
-            log << level::error << ts << here << ' ' << "Unknown client order ID: " << Factory::clordID(msg) << std::endl;
-            return next.put(m_factory.reject(msg, { 99 }));
-        }
+        if (msg.newUserRefNum > m_session.iSequence()) {
+            m_session.iSequence(msg.newUserRefNum);
 
-        auto o = m_factory.order(msg, *itr);
-        o.status(Order::Status::Replaced);
-        idx.erase(itr);
-        if (m_orderbook.orders.insert(o).second) {
-            return next.put(m_factory.accept(msg, o));
+            auto& idx = m_orderbook.orders.get<Context::OrderBook::clordid>();
+
+            auto itr = idx.find(Factory::clordID(msg));
+            if (itr == idx.end()) {
+                log << level::error << ts << here << ' ' << "Unknown client order ID: " << Factory::clordID(msg) << std::endl;
+                return next.put(m_factory.reject(msg, { 99 }));
+            }
+
+            auto o = m_factory.order(msg, *itr);
+            o.status(Order::Status::Replaced);
+            idx.erase(itr);
+            if (m_orderbook.orders.insert(o).second) {
+                return next.put(m_factory.accept(msg, o));
+            }
         }
+        log << level::info << ts << here << ' ' << "Ignoring order replace with user reference number: " << msg.newUserRefNum << std::endl;
         return false;
     }
 
@@ -91,20 +107,28 @@ private:
     bool process(const CancelOrder& msg, Next& next)
     {
         log << level::trace << ts << here << std::endl;
-        auto& idx = m_orderbook.orders.get<Context::OrderBook::clordid>();
-        auto  itr = idx.find(Factory::clordID(msg));
-        if (itr == idx.end()) {
-            log << level::error << ts << here << ' ' << "Unknown client order ID: " << Factory::clordID(msg) << std::endl;
-            return next.put(m_factory.reject(msg, { 99 }));
+
+        if (msg.userRefNum > m_session.iSequence()) {
+            m_session.iSequence(msg.userRefNum);
+
+            auto& idx = m_orderbook.orders.get<Context::OrderBook::clordid>();
+            auto  itr = idx.find(Factory::clordID(msg));
+            if (itr == idx.end()) {
+                log << level::error << ts << here << ' ' << "Unknown client order ID: " << Factory::clordID(msg) << std::endl;
+                return next.put(m_factory.reject(msg, { 99 }));
+            }
+
+            itr->status(Order::Status::Canceled);
+            auto ret = next.put(m_factory.accept(msg, *itr));
+            idx.erase(itr);
+
+            return ret;
         }
-
-        itr->status(Order::Status::Canceled);
-        auto ret = next.put(m_factory.accept(msg, *itr));
-        idx.erase(itr);
-
-        return ret;
+        return false;
+        log << level::info << ts << here << ' ' << "Ignoring order cancel with user reference number: " << msg.userRefNum << std::endl;
     }
 
+    Context::Session&   m_session;
     Context::OrderBook& m_orderbook;
     Factory             m_factory;
 };

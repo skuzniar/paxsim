@@ -100,7 +100,7 @@ private:
         omsg.push_back_string(tag::MsgType, msgtype);
         omsg.push_back_string(tag::SenderCompID, m_session.senderCompID());
         omsg.push_back_string(tag::TargetCompID, m_session.targetCompID());
-        omsg.push_back_int(tag::MsgSeqNum, m_session.nextOSequence());
+        omsg.push_back_int(tag::MsgSeqNum, m_session.oSequenceAdvance());
         omsg.push_back_timestamp(tag::SendingTime, std::chrono::system_clock::now());
 
         return omsg;

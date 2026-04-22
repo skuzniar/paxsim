@@ -94,27 +94,26 @@ struct Session
     {
         return ISequenceNumber;
     }
+    int iSequence(int sequence)
+    {
+        return ISequenceNumber = sequence;
+    }
     int oSequence() const
     {
         return OSequenceNumber;
     }
+    int oSequence(int sequence)
+    {
+        return OSequenceNumber = sequence;
+    }
 
-    int nextISequence()
+    int iSequenceAdvance()
     {
         return ISequenceNumber++;
     }
-    int nextOSequence()
+    int oSequenceAdvance()
     {
         return OSequenceNumber++;
-    }
-
-    void iAdvance()
-    {
-        ++ISequenceNumber;
-    }
-    void oAdvance()
-    {
-        ++OSequenceNumber;
     }
 
     State state() const
