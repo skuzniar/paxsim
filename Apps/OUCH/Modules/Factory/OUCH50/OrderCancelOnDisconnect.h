@@ -1,5 +1,5 @@
-#ifndef OUCH_Modules_Factory_OUCH50_OrderCancel_dot_h
-#define OUCH_Modules_Factory_OUCH50_OrderCancel_dot_h
+#ifndef OUCH_Modules_Factory_OUCH50_OrderCancelOnDisconnect_dot_h
+#define OUCH_Modules_Factory_OUCH50_OrderCancelOnDisconnect_dot_h
 
 #include "PaxSim/Core/Streamlog.h"
 
@@ -18,24 +18,24 @@ using PaxSim::Core::log;
 //---------------------------------------------------------------------------------------------------------------------
 // OUCH50 protocol message factory.
 //---------------------------------------------------------------------------------------------------------------------
-struct OrderCancel
+struct OrderCancelOnDisconnect
 {
     using PacketHeader   = PacketHeader;
     using OrderCancelled = OrderCancelled;
 
     template<typename Context>
-    explicit OrderCancel(Context& context)
+    explicit OrderCancelOnDisconnect(Context& context)
     {
     }
 
-    PacketHeader& cancel(const Order& order, const Config::Table& params)
+    PacketHeader& cancel(const Order& order)
     {
         auto& omsg = *new (m_buff) OrderCancelled;
 
         omsg.timestamp         = Timestamp::now();
         omsg.userRefNum        = order.clordID();
         omsg.decrementQuantity = 0;
-        omsg.reason            = OrderCancelled::CancelReason::State;
+        omsg.reason            = OrderCancelled::CancelReason::UserRequested;
 
         log << level::debug << vmark << '[' << omsg << ']' << std::endl;
 

@@ -47,8 +47,18 @@ def fixmsg(header, body, prefix, session):
 
     return msg
 
+logout_header = {
+        8: "FIX.4.2",
+       35: "5",
+       49: "SenderCompID",
+       56: "TargetCompID",
+}
+
+logout_body = {
+}
+
 new_order_header = {
-        8: "FIX.4.4",
+        8: "FIX.4.2",
        35: "D",
        49: "SenderCompID",
        50: "Internal.Electronic",

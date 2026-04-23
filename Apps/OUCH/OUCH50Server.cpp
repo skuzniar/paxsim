@@ -13,6 +13,7 @@
 #include "Modules/Factory/OUCH50/OrderReject.h"
 #include "Modules/Factory/OUCH50/OrderFill.h"
 #include "Modules/Factory/OUCH50/OrderCancel.h"
+#include "Modules/Factory/OUCH50/OrderCancelOnDisconnect.h"
 #include "Modules/Factory/OUCH50/FillCancel.h"
 #include "Modules/Factory/OUCH50/Writer.h"
 
@@ -22,6 +23,7 @@
 #include "Modules/OrderReject.h"
 #include "Modules/OrderFill.h"
 #include "Modules/OrderCancel.h"
+#include "Modules/OrderCancelOnDisconnect.h"
 #include "Modules/FillCancel.h"
 #include "Modules/Writer.h"
 
@@ -47,16 +49,17 @@ execute(PaxSim::Core::IOContext& ioctx, const Config& config)
 
     Context context(config);
 
-    using Parser      = OUCH::Modules::Parser<OUCH::Modules::Factory::OUCH50::Parser>;
-    using Session     = OUCH::Modules::Session<OUCH::Modules::Factory::OUCH50::Session>;
-    using OrderFlow   = OUCH::Modules::OrderFlow<OUCH::Modules::Factory::OUCH50::OrderFlow>;
-    using OrderReject = OUCH::Modules::OrderReject<OUCH::Modules::Factory::OUCH50::OrderReject>;
-    using OrderFill   = OUCH::Modules::OrderFill<OUCH::Modules::Factory::OUCH50::OrderFill>;
-    using OrderCancel = OUCH::Modules::OrderCancel<OUCH::Modules::Factory::OUCH50::OrderCancel>;
-    using FillCancel  = OUCH::Modules::FillCancel<OUCH::Modules::Factory::OUCH50::FillCancel>;
-    using Writer      = OUCH::Modules::Writer<OUCH::Modules::Factory::OUCH50::Writer>;
+    using Parser                  = OUCH::Modules::Parser<OUCH::Modules::Factory::OUCH50::Parser>;
+    using Session                 = OUCH::Modules::Session<OUCH::Modules::Factory::OUCH50::Session>;
+    using OrderFlow               = OUCH::Modules::OrderFlow<OUCH::Modules::Factory::OUCH50::OrderFlow>;
+    using OrderReject             = OUCH::Modules::OrderReject<OUCH::Modules::Factory::OUCH50::OrderReject>;
+    using OrderFill               = OUCH::Modules::OrderFill<OUCH::Modules::Factory::OUCH50::OrderFill>;
+    using OrderCancel             = OUCH::Modules::OrderCancel<OUCH::Modules::Factory::OUCH50::OrderCancel>;
+    using OrderCancelOnDisconnect = OUCH::Modules::OrderCancelOnDisconnect<OUCH::Modules::Factory::OUCH50::OrderCancelOnDisconnect>;
+    using FillCancel              = OUCH::Modules::FillCancel<OUCH::Modules::Factory::OUCH50::FillCancel>;
+    using Writer                  = OUCH::Modules::Writer<OUCH::Modules::Factory::OUCH50::Writer>;
 
-    using Handler = Core::Pipeline<Parser, Core::Flareout<Session, OrderReject, OrderFlow, OrderFill, OrderCancel, FillCancel>, Writer>;
+    using Handler = Pipeline<Parser, Flareout<Session, OrderReject, OrderFlow, OrderFill, OrderCancel, OrderCancelOnDisconnect, FillCancel>, Writer>;
 
     const auto& sescfg = config["Session"];
 

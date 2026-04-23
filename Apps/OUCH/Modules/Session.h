@@ -126,7 +126,7 @@ private:
 
         next.put(m_factory.logoutRequest());
         m_context.state(State::LogonWait);
-        return false;
+        throw std::runtime_error("Terminating session after logout.");
     }
 
     template<typename Next>

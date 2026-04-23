@@ -13,6 +13,7 @@
 #include "Modules/Factory/FIX42/OrderReject.h"
 #include "Modules/Factory/FIX42/OrderFill.h"
 #include "Modules/Factory/FIX42/OrderCancel.h"
+#include "Modules/Factory/FIX42/OrderCancelOnDisconnect.h"
 #include "Modules/Factory/FIX42/FillCancel.h"
 #include "Modules/Factory/FIX42/FillCorrect.h"
 #include "Modules/Factory/FIX42/Writer.h"
@@ -23,6 +24,7 @@
 #include "Modules/OrderReject.h"
 #include "Modules/OrderFill.h"
 #include "Modules/OrderCancel.h"
+#include "Modules/OrderCancelOnDisconnect.h"
 #include "Modules/FillCancel.h"
 #include "Modules/FillCorrect.h"
 #include "Modules/Writer.h"
@@ -51,17 +53,19 @@ execute(PaxSim::Core::IOContext& ioctx, const Config& config)
 
     Context context(config);
 
-    using Parser      = FIX::Modules::Parser<FIX::Modules::Factory::FIX42::Parser>;
-    using Writer      = FIX::Modules::Writer<FIX::Modules::Factory::FIX42::Writer>;
-    using Session     = FIX::Modules::Session<FIX::Modules::Factory::FIX42::Session>;
-    using OrderFlow   = FIX::Modules::OrderFlow<FIX::Modules::Factory::FIX42::OrderFlow>;
-    using OrderReject = FIX::Modules::OrderReject<FIX::Modules::Factory::FIX42::OrderReject>;
-    using OrderFill   = FIX::Modules::OrderFill<FIX::Modules::Factory::FIX42::OrderFill>;
-    using OrderCancel = FIX::Modules::OrderCancel<FIX::Modules::Factory::FIX42::OrderCancel>;
-    using FillCancel  = FIX::Modules::FillCancel<FIX::Modules::Factory::FIX42::FillCancel>;
-    using FillCorrect = FIX::Modules::FillCorrect<FIX::Modules::Factory::FIX42::FillCorrect>;
+    using Parser                  = FIX::Modules::Parser<FIX::Modules::Factory::FIX42::Parser>;
+    using Writer                  = FIX::Modules::Writer<FIX::Modules::Factory::FIX42::Writer>;
+    using Session                 = FIX::Modules::Session<FIX::Modules::Factory::FIX42::Session>;
+    using OrderFlow               = FIX::Modules::OrderFlow<FIX::Modules::Factory::FIX42::OrderFlow>;
+    using OrderReject             = FIX::Modules::OrderReject<FIX::Modules::Factory::FIX42::OrderReject>;
+    using OrderFill               = FIX::Modules::OrderFill<FIX::Modules::Factory::FIX42::OrderFill>;
+    using OrderCancel             = FIX::Modules::OrderCancel<FIX::Modules::Factory::FIX42::OrderCancel>;
+    using OrderCancelOnDisconnect = FIX::Modules::OrderCancelOnDisconnect<FIX::Modules::Factory::FIX42::OrderCancelOnDisconnect>;
+    using FillCancel              = FIX::Modules::FillCancel<FIX::Modules::Factory::FIX42::FillCancel>;
+    using FillCorrect             = FIX::Modules::FillCorrect<FIX::Modules::Factory::FIX42::FillCorrect>;
 
-    using Handler = Pipeline<Parser, Flareout<Session, OrderReject, OrderFlow, OrderFill, OrderCancel, FillCancel, FillCorrect>, Writer>;
+    using Handler =
+        Pipeline<Parser, Flareout<Session, OrderReject, OrderFlow, OrderFill, OrderCancel, OrderCancelOnDisconnect, FillCancel, FillCorrect>, Writer>;
 
     const auto& sescfg = config["Session"];
 
