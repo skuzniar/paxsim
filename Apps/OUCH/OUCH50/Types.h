@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <concepts>
+#include <cmath>
 #include <bit>
 #include <charconv>
 #include <chrono>
