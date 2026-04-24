@@ -1,7 +1,10 @@
 #ifndef PaxSim_Core_types_dot_h
 #define PaxSim_Core_types_dot_h
 
+#include <utility>
 #include <chrono>
+#include <iostream>
+#include <string_view>
 
 namespace PaxSim::Core {
 
