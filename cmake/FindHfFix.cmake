@@ -1,7 +1,7 @@
 include(FindPackageHandleStandardArgs)
 
-find_path(HFFIX_INCLUDE_DIR hffix.hpp
-    PATHS $ENV{HOME}/local/opt/hffix
+find_path(HFFIX_INCLUDE_DIR hffix/hffix.hpp
+    PATHS $ENV{HOME}/local
     PATH_SUFFIXES include
     REQUIRED)
 

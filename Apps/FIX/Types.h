@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include <FIX/Utils.h>
-#include <hffix.hpp>
+#include <hffix/hffix.hpp>
 
 namespace FIX {
 

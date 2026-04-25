@@ -1,7 +1,7 @@
 include(FindPackageHandleStandardArgs)
 
 find_path(SOL2_INCLUDE_DIR sol/sol.hpp
-    PATHS $ENV{HOME}/local/opt/sol2
+    PATHS $ENV{HOME}/local
     PATH_SUFFIXES include
     REQUIRED)
 
