@@ -38,7 +38,7 @@ public:
     template<typename Message, typename Next>
     bool put(const Message& msg, Next& next)
     {
-        log << level::debug << vmark << '[' << msg << ']' << std::endl;
+        log << level::debug << oflow << '[' << msg << ']' << std::endl;
 
         auto msgtype = msg.msgtype();
 
@@ -60,7 +60,7 @@ private:
     template<typename Next>
     bool process(const NewOrderSingle& msg, Next& next)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto o = m_factory.order(msg);
         if (!m_orderbook.orders.insert(o).second) {
             std::string error = "Duplicate client order ID: " + o.clordID();
@@ -74,7 +74,7 @@ private:
     template<typename Next>
     bool process(const OrderCancelReplaceRequest& msg, Next& next)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto& idx = m_orderbook.orders.get<clordid>();
 
         auto itr = idx.find(Factory::clordID(msg));
@@ -97,7 +97,7 @@ private:
     template<typename Next>
     bool process(const OrderCancelRequest& msg, Next& next)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto& idx = m_orderbook.orders.get<clordid>();
         auto  itr = idx.find(Factory::clordID(msg));
         if (itr == idx.end()) {

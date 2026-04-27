@@ -43,7 +43,7 @@ public:
 
         *fmt.begin() = std::toupper(*fmt.begin());
 
-        log << level::info << vmark << '[' << hexdump(fmt.data(), fmt.size()) << ']' << std::endl;
+        log << level::info << oflow << '[' << hexdump(fmt.data(), fmt.size()) << ']' << std::endl;
         return next.put(fmt);
     }
 
@@ -73,7 +73,7 @@ public:
 
         // Here we use the sentence count that has been updated elsewhere
         rtn = '[' + std::to_string(m_context->Counter) + ']' + rtn;
-        log << level::info << vmark << '[' << hexdump(rtn.data(), rtn.size()) << ']' << std::endl;
+        log << level::info << iflow << '[' << hexdump(rtn.data(), rtn.size()) << ']' << std::endl;
         return next.put(rtn);
     }
 

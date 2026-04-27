@@ -25,7 +25,7 @@ public:
 
         std::replace(fmt.begin(), fmt.end(), '\n', ' ');
 
-        log << level::info << hmark << '[' << hexdump(fmt.data(), fmt.size()) << ']' << std::endl;
+        log << level::info << oflow << '[' << hexdump(fmt.data(), fmt.size()) << ']' << std::endl;
         return next.put(fmt);
     }
 };
@@ -47,7 +47,7 @@ public:
 
         *fmt.begin() = std::toupper(*fmt.begin());
 
-        log << level::info << hmark << '[' << hexdump(fmt.data(), fmt.size()) << ']' << std::endl;
+        log << level::info << oflow << '[' << hexdump(fmt.data(), fmt.size()) << ']' << std::endl;
         return next.put(fmt);
     }
 };

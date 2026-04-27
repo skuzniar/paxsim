@@ -41,7 +41,7 @@ struct FillCancel
         omsg.transactionCategory = TransactionCategory::NoneApply;
         omsg.algoIndicator       = AlgoIndicator::Algo;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }

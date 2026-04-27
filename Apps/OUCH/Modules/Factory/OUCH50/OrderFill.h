@@ -49,7 +49,7 @@ public:
         omsg.liquidityAttributes = LiquidityAttributes();
         omsg.lastMarket          = Market::DHEL;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }

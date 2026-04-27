@@ -60,7 +60,7 @@ private:
     template<typename Next>
     bool process(const EnterOrder& msg, Next& next)
     {
-        log << level::trace << ts << here << std::endl;
+        log << level::debug << iflow << '[' << msg << ']' << std::endl;
 
         if (msg.userRefNum > m_session.iSequence()) {
             m_session.iSequence(msg.userRefNum);
@@ -79,7 +79,7 @@ private:
     template<typename Next>
     bool process(const ReplaceOrder& msg, Next& next)
     {
-        log << level::trace << ts << here << std::endl;
+        log << level::debug << iflow << '[' << msg << ']' << std::endl;
 
         if (msg.newUserRefNum > m_session.iSequence()) {
             m_session.iSequence(msg.newUserRefNum);
@@ -106,7 +106,7 @@ private:
     template<typename Next>
     bool process(const CancelOrder& msg, Next& next)
     {
-        log << level::trace << ts << here << std::endl;
+        log << level::debug << iflow << '[' << msg << ']' << std::endl;
 
         if (msg.userRefNum > m_session.iSequence()) {
             m_session.iSequence(msg.userRefNum);

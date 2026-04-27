@@ -39,7 +39,7 @@ struct OrderCancel
         omsg.decrementQuantity = 0;
         omsg.reason            = OrderCancelled::template enum_cast<OrderCancelled::CancelReason>(reason);
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }

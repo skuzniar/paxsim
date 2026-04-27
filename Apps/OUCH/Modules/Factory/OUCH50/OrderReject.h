@@ -57,7 +57,7 @@ struct OrderReject
         omsg.userRefNum = msg.userRefNum;
         omsg.reason     = int(params["Error"]);
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -76,7 +76,7 @@ struct OrderReject
         omsg.userRefNum = msg.newUserRefNum;
         omsg.reason     = int(params["Error"]);
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -95,7 +95,7 @@ struct OrderReject
         omsg.userRefNum = msg.userRefNum;
         omsg.reason     = int(params["Error"]);
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }

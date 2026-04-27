@@ -25,7 +25,7 @@ public:
 
     OMessage enterOrder()
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::NewOrderSingle);
 
         m_clordid = Order::anOrderID();
@@ -42,7 +42,7 @@ public:
 
     OMessage replaceOrder()
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::OrderCancelReplaceRequest);
 
         omsg.push_back_string(tag::OrigClOrdID, m_clordid);
@@ -58,7 +58,7 @@ public:
 
     OMessage cancelOrder()
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::OrderCancelRequest);
 
         omsg.push_back_string(tag::OrigClOrdID, m_clordid);

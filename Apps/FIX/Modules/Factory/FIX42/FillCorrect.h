@@ -32,7 +32,7 @@ public:
 
     OMessage correct(const Fill& fill, const Order& o, const Config::Table& params)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);
 
         omsg.push_back_string(tag::ClOrdID, o.clordID());

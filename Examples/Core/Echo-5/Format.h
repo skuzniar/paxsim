@@ -29,7 +29,7 @@ public:
 
         *fmt.begin() = std::toupper(*fmt.begin());
 
-        log << level::info << vmark << '[' << hexdump(fmt.data(), fmt.size()) << ']' << std::endl;
+        log << level::info << oflow << '[' << hexdump(fmt.data(), fmt.size()) << ']' << std::endl;
         return next.put(fmt);
     }
 };
@@ -49,7 +49,7 @@ public:
         rtn.reserve(msg.size());
         std::regex_replace(std::back_insert_iterator<std::string>(rtn), msg.cbegin(), msg.cend(), rgx_pattern, "$1");
 
-        log << level::info << vmark << '[' << hexdump(rtn.data(), rtn.size()) << ']' << std::endl;
+        log << level::info << oflow << '[' << hexdump(rtn.data(), rtn.size()) << ']' << std::endl;
         return next.put(rtn);
     }
 };

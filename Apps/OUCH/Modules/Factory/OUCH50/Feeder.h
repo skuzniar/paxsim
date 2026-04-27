@@ -53,7 +53,7 @@ public:
 
         m_clordid = omsg.userRefNum;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -77,7 +77,7 @@ public:
 
         m_clordid = omsg.userRefNum;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -94,7 +94,7 @@ public:
 
         m_clordid = omsg.newUserRefNum;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -111,7 +111,7 @@ public:
 
         m_clordid = omsg.newUserRefNum;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -124,7 +124,7 @@ public:
         omsg.quantity   = 600;
         omsg.user       = std::string_view("PaxSim");
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -148,7 +148,7 @@ public:
 
         m_clordid = omsg.userRefNum;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }

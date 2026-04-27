@@ -37,7 +37,7 @@ struct OrderCancelOnDisconnect
         omsg.decrementQuantity = 0;
         omsg.reason            = OrderCancelled::CancelReason::UserRequested;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }

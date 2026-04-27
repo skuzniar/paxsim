@@ -317,16 +317,16 @@ status(std::basic_ostream<CharT, Traits>& os)
 
 template<class CharT, class Traits>
 auto&
-vmark(std::basic_ostream<CharT, Traits>& os)
+iflow(std::basic_ostream<CharT, Traits>& os)
 {
-    return os << ts << ' ' << yellow("=== ");
+    return os << ts << ' ' << red("=== ");
 }
 
 template<class CharT, class Traits>
 auto&
-hmark(std::basic_ostream<CharT, Traits>& os)
+oflow(std::basic_ostream<CharT, Traits>& os)
 {
-    return os << ts << ' ' << yellow("||| ");
+    return os << ts << ' ' << green("=== ");
 }
 
 template<class CharT, class Traits>

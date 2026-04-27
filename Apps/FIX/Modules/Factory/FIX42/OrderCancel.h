@@ -32,7 +32,7 @@ public:
 
     OMessage cancel(const Order& o, const Config::Table& params)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);
 
         int         code = params["Error"];

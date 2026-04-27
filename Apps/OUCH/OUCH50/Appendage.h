@@ -2,6 +2,7 @@
 #define Appendage_h
 
 #include "PacketHeader.h"
+#include "Types.h"
 
 namespace OUCH::OUCH50::appendage {
 

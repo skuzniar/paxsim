@@ -64,7 +64,7 @@ struct OrderFlow
         omsg.userRefNum = msg.userRefNum;
         omsg.reason     = reason;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -88,7 +88,7 @@ struct OrderFlow
         omsg.capacity                     = msg.capacity;
         omsg.algoIndicator                = msg.algoIndicator;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -112,7 +112,7 @@ struct OrderFlow
         omsg.userRefNum = msg.newUserRefNum;
         omsg.reason     = reason;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -131,7 +131,7 @@ struct OrderFlow
         omsg.quantity             = order.quantity();
         omsg.user                 = msg.user;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -149,7 +149,7 @@ struct OrderFlow
         omsg.userRefNum = msg.userRefNum;
         omsg.reason     = reason;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }
@@ -163,7 +163,7 @@ struct OrderFlow
         omsg.decrementQuantity = 0;
         omsg.reason            = OrderCancelled::CancelReason::UserRequested;
 
-        log << level::debug << vmark << '[' << omsg << ']' << std::endl;
+        log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
         return reinterpret_cast<PacketHeader&>(omsg);
     }

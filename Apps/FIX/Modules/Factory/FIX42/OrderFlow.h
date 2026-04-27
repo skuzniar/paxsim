@@ -68,7 +68,7 @@ struct OrderFlow
 
     OMessage reject(const NewOrderSingle& msg, int code, std::string& reason)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);
 
         omsg.push_back_string(tag::ClOrdID, msg[tag::ClOrdID]);
@@ -92,7 +92,7 @@ struct OrderFlow
 
     OMessage accept(const NewOrderSingle&, const Order& o)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);
 
         omsg.push_back_string(tag::ClOrdID, o.clordID());
@@ -126,7 +126,7 @@ struct OrderFlow
 
     OMessage reject(const OrderCancelReplaceRequest& msg, int code, std::string& reason)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::OrderCancelReject);
 
         omsg.push_back_string(tag::OrderID, "NONE");
@@ -142,7 +142,7 @@ struct OrderFlow
 
     OMessage reject(const OrderCancelReplaceRequest& msg, const Order& o, int code, std::string& reason)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::OrderCancelReject);
 
         omsg.push_back_string(tag::OrderID, "NONE");
@@ -158,7 +158,7 @@ struct OrderFlow
 
     OMessage accept(const OrderCancelReplaceRequest& msg, const Order& o)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);
 
         omsg.push_back_string(tag::ClOrdID, o.clordID());
@@ -185,7 +185,7 @@ struct OrderFlow
 
     OMessage reject(const OrderCancelRequest& msg, int code, std::string& reason)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::OrderCancelReject);
 
         omsg.push_back_string(tag::ClOrdID, msg[tag::ClOrdID]);
@@ -200,7 +200,7 @@ struct OrderFlow
 
     OMessage reject(const OrderCancelRequest& msg, const Order& o, int code, std::string& reason)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::OrderCancelReject);
 
         omsg.push_back_string(tag::ClOrdID, msg[tag::ClOrdID]);
@@ -215,7 +215,7 @@ struct OrderFlow
 
     OMessage accept(const OrderCancelRequest& msg, const Order& o)
     {
-        log << level::trace << vmark << here << std::endl;
+        log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);
 
         omsg.push_back_string(tag::ClOrdID, msg[tag::ClOrdID]);

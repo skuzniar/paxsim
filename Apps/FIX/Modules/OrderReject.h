@@ -37,7 +37,7 @@ public:
     template<typename Message, typename Next>
     bool put(const Message& msg, Next& next)
     {
-        log << level::debug << vmark << '[' << msg << ']' << std::endl;
+        log << level::debug << oflow << '[' << msg << ']' << std::endl;
 
         auto msgtype = msg.msgtype();
 

@@ -27,7 +27,7 @@ public:
 
         *fmt.begin() = std::toupper(*fmt.begin());
 
-        log << level::info << vmark << '[' << hexdump(fmt.data(), fmt.size()) << ']' << std::endl;
+        log << level::info << oflow << '[' << hexdump(fmt.data(), fmt.size()) << ']' << std::endl;
         return next.put(fmt);
     }
 };
