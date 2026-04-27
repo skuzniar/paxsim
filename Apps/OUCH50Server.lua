@@ -2,7 +2,7 @@ Config = {
     Application = {
         Type = "OUCH50",
         Log = {
-            Level = "info",
+            Level = "debug",
             --File = "server.log",
         },
     },
@@ -78,8 +78,8 @@ Config = {
             }
         },
         FillCancel = {
-            { Quantity = 101, Price = 1.23 },
-            { Quantity = 202, Price = 2.34 },
+            { Quantity = 101, Price = 1.23, Reason = "Supervisory" },
+            { Quantity = 202, Price = 2.34, Reason = "Erroneous" },
         },
     }
 }

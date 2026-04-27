@@ -31,10 +31,12 @@ struct FillCancel
     {
         auto& omsg = *new (m_buff) TradeBroken;
 
+        std::string reason = params["Reason"];
+
         omsg.timestamp           = Timestamp::now();
         omsg.userRefNum          = order.clordID();
         omsg.matchNumber         = fill.executionID();
-        omsg.reason              = TradeBroken::enum_cast<TradeBroken::BreakReason>("Erroneous"); // TODO
+        omsg.reason              = TradeBroken::enum_cast<TradeBroken::BreakReason>(reason);
         omsg.tradingMode         = TradingMode::ContinuousTrading;
         omsg.transactionCategory = TransactionCategory::NoneApply;
         omsg.algoIndicator       = AlgoIndicator::Algo;
