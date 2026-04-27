@@ -56,28 +56,6 @@ to_utcstring(const struct timeval& tv, unsigned precision = 6)
 }
 
 inline std::string
-xto_utcstring(const struct timeval& tv, unsigned precision)
-{
-    char buffer[64];
-
-    if (const auto* tvp = std::gmtime(&tv.tv_sec); tvp != nullptr) {
-        auto count = std::strftime(buffer, sizeof(buffer), "%Y%m%d-%T", tvp);
-
-        precision = std::min(precision, 9U);
-        if (precision > 0) {
-            std::snprintf(buffer + count, sizeof(buffer) - count, ".%.6d", tv.tv_usec);
-            if (precision > 6) {
-                std::fill(buffer + count + 1 + 6, buffer + count + 1 + precision, '0');
-            }
-            buffer[count + 1 + precision] = '\0';
-        }
-    } else {
-        buffer[0] = '\0';
-    }
-    return buffer;
-}
-
-inline std::string
 to_utcstring(std::chrono::seconds s, unsigned precision)
 {
     char buffer[64];
