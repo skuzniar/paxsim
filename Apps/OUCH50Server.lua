@@ -33,11 +33,11 @@ Config = {
             }
         },
         OrderCancel = {
-            { Quantity = 7101, Error = 99, Message = "Unsolicited cancel at size" },
-            { Quantity = 7102, Error = 98, Message = "Unsolicited cancel at size, different error" },
+            { Quantity = 7101, Reason = "Supervisory" },
+            { Quantity = 7102, Reason = "UserRequested" },
 
-            { Below = 90,      Error = 90, Message = "Unsolicited cancel if below 90" },
-            { Below = 80,      Error = 80, Message = "Unsolicited cancel if below 80" },
+            { Below = 90,      Reason = "State" },
+            { Below = 80,      Reason = "BadQuote" },
         },
         OrderFill = {
             {

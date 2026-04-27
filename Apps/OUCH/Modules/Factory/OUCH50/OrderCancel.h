@@ -32,10 +32,12 @@ struct OrderCancel
     {
         auto& omsg = *new (m_buff) OrderCancelled;
 
+        std::string reason = params["Reason"];
+
         omsg.timestamp         = Timestamp::now();
         omsg.userRefNum        = order.clordID();
         omsg.decrementQuantity = 0;
-        omsg.reason            = OrderCancelled::CancelReason::State;
+        omsg.reason            = OrderCancelled::template enum_cast<OrderCancelled::CancelReason>(reason);
 
         log << level::debug << vmark << '[' << omsg << ']' << std::endl;
 
