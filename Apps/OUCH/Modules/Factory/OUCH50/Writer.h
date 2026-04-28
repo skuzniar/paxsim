@@ -1,7 +1,7 @@
 #ifndef OUCH_Modules_Factory_OUCH50_Writer_dot_h
 #define OUCH_Modules_Factory_OUCH50_Writer_dot_h
 
-#include "Common/Context/Session.h"
+#include "OUCH/Context/Session.h"
 
 #include "OUCH/OUCH50/ServerHeartbeat.h"
 
@@ -29,8 +29,8 @@ struct Writer
         return *reinterpret_cast<PacketHeader*>(new (m_buff) ServerHeartbeat);
     }
 
-    Common::Context::Session& m_session;
-    char                      m_buff[1024];
+    Context::Session& m_session;
+    char              m_buff[1024];
 };
 
 } // namespace OUCH::Modules::Factory::OUCH50

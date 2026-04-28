@@ -1,7 +1,7 @@
 #ifndef OUCH_Modules_Factory_OUCH50_Session_dot_h
 #define OUCH_Modules_Factory_OUCH50_Session_dot_h
 
-#include "Common/Context/Session.h"
+#include "OUCH/Context/Session.h"
 
 #include "OUCH/OUCH50/ServerHeartbeat.h"
 #include "OUCH/OUCH50/LoginRequest.h"
@@ -70,15 +70,15 @@ struct Session
     {
         auto* response = new (m_buff) AccountQueryResponse;
 
-        response->timestamp = Timestamp::now();
+        response->timestamp      = Timestamp::now();
         response->nextUserRefNum = m_session.iSequence();
 
         return *reinterpret_cast<PacketHeader*>(response);
     }
 
 private:
-    Common::Context::Session& m_session;
-    char                      m_buff[1024];
+    Context::Session& m_session;
+    char              m_buff[1024];
 };
 
 } // namespace OUCH::Modules::Factory::OUCH50

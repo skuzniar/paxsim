@@ -124,8 +124,8 @@ private:
 
             return ret;
         }
-        return false;
         log << level::info << ts << here << ' ' << "Ignoring order cancel with user reference number: " << msg.userRefNum << std::endl;
+        return false;
     }
 
     Context::Session&   m_session;

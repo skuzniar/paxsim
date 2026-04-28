@@ -8,6 +8,8 @@
 #include "Modules/Factory/FIX42/Feeder.h"
 #include "Modules/Factory/FIX42/Writer.h"
 
+#include "Context/Session.h"
+
 #include "Modules/Parser.h"
 #include "Modules/Session.h"
 #include "Modules/Initiator.h"
@@ -25,7 +27,7 @@ void
 execute(PaxSim::Core::IOContext& ioctx, const Config& config)
 {
     // Context is an aggregate of context classes.
-    using Context = Core::Aggregate<Common::Context::Session>;
+    using Context = Core::Aggregate<Context::Session>;
 
     Context context(config);
 

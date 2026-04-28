@@ -5,7 +5,7 @@
 #include "PaxSim/Core/Streamlog.h"
 #include "PaxSim/Core/Types.h"
 
-#include "Common/Context/Session.h"
+#include "FIX/Context/Session.h"
 #include "Common/Config.h"
 
 namespace FIX::Modules {
