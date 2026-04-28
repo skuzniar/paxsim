@@ -63,10 +63,10 @@ private:
         log << level::debug << iflow << '[' << msg << ']' << std::endl;
 
         if (msg.userRefNum > m_session.iSequence()) {
-            m_session.iSequence(msg.userRefNum);
 
             auto o = m_factory.order(msg);
             if (m_orderbook.orders.insert(o).second) {
+                m_session.iSequence(msg.userRefNum + 1);
                 return next.put(m_factory.accept(msg, o));
             }
             log << level::error << ts << here << ' ' << "Unable to enter order with client order ID: " << Factory::clordID(msg) << std::endl;
@@ -82,8 +82,6 @@ private:
         log << level::debug << iflow << '[' << msg << ']' << std::endl;
 
         if (msg.newUserRefNum > m_session.iSequence()) {
-            m_session.iSequence(msg.newUserRefNum);
-
             auto& idx = m_orderbook.orders.get<Context::OrderBook::clordid>();
 
             auto itr = idx.find(Factory::clordID(msg));
@@ -96,6 +94,7 @@ private:
             o.status(Order::Status::Replaced);
             idx.erase(itr);
             if (m_orderbook.orders.insert(o).second) {
+                m_session.iSequence(msg.newUserRefNum + 1);
                 return next.put(m_factory.accept(msg, o));
             }
         }
@@ -109,8 +108,6 @@ private:
         log << level::debug << iflow << '[' << msg << ']' << std::endl;
 
         if (msg.userRefNum > m_session.iSequence()) {
-            m_session.iSequence(msg.userRefNum);
-
             auto& idx = m_orderbook.orders.get<Context::OrderBook::clordid>();
             auto  itr = idx.find(Factory::clordID(msg));
             if (itr == idx.end()) {
