@@ -10,7 +10,7 @@ Config = {
         Acceptor = {
             Port = 7777,
         },
-        Username = "PAXUSR",
+        UserName = "PAXUSR",
         Password = "PAXPAS",
         HBInterval = 10,
     },

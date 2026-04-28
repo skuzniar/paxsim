@@ -13,7 +13,7 @@ Config = {
             Retries = 10,
             Delay = 1,
         },
-        Username = "PAXUSR",
+        UserName = "PAXUSR",
         Password = "PAXPAS",
         HBInterval = 10,
     },
