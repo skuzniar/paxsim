@@ -52,11 +52,6 @@ struct Session
     explicit Session(Config& config)
     {
         if (const auto& cfg = config["Session"]; cfg.valid()) {
-            BeginString = cfg["BeginString"];
-
-            TargetCompID = cfg["TargetCompID"];
-            SenderCompID = cfg["SenderCompID"];
-
             UserName = cfg["UserName"];
             Password = cfg["Password"];
 
@@ -68,21 +63,6 @@ struct Session
     {
         ISequenceNumber = 1;
         OSequenceNumber = 1;
-    }
-
-    const std::string& beginString() const
-    {
-        return BeginString;
-    }
-
-    const std::string& senderCompID() const
-    {
-        return SenderCompID;
-    }
-
-    const std::string& targetCompID() const
-    {
-        return TargetCompID;
     }
 
     int hbInterval() const
@@ -126,11 +106,6 @@ struct Session
     }
 
     State m_state = State::LogonWait;
-
-    std::string BeginString;
-
-    std::string TargetCompID;
-    std::string SenderCompID;
 
     std::string UserName;
     std::string Password;

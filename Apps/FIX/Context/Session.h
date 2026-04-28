@@ -57,9 +57,6 @@ struct Session
             TargetCompID = cfg["TargetCompID"];
             SenderCompID = cfg["SenderCompID"];
 
-            UserName = cfg["UserName"];
-            Password = cfg["Password"];
-
             HBInterval = cfg["HBInterval"];
         }
     }
@@ -131,9 +128,6 @@ struct Session
 
     std::string TargetCompID;
     std::string SenderCompID;
-
-    std::string UserName;
-    std::string Password;
 
     int HBInterval = 30;
 
