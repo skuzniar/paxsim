@@ -53,9 +53,11 @@ struct OrderReject
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
         auto& omsg = *new (m_buff) OrderRejected;
 
+        int reason = params["Error"];
+
         omsg.timestamp  = Timestamp::now();
         omsg.userRefNum = msg.userRefNum;
-        omsg.reason     = int(params["Error"]);
+        omsg.reason     = reason;
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
@@ -72,9 +74,11 @@ struct OrderReject
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
         auto& omsg = *new (m_buff) OrderRejected;
 
+        int reason = params["Error"];
+
         omsg.timestamp  = Timestamp::now();
         omsg.userRefNum = msg.newUserRefNum;
-        omsg.reason     = int(params["Error"]);
+        omsg.reason     = reason;
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
@@ -91,9 +95,11 @@ struct OrderReject
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
         auto& omsg = *new (m_buff) CancelRejected;
 
+        int reason = params["Error"];
+
         omsg.timestamp  = Timestamp::now();
         omsg.userRefNum = msg.userRefNum;
-        omsg.reason     = int(params["Error"]);
+        omsg.reason     = reason;
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
