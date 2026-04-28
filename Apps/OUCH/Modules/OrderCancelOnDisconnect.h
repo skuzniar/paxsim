@@ -42,13 +42,13 @@ public:
             cancell(next);
             m_hot = false;
         }
-        cancell(next);
     }
 
 private:
     template<typename Next>
     void cancell(Next& next)
     {
+        log << level::trace << ts << here << std::endl;
         for (const auto& order : m_orderbook.orders) {
             if (order.status() != Order::Status::Canceled && order.status() != Order::Status::Rejected) {
                 cancel(order, next);
@@ -59,6 +59,7 @@ private:
     template<typename Next>
     void cancel(const Order& order, Next& next)
     {
+        log << level::trace << ts << here << std::endl;
         order.status(Order::Status::Canceled);
         next.put(m_factory.cancel(order));
     }
