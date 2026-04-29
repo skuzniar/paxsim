@@ -41,7 +41,7 @@ public:
         omsg.executedQuantity    = fill.quantity();
         omsg.executionPrice      = fill.price();
         omsg.liquidityFlag       = LiquidityFlag::AuctionTrade;
-        omsg.matchNumber         = order.anExecutionID();
+        omsg.matchNumber         = fill.executionID();
         omsg.contraFirm          = std::string_view("PaxFrm");
         omsg.tradingMode         = TradingMode::ContinuousTrading;
         omsg.transactionCategory = TransactionCategory::NoneApply;

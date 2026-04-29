@@ -555,7 +555,8 @@ public:
 private:
     static uint64_t create_id()
     {
-        return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        static uint64_t m_id = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        return m_id++;
     }
 
 private:
