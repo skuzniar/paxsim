@@ -65,7 +65,7 @@ execute(PaxSim::Core::IOContext& ioctx, const Config& config)
     using FillCorrect             = FIX::Modules::FillCorrect<FIX::Modules::Factory::FIX42::FillCorrect>;
 
     using Handler =
-        Pipeline<Parser, Flareout<Session, OrderReject, OrderFlow, OrderFill, OrderCancel, OrderCancelOnDisconnect, FillCancel, FillCorrect>, Writer>;
+        Pipeline<Parser, Flareout<Session, OrderReject, OrderFlow, OrderCancelOnDisconnect, OrderCancel, FillCancel, FillCorrect, OrderFill>, Writer>;
 
     const auto& sescfg = config["Session"];
 

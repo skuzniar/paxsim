@@ -59,7 +59,7 @@ execute(PaxSim::Core::IOContext& ioctx, const Config& config)
     using FillCancel              = OUCH::Modules::FillCancel<OUCH::Modules::Factory::OUCH50::FillCancel>;
     using Writer                  = OUCH::Modules::Writer<OUCH::Modules::Factory::OUCH50::Writer>;
 
-    using Handler = Pipeline<Parser, Flareout<Session, OrderReject, OrderFlow, OrderFill, OrderCancel, OrderCancelOnDisconnect, FillCancel>, Writer>;
+    using Handler = Pipeline<Parser, Flareout<Session, OrderReject, OrderFlow, OrderCancelOnDisconnect, OrderCancel, FillCancel, OrderFill>, Writer>;
 
     const auto& sescfg = config["Session"];
 
