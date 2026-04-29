@@ -62,7 +62,7 @@ private:
     {
         log << level::debug << iflow << '[' << msg << ']' << std::endl;
 
-        if (msg.userRefNum > m_session.iSequence()) {
+        if (msg.userRefNum >= m_session.iSequence()) {
 
             auto o = m_factory.order(msg);
             if (m_orderbook.orders.insert(o).second) {
@@ -81,7 +81,7 @@ private:
     {
         log << level::debug << iflow << '[' << msg << ']' << std::endl;
 
-        if (msg.newUserRefNum > m_session.iSequence()) {
+        if (msg.newUserRefNum >= m_session.iSequence()) {
             auto& idx = m_orderbook.orders.get<Context::OrderBook::clordid>();
 
             auto itr = idx.find(Factory::clordID(msg));
@@ -107,22 +107,18 @@ private:
     {
         log << level::debug << iflow << '[' << msg << ']' << std::endl;
 
-        if (msg.userRefNum > m_session.iSequence()) {
-            auto& idx = m_orderbook.orders.get<Context::OrderBook::clordid>();
-            auto  itr = idx.find(Factory::clordID(msg));
-            if (itr == idx.end()) {
-                log << level::error << ts << here << ' ' << "Unknown client order ID: " << Factory::clordID(msg) << std::endl;
-                return next.put(m_factory.reject(msg, { 99 }));
-            }
-
-            itr->status(Order::Status::Canceled);
-            auto ret = next.put(m_factory.accept(msg, *itr));
-            idx.erase(itr);
-
-            return ret;
+        auto& idx = m_orderbook.orders.get<Context::OrderBook::clordid>();
+        auto  itr = idx.find(Factory::clordID(msg));
+        if (itr == idx.end()) {
+            log << level::error << ts << here << ' ' << "Unknown client order ID: " << Factory::clordID(msg) << std::endl;
+            return next.put(m_factory.reject(msg, { 99 }));
         }
-        log << level::info << ts << here << ' ' << "Ignoring order cancel with user reference number: " << msg.userRefNum << std::endl;
-        return false;
+
+        itr->status(Order::Status::Canceled);
+        auto ret = next.put(m_factory.accept(msg, *itr));
+        idx.erase(itr);
+
+        return ret;
     }
 
     Context::Session&   m_session;
