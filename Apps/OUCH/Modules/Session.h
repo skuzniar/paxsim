@@ -34,10 +34,10 @@ public:
 
     template<typename Context>
     Session(const Config& config, Context& context)
-      : m_context(context)
+      : m_session(context)
       , m_factory(context)
     {
-        m_context.state(State::LogonWait);
+        m_session.state(State::LogonWait);
     }
 
     template<typename Message, typename Next>
@@ -75,10 +75,10 @@ private:
     void validate(const Factory::PacketHeader& msg)
     {
         log << level::trace << ts << here << std::endl;
-        if (auto state = m_context.state(); state == State::LogonSent && msg.type != Factory::LoginAccepted::Type) {
+        if (auto state = m_session.state(); state == State::LogonSent && msg.type != Factory::LoginAccepted::Type) {
             throw std::runtime_error("Logon Accepted must be the first message.");
         }
-        if (auto state = m_context.state(); state == State::LogonWait && msg.type != Factory::LoginRequest::Type) {
+        if (auto state = m_session.state(); state == State::LogonWait && msg.type != Factory::LoginRequest::Type) {
             throw std::runtime_error("Logon Request must be the first message.");
         }
     }
@@ -88,21 +88,21 @@ private:
     {
         log << level::trace << ts << here << std::endl;
 
-        if (auto state = m_context.state(); state != State::LogonWait) {
-            throw std::runtime_error("Unexpected Logon Request message at this time. " + to_string(m_context.state()));
+        if (auto state = m_session.state(); state != State::LogonWait) {
+            throw std::runtime_error("Unexpected Logon Request message at this time. " + to_string(m_session.state()));
         }
-        if (msg.userName != m_context.UserName) {
-            throw std::runtime_error("Invalid user name. Expecting: " + m_context.UserName + ", got: " + std::string(msg.userName));
+        if (msg.userName != m_session.UserName) {
+            throw std::runtime_error("Invalid user name. Expecting: " + m_session.UserName + ", got: " + std::string(msg.userName));
         }
-        if (msg.password != m_context.Password) {
-            throw std::runtime_error("Invalid password. Expecting: " + m_context.Password + ", got: " + std::string(msg.password));
+        if (msg.password != m_session.Password) {
+            throw std::runtime_error("Invalid password. Expecting: " + m_session.Password + ", got: " + std::string(msg.password));
         }
 
-        if (m_context.state() == State::LogonWait) {
+        if (m_session.state() == State::LogonWait) {
             next.put(m_factory.loginAccept());
         }
 
-        m_context.state(State::Normal);
+        m_session.state(State::Normal);
         return false;
     }
 
@@ -111,11 +111,11 @@ private:
     {
         log << level::trace << ts << here << std::endl;
 
-        if (auto state = m_context.state(); state != State::LogonSent) {
-            throw std::runtime_error("Unexpected Logon Accepted message at this time. " + to_string(m_context.state()));
+        if (auto state = m_session.state(); state != State::LogonSent) {
+            throw std::runtime_error("Unexpected Logon Accepted message at this time. " + to_string(m_session.state()));
         }
         next.put(m_factory.accountQuery());
-        m_context.state(State::Normal);
+        m_session.state(State::Normal);
         return false;
     }
 
@@ -125,7 +125,7 @@ private:
         log << level::trace << ts << here << std::endl;
 
         next.put(m_factory.logoutRequest());
-        m_context.state(State::LogonWait);
+        m_session.state(State::LogonWait);
         throw std::runtime_error("Terminating session after logout.");
     }
 
@@ -143,11 +143,13 @@ private:
     {
         log << level::trace << ts << here << std::endl;
 
+        m_session.oSequence(msg.nextUserRefNum);
+
         return false;
     }
 
 private:
-    Context::Session& m_context;
+    Context::Session& m_session;
     Factory           m_factory;
 };
 

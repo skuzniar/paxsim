@@ -38,7 +38,7 @@ public:
     {
         auto& omsg = *new (m_buff) EnterOrder;
 
-        omsg.userRefNum                   = Order::anOrderID();
+        omsg.userRefNum                   = m_session.oSequenceAdvance();
         omsg.buySellIndicator             = BuySellIndicator::Buy;
         omsg.quantity                     = 500;
         omsg.orderBook                    = 1111;
@@ -62,7 +62,7 @@ public:
     {
         auto& omsg = *new (m_buff) EnterOrder;
 
-        omsg.userRefNum                   = Order::anOrderID();
+        omsg.userRefNum                   = m_session.oSequenceAdvance();
         omsg.buySellIndicator             = BuySellIndicator::Buy;
         omsg.quantity                     = 5101;
         omsg.orderBook                    = 1111;
@@ -87,7 +87,7 @@ public:
         auto& omsg = *new (m_buff) ReplaceOrder;
 
         omsg.origUserRefNum = m_clordid;
-        omsg.newUserRefNum  = Order::anOrderID();
+        omsg.newUserRefNum  = m_session.oSequenceAdvance();
         omsg.quantity       = 600;
         omsg.price          = 5.99;
         omsg.user           = std::string_view("PaxSim");
@@ -104,7 +104,7 @@ public:
         auto& omsg = *new (m_buff) ReplaceOrder;
 
         omsg.origUserRefNum = m_clordid;
-        omsg.newUserRefNum  = Order::anOrderID();
+        omsg.newUserRefNum  = m_session.oSequenceAdvance();
         omsg.quantity       = 5102;
         omsg.price          = 5.99;
         omsg.user           = std::string_view("PaxSim");
@@ -133,7 +133,7 @@ public:
     {
         auto& omsg = *new (m_buff) EnterOrder;
 
-        omsg.userRefNum                   = Order::anOrderID();
+        omsg.userRefNum                   = m_session.oSequenceAdvance();
         omsg.buySellIndicator             = BuySellIndicator::Buy;
         omsg.quantity                     = 6104;
         omsg.orderBook                    = 1111;

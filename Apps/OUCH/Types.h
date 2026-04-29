@@ -306,11 +306,6 @@ public:
         return m_order_id;
     }
 
-    static auto anOrderID()
-    {
-        return create_id();
-    }
-
     auto clordID() const
     {
         return m_clord_id;
