@@ -78,7 +78,7 @@ Config = {
             }
         },
         FillCancel = {
-            { Quantity = 101, Price = 1.23, Reason = "Supervisory" },
+            { Quantity = 101, Price = 1.23, Reason = "Consent" },
             { Quantity = 202, Price = 2.34, Reason = "Erroneous" },
         },
     }
