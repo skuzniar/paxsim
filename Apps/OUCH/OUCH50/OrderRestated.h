@@ -21,7 +21,7 @@ struct OrderRestated
     Timestamp     timestamp;
     UserRefNum    userRefNum;
     Reason        reason;
-    Int16         appendageLength;
+    UInt16        appendageLength;
 
     std::size_t size() const
     {

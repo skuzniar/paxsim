@@ -50,7 +50,7 @@ struct TradeBroken
     SequencedData       header = { Type, sizeof(TradeBroken) };
     Timestamp           timestamp;
     UserRefNum          userRefNum;
-    Int32               matchNumber;
+    UInt32              matchNumber;
     BreakReason         reason;
     TradingMode         tradingMode;
     TransactionCategory transactionCategory;

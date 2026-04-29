@@ -15,18 +15,18 @@ struct OrderAccepted
     Timestamp          timestamp;
     UserRefNum         userRefNum;
     Price              price;
-    Int64              orderReferenceNumber;
+    UInt64             orderReferenceNumber;
     BuySellIndicator   buySellIndicator;
-    Int32              orderBook;
-    Int32              quantity;
+    UInt32             orderBook;
+    UInt32             quantity;
     Alpha<6>           user;
-    Int32              executionWithinFirm;
-    Int32              investmentDecisionWithinFirm;
-    Int32              clientIdentifier;
+    UInt32             executionWithinFirm;
+    UInt32             investmentDecisionWithinFirm;
+    UInt32             clientIdentifier;
     PartyRoleQualifier partyRoleQualifier;
     Capacity           capacity;
     AlgoIndicator      algoIndicator;
-    Int16              appendageLength;
+    UInt16             appendageLength;
 
     std::size_t size() const
     {

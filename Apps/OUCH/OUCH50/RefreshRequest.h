@@ -19,7 +19,7 @@ struct RefreshRequest
     SequencedData header = { Type, sizeof(RefreshRequest) };
     Timestamp     timestamp;
     Alpha<4>      firm;
-    Int32         orderBook;
+    UInt32        orderBook;
     Reason        reason;
 };
 #pragma pack()

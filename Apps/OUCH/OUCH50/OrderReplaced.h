@@ -16,12 +16,12 @@ struct OrderReplaced
     UserRefNum       origUserRefNum;
     UserRefNum       newUserRefNum;
     Price            price;
-    Int64            orderReferenceNumber;
+    UInt64           orderReferenceNumber;
     BuySellIndicator buySellIndicator;
-    Int32            orderBook;
+    UInt32           orderBook;
     UInt32           quantity;
     Alpha<6>         user;
-    Int16            appendageLength;
+    UInt16           appendageLength;
 
     std::size_t size() const
     {

@@ -14,10 +14,10 @@ struct ReplaceOrder
     UnsequencedData header = { Type, sizeof(ReplaceOrder) };
     UserRefNum      origUserRefNum;
     UserRefNum      newUserRefNum;
-    Int32           quantity;
+    UInt32          quantity;
     Price           price;
     Alpha<6>        user;
-    Int16           appendageLength;
+    UInt16          appendageLength;
 
     std::size_t size() const
     {

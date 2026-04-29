@@ -241,7 +241,7 @@ struct Price
 {
     static const long multiplier = 10'000;
 
-    Int32 value = 0;
+    UInt32 value = 0;
 
     Price() = default;
 
@@ -831,10 +831,10 @@ enum class PendingReason : uint8_t
 #pragma pack(1)
 struct RejectReason
 {
-    Int16 value = 0;
+    UInt16 value = 0;
 
     RejectReason(int code = 0)
-      : value(static_cast<int16_t>(code))
+      : value(static_cast<uint16_t>(code))
     {
     }
 

@@ -62,7 +62,7 @@ struct OrderCancelled
     SequencedData header = { Type, sizeof(OrderCancelled) };
     Timestamp     timestamp;
     UserRefNum    userRefNum;
-    Int32         decrementQuantity;
+    UInt32        decrementQuantity;
     CancelReason  reason;
     // Appendages;
 };

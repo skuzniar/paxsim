@@ -14,17 +14,17 @@ struct EnterOrder
     UnsequencedData    header     = { Type, sizeof(EnterOrder) };
     UserRefNum         userRefNum = 1;
     BuySellIndicator   buySellIndicator;
-    Int32              quantity;
-    Int32              orderBook;
+    UInt32             quantity;
+    UInt32             orderBook;
     Price              price;
     Alpha<6>           user;
-    Int32              executionWithinFirm;
-    Int32              investmentDecisionWithinFirm;
-    Int32              clientIdentifier;
+    UInt32             executionWithinFirm;
+    UInt32             investmentDecisionWithinFirm;
+    UInt32             clientIdentifier;
     PartyRoleQualifier partyRoleQualifier;
     Capacity           capacity;
     AlgoIndicator      algoIndicator;
-    Int16              appendageLength;
+    UInt16             appendageLength;
 
     std::size_t size() const
     {

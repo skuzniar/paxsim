@@ -13,10 +13,10 @@ struct OrderExecuted
     SequencedData       header = { Type, sizeof(OrderExecuted) };
     Timestamp           timestamp;
     UserRefNum          userRefNum;
-    Int32               executedQuantity;
+    UInt32              executedQuantity;
     Price               executionPrice;
     LiquidityFlag       liquidityFlag;
-    Int32               matchNumber;
+    UInt32              matchNumber;
     Alpha<4>            contraFirm;
     TradingMode         tradingMode;
     TransactionCategory transactionCategory;
