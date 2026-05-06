@@ -76,7 +76,7 @@ struct OrderFlow
         omsg.timestamp                    = Timestamp::now();
         omsg.userRefNum                   = msg.userRefNum;
         omsg.price                        = msg.price;
-        omsg.orderReferenceNumber         = 0;
+        omsg.orderReferenceNumber         = order.orderID();
         omsg.buySellIndicator             = msg.buySellIndicator;
         omsg.orderBook                    = msg.orderBook;
         omsg.quantity                     = msg.quantity;
@@ -125,7 +125,7 @@ struct OrderFlow
         omsg.origUserRefNum       = msg.origUserRefNum;
         omsg.newUserRefNum        = msg.newUserRefNum;
         omsg.price                = order.price();
-        omsg.orderReferenceNumber = 0;
+        omsg.orderReferenceNumber = order.orderID();
         omsg.buySellIndicator     = order.side();
         omsg.orderBook            = order.bookID();
         omsg.quantity             = order.quantity();
