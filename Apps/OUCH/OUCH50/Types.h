@@ -523,29 +523,29 @@ struct LiquidityAttributes
                                  LiquidityInternalized n = LiquidityInternalized::NotInternalized,
                                  LiquidityTopOfBook    t = LiquidityTopOfBook::NotTopOfBook,
                                  LiquiditySelfTrade    s = LiquiditySelfTrade::NotSelfTrade)
-      : value((std::underlying_type_t<LiquidityIndicator>(i) << 2) | (std::underlying_type_t<LiquidityInternalized>(n) << 4) |
-              (std::underlying_type_t<LiquidityTopOfBook>(t) << 5) | (std::underlying_type_t<LiquiditySelfTrade>(s) << 6))
+      : value((std::underlying_type_t<LiquidityIndicator>(i) << 3) | (std::underlying_type_t<LiquidityInternalized>(n) << 5) |
+              (std::underlying_type_t<LiquidityTopOfBook>(t) << 6) | (std::underlying_type_t<LiquiditySelfTrade>(s) << 7))
     {
     }
 
     explicit operator LiquidityIndicator() const
     {
-        return LiquidityIndicator((value >> 2) & 0x03);
+        return LiquidityIndicator((value >> 3) & 0x03);
     }
 
     explicit operator LiquidityInternalized() const
     {
-        return LiquidityInternalized((value >> 4) & 0x01);
+        return LiquidityInternalized((value >> 5) & 0x01);
     }
 
     explicit operator LiquidityTopOfBook() const
     {
-        return LiquidityTopOfBook((value >> 5) & 0x01);
+        return LiquidityTopOfBook((value >> 6) & 0x01);
     }
 
     explicit operator LiquiditySelfTrade() const
     {
-        return LiquiditySelfTrade((value >> 6) & 0x01);
+        return LiquiditySelfTrade((value >> 7) & 0x01);
     }
 };
 #pragma pack()

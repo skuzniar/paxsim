@@ -43,11 +43,12 @@ public:
         omsg.liquidityFlag       = LiquidityFlag::AuctionTrade;
         omsg.matchNumber         = fill.executionID();
         omsg.contraFirm          = std::string_view("PaxFrm");
-        omsg.tradingMode         = TradingMode::ContinuousTrading;
+        omsg.tradingMode         = TradingMode::UnscheduledAuction;
         omsg.transactionCategory = TransactionCategory::NoneApply;
         omsg.algoIndicator       = AlgoIndicator::Algo;
-        omsg.liquidityAttributes = LiquidityAttributes();
-        omsg.lastMarket          = Market::DHEL;
+        omsg.liquidityAttributes =
+            LiquidityAttributes(LiquidityIndicator::Auction, LiquidityInternalized::Internalized, LiquidityTopOfBook::TopOfBook, LiquiditySelfTrade::SelfTrade);
+        omsg.lastMarket = Market::DHEL;
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
