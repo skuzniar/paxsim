@@ -1,4 +1,4 @@
-target_sources(Server 
+target_sources(PAXSim 
     PRIVATE
     OUCH50Server.cpp
     PUBLIC
@@ -25,7 +25,7 @@ target_include_directories(Client PRIVATE
     ${SOL2_INCLUDE_DIR}
 )
 
-target_include_directories(Server PRIVATE 
+target_include_directories(PAXSim PRIVATE 
     ${LUA_INCLUDE_DIR}
     ${SOL2_INCLUDE_DIR}
 )
@@ -34,7 +34,7 @@ target_link_libraries(Client PRIVATE
     ${LUA_LIBRARIES} 
 )
 
-target_link_libraries(Server PRIVATE 
+target_link_libraries(PAXSim PRIVATE 
     ${LUA_LIBRARIES} 
 )
 

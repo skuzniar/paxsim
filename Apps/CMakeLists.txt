@@ -11,7 +11,7 @@ find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 
 set(ALL_APPS
-    Server
+    PAXSim
     Client
 )
 

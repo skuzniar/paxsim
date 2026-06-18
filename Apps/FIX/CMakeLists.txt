@@ -1,5 +1,5 @@
 #--- TODO
-target_sources(Server 
+target_sources(PAXSim 
     PRIVATE
     FIX42Server.cpp
     PUBLIC
@@ -29,7 +29,7 @@ target_include_directories(Client PRIVATE
     ${SOL2_INCLUDE_DIR}
 )
 
-target_include_directories(Server PRIVATE 
+target_include_directories(PAXSim PRIVATE 
     ${HFFIX_INCLUDE_DIR}
     ${QUICKFIX_INCLUDE_DIR}
     ${LUA_INCLUDE_DIR}
@@ -41,7 +41,7 @@ target_link_libraries(Client PRIVATE
     ${LUA_LIBRARIES} 
 )
 
-target_link_libraries(Server PRIVATE 
+target_link_libraries(PAXSim PRIVATE 
     ${QUICKFIX_LIBRARIES}
     ${LUA_LIBRARIES} 
 )
