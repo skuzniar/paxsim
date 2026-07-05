@@ -1,10 +1,11 @@
-import os
-import sys
 import importlib.util
 
+from inspect import signature
+
 class Runner:
-    def __init__(self, session):
-        self.session  = session
+    def __init__(self, fixapp, logmon):
+        self.fixapp = fixapp
+        self.logmon = logmon
 
     def load(self, path):
         # Create a module spec from the given path
@@ -21,6 +22,15 @@ class Runner:
 
     def run(self, path):
         print("Running [%s]" % path)
+        # Purge exchange messages that should be irrelevant at this point
+        self.fixapp.purge()
+        self.logmon.purge()
+
         module = self.load(path)
-        module.run(self.session)
+
+        sig = signature(module.run)
+        if len(sig.parameters) == 1:
+            module.run(self.fixapp)
+        else:
+            module.run(self.fixapp, self.logmon)
 

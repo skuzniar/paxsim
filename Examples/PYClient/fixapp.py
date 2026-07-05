@@ -1,26 +1,54 @@
-"""FIX Application"""
-import sys
-import quickfix as fix
+import os
 import time
-import logging
-import traceback
+import math
+import argparse
 import threading
+import quickfix
 
-from datetime import datetime
+from datetime   import datetime
+from pathlib    import Path
+from contextlib import chdir
 
-from loader import Loader
-from runner import Runner
+def locate(paths, pattern):
+    files = []
+    for p in paths:
+        for f in Path(os.path.expanduser(p)).rglob(pattern):
+            if Path.is_file(f):
+                files.append(f)
+    if not files:
+        raise Exception(f"Unable to locate: {pattern} in: {paths}.")
+    return str(max(files, key=os.path.getctime)) if files else None
 
 __SOH__ = chr(1)
 
-class Application(fix.Application):
-    """FIX Application"""
-    ClOrdID   = 0
-    sessionID = None
-    UID       = int(time.time())
+class FIXApp(quickfix.Application):
+    """FIX App"""
 
-    iqlock    = threading.Lock()
-    iqueue    = []
+    def __init__(self):
+        super().__init__()
+
+        self.sessionID = None
+        self.UID = int(time.time())
+
+        # Messages queue
+        self.iqlock = threading.Lock()
+        self.iqueue = []
+
+        # Most relevant tag path and corresponding error message
+        self.errtag = None
+        self.errmsg = None
+
+    def start(self):
+        self.config       = locate([os.getcwd()], "FIXApp.cfg")
+        self.settings     = quickfix.SessionSettings(self.config)
+        self.storefactory = quickfix.FileStoreFactory(self.settings)
+        self.logfactory   = quickfix.FileLogFactory(self.settings)
+        self.initiator    = quickfix.SocketInitiator(self, self.storefactory, self.settings, self.logfactory)
+
+        self.initiator.start()
+
+    def stop(self):
+        self.initiator.stop()
 
     def onCreate(self, sessionID):
         print("Created Session: (%s)" % sessionID.toString())
@@ -37,22 +65,25 @@ class Application(fix.Application):
 
     def toAdmin(self, message, sessionID):
         return
+
     def fromAdmin(self, message, sessionID):
         self.iqlock.acquire()
         try:
-            self.iqueue.append(fix.Message(message))
-            msg = fix.Message(message)
-            #if msg.getField(35) != "0" and msg.getField(35) != "1":
+            self.iqueue.append(quickfix.Message(message))
+            msg = quickfix.Message(message)
+            # if msg.getField(35) != "0" and msg.getField(35) != "1":
             print(">>>", message.toString().replace(__SOH__, "|"))
         finally:
             self.iqlock.release()
         return
+
     def toApp(self, message, sessionID):
         return
+
     def fromApp(self, message, sessionID):
         self.iqlock.acquire()
         try:
-            self.iqueue.append(fix.Message(message))
+            self.iqueue.append(quickfix.Message(message))
             print(">>>", message.toString().replace(__SOH__, "|"))
         finally:
             self.iqlock.release()
@@ -73,77 +104,93 @@ class Application(fix.Application):
         return self.UID
 
     def equal(self, lhs, rhs):
-        if (callable(getattr(lhs, 'equal', None))):
+        if callable(getattr(lhs, "equal", None)):
             return lhs.equal(rhs)
+        if isinstance(lhs, float) and not isinstance(rhs, float):
+            return math.isclose(lhs, float(rhs))
+        if isinstance(lhs, int) and not isinstance(rhs, int):
+            return lhs == int(rhs)
         return lhs == rhs
+
+    def capture(self, tag, msg):
+        self.errtag = tag
+        self.errmsg = msg
+
+    def clear(self):
+        self.errtag = None
+        self.errmsg = None
+
+    def fmterror(self):
+        return (
+            f"Tag: {self.errtag}, error: {self.errmsg}" if self.errtag else f"Error: {self.errmsg}"
+        )
 
     def compare(self, dct, msg):
         for k, v in zip(dct.keys(), dct.values()):
             if msg.isSetField(k):
                 f = msg.getField(k)
                 if not self.equal(v, f):
-                    return False
+                    return False, k, "Expecting " + str(v) + ", got " + str(f)
             else:
-                return False
-        return True
+                return False, k, "Field " + str(k) + " not found"
+        return True, None, None
 
     def match(self, hdr, bod, seconds):
-        delta = 0.1
-        while seconds >= 0:
-            self.iqlock.acquire()
-            try:
-                for i, m in enumerate(self.iqueue):
-                    if self.compare(hdr, m.getHeader()) and self.compare(bod, m):
-                        self.iqueue.pop(i)
-                        return True, m
-            finally:
-                self.iqlock.release()
-            time.sleep(delta)
-            seconds -= delta 
-            delta = min(10.0, 2 * delta)
-        return False, None
+        return self.match_any([(hdr, bod)], seconds)
 
     def match_any(self, tuples, seconds):
+        dt = 0.1
         while seconds >= 0:
             self.iqlock.acquire()
             try:
                 for i, m in enumerate(self.iqueue):
                     for hdr, bod in tuples:
-                        if self.compare(hdr, m.getHeader()) and self.compare(bod, m):
-                            self.iqueue.pop(i)
-                            return True, m
+                        retv, errtag, errmsg = self.compare(hdr, m.getHeader())
+                        if retv:
+                            retv, errtag, errmsg = self.compare(bod, m)
+                            if retv:
+                                self.iqueue.pop(i)
+                                return retv, m
+                        self.capture(errtag, errmsg)
             finally:
                 self.iqlock.release()
-            time.sleep(1)
-            seconds -= 1
+            time.sleep(dt)
+            seconds -= dt
+            dt = 2 * dt
         return False, None
 
     def send(self, msg):
-        trstime = fix.TransactTime()
+        trstime = quickfix.TransactTime()
         trstime.setString(datetime.now().strftime("%Y%m%d-%H:%M:%S.%f")[:-3])
         msg.setField(trstime)
 
         print("<<<", msg.toString().replace(__SOH__, "|"))
 
-        fix.Session.sendToTarget(msg, self.sessionID)
+        quickfix.Session.sendToTarget(msg, self.sessionID)
+
+    def purge(self):
+        with self.iqlock:
+            self.iqueue = []
 
     def expect(self, hdr, bod, seconds=5):
+        self.clear()
         result, message = self.match(hdr, bod, seconds)
         if not result:
-            raise Exception(f"Unable to match header:{hdr} body:{bod}")
+            raise Exception(f"Unable to match header:{hdr} body:{bod}. {self.fmterror()}")
         return message
 
     def expect_any(self, tuples, seconds=5):
+        self.clear()
         result, message = self.match_any(tuples, seconds)
         if not result:
-            raise Exception(f"Unable to match tuples:{tuples}")
+            raise Exception(f"Unable to match tuples:{tuples}. {self.fmterror()}")
         return message
 
     def expect_all(self, tuples, seconds=5):
         for i in range(0, len(tuples)):
             self.expect_any(tuples, seconds)
 
-    #--- Drain message queue for a number of seconds and return last message
+    # --- Drain message queue for a number of seconds and return last message
     def drain(self, seconds=0):
         m = None
         while seconds >= 0:
@@ -157,12 +204,9 @@ class Application(fix.Application):
             seconds -= 1
         return m
 
-    #--- Test cases entry points
+    # --- Test cases entry points
+        '''
     def run(self, path):
-        """Run"""
-        loader = Loader(path)
-        runner = Runner(self)
-
         def prompt():
             print("h     - Print this message.")
             print("s     - Scan for test cases.")
@@ -172,7 +216,7 @@ class Application(fix.Application):
 
         if not self.waitForLogon():
             print("Failed to logon, exiting...")
-            return
+            # return
 
         while True:
             try:
@@ -182,19 +226,19 @@ class Application(fix.Application):
 
             if not opt:
                 continue
-            if  opt == 'h' or opt == '?':
+            if opt == "h" or opt == "?":
                 prompt()
                 continue
-            if  opt == 's':
+            if opt == "s":
                 loader.scan()
                 print("Loaded {} test cases".format(loader.size()))
                 continue
-            if  opt == 'l':
+            if opt == "l":
                 loader.list()
                 continue
-            if  opt == 'q':
+            if opt == "q":
                 break
-            if  opt == 'all':
+            if opt == "all":
                 for idx in range(1, loader.size() + 1):
                     self.iqueue.clear()
                     runner.run(loader.file(idx))
@@ -211,4 +255,24 @@ class Application(fix.Application):
                     continue
 
                 print("Invalid option:", opt)
+
+        # process.kill()
+        '''
+
+def main(suite, location):
+    try:
+        with chdir(location):
+            fixapp = FIXApp()
+            fixapp.start()
+            time.sleep(5)
+            fixapp.stop()
+    except Exception as e:
+        print("Exception occured while running", suite, ':', e)
+
+if __name__=='__main__':
+    parser = argparse.ArgumentParser(description='Loader')
+    parser.add_argument('suite', type=str, help='Test suite name')
+    parser.add_argument('location', type=str, help='Test suite location')
+    args = parser.parse_args()
+    main(args.suite, args.location)
 
