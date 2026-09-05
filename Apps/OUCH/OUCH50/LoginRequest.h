@@ -10,11 +10,6 @@ struct LoginRequest
 {
     static constexpr char Type = 'L';
 
-    static constexpr std::size_t size()
-    {
-        return sizeof(LoginRequest);
-    }
-
     LoginRequest() = default;
 
     LoginRequest(std::string_view user, std::string_view password)

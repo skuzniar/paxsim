@@ -58,6 +58,10 @@ struct SequencedData
     {
         return header.size();
     }
+    const char* data() const
+    {
+        return header.data();
+    }
 };
 #pragma pack()
 
@@ -89,6 +93,10 @@ struct UnsequencedData
     std::size_t size() const
     {
         return header.size();
+    }
+    const char* data() const
+    {
+        return header.data();
     }
 };
 #pragma pack()

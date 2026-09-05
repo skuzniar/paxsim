@@ -608,6 +608,19 @@ enum class EventCode : uint8_t
     EndOfDay   = 'E',
 };
 
+inline [[cppgen::auto]] std::ostream&
+operator<<(std::ostream& s, EventCode o)
+{
+    switch (o) {
+            // clang-format off
+        case EventCode::StartOfDay: s << "'S'(StartOfDay)"; break;
+        case EventCode::EndOfDay:   s << "'E'(EndOfDay)";   break;
+        default: s << std::to_string(static_cast<std::underlying_type_t<EventCode>>(o)) + "(Invalid EventCode)"; break;
+            // clang-format on
+    };
+    return s;
+}
+
 enum class Capacity : uint8_t
 {
     Client                    = '1',
@@ -827,6 +840,18 @@ enum class PendingReason : uint8_t
 {
     CompletionOfAuctionOfDemand = 'A',
 };
+
+inline [[cppgen::auto]] std::ostream&
+operator<<(std::ostream& s, PendingReason o)
+{
+    switch (o) {
+            // clang-format off
+        case PendingReason::CompletionOfAuctionOfDemand: s << "'A'(CompletionOfAuctionOfDemand)"; break;
+        default: s << std::to_string(static_cast<std::underlying_type_t<PendingReason>>(o)) + "(Invalid PendingReason)"; break;
+            // clang-format on
+    };
+    return s;
+}
 
 #pragma pack(1)
 struct RejectReason

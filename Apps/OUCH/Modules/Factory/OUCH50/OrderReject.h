@@ -48,10 +48,10 @@ struct OrderReject
         return msg.userRefNum;
     }
 
-    PacketHeader& reject(const EnterOrder& msg, const Config::Table& params)
+    auto reject(const EnterOrder& msg, const Config::Table& params)
     {
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
-        auto& omsg = *new (m_buff) OrderRejected;
+        OrderRejected omsg;
 
         int reason = params["Error"];
 
@@ -61,7 +61,7 @@ struct OrderReject
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
     static auto clordID(const ReplaceOrder& msg)
@@ -69,10 +69,10 @@ struct OrderReject
         return msg.origUserRefNum;
     }
 
-    PacketHeader& reject(const ReplaceOrder& msg, const Order& order, const Config::Table& params)
+    auto reject(const ReplaceOrder& msg, const Order& order, const Config::Table& params)
     {
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
-        auto& omsg = *new (m_buff) OrderRejected;
+        OrderRejected omsg;
 
         int reason = params["Error"];
 
@@ -82,7 +82,7 @@ struct OrderReject
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
     static auto clordID(const CancelOrder& msg)
@@ -90,10 +90,10 @@ struct OrderReject
         return msg.userRefNum;
     }
 
-    PacketHeader& reject(const CancelOrder& msg, const Order& order, const Config::Table& params)
+    auto reject(const CancelOrder& msg, const Order& order, const Config::Table& params)
     {
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
-        auto& omsg = *new (m_buff) CancelRejected;
+        CancelRejected omsg;
 
         int reason = params["Error"];
 
@@ -103,11 +103,8 @@ struct OrderReject
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
-
-private:
-    char m_buff[1024];
 };
 
 } // namespace OUCH::Modules::Factory::OUCH50

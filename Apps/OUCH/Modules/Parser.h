@@ -20,9 +20,6 @@ template<typename Factory>
 class Parser
 {
 public:
-    using SequencedData   = Factory::SequencedData;
-    using UnsequencedData = Factory::UnsequencedData;
-
     template<typename Context>
     Parser(IRWBuffer& ibuf, const Config& config, Context& context)
       : m_ibuf(ibuf)
@@ -33,18 +30,7 @@ public:
     void ioevent(Next& next)
     {
         if (const auto& [valid, msg] = m_factory.message(m_ibuf.rpos(), m_ibuf.rsize()); valid) {
-
-            switch (msg.type) {
-                case SequencedData::Type:
-                    log << level::info << in << '[' << reinterpret_cast<const SequencedData&>(msg) << ']' << std::endl;
-                    break;
-                case UnsequencedData::Type:
-                    log << level::info << in << '[' << reinterpret_cast<const UnsequencedData&>(msg) << ']' << std::endl;
-                    break;
-                default:
-                    log << level::info << in << '[' << msg << ']' << std::endl;
-                    break;
-            }
+            log << level::info << in << '[' << msg << ']' << std::endl;
             m_ibuf.rmove(msg.size());
             next.put(msg);
         }

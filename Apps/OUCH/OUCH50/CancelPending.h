@@ -18,6 +18,19 @@ struct CancelPending
 };
 #pragma pack()
 
+inline [[cppgen::auto]] std::ostream&
+operator<<(std::ostream& s, const CancelPending& o)
+{
+    // clang-format off
+    s << "[CancelPending]=";
+    s << "Header: "     << o.header     << ' ';
+    s << "Timestamp: "  << o.timestamp  << ' ';
+    s << "UserRefNum: " << o.userRefNum << ' ';
+    s << "Reason: "     << o.reason;
+    // clang-format on
+    return s;
+}
+
 } // namespace OUCH::OUCH50
 
 #endif

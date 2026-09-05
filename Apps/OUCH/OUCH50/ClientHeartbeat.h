@@ -10,14 +10,19 @@ struct ClientHeartbeat
 {
     static constexpr char Type = 'R';
 
-    static constexpr std::size_t size()
-    {
-        return sizeof(ClientHeartbeat);
-    }
-
     PacketHeader header = { Type, sizeof(ClientHeartbeat) };
 };
 #pragma pack()
+
+inline [[cppgen::auto]] std::ostream&
+operator<<(std::ostream& s, const ClientHeartbeat& o)
+{
+    // clang-format off
+    s << "[ClientHeartbeat]=";
+    s << "Header: " << o.header;
+    // clang-format on
+    return s;
+}
 
 } // namespace OUCH::OUCH50
 

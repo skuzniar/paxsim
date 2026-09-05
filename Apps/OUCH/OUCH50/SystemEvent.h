@@ -16,6 +16,18 @@ struct SystemEvent
 };
 #pragma pack()
 
+inline [[cppgen::auto]] std::ostream&
+operator<<(std::ostream& s, const SystemEvent& o)
+{
+    // clang-format off
+    s << "[SystemEvent]=";
+    s << "Header: "    << o.header    << ' ';
+    s << "Timestamp: " << o.timestamp << ' ';
+    s << "EventCode: " << o.eventCode;
+    // clang-format on
+    return s;
+}
+
 } // namespace OUCH::OUCH50
 
 #endif

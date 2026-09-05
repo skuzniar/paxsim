@@ -28,9 +28,9 @@ struct OrderCancelOnDisconnect
     {
     }
 
-    PacketHeader& cancel(const Order& order)
+    auto cancel(const Order& order)
     {
-        auto& omsg = *new (m_buff) OrderCancelled;
+        OrderCancelled omsg;
 
         omsg.timestamp         = Timestamp::now();
         omsg.userRefNum        = order.clordID();
@@ -39,11 +39,8 @@ struct OrderCancelOnDisconnect
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
-
-private:
-    char m_buff[1024];
 };
 
 } // namespace OUCH::Modules::Factory::OUCH50

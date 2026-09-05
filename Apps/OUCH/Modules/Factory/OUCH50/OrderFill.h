@@ -32,9 +32,9 @@ public:
     {
     }
 
-    PacketHeader& report(const Fill& fill, const Order& order)
+    auto report(const Fill& fill, const Order& order)
     {
-        auto& omsg = *new (m_buff) OrderExecuted;
+        OrderExecuted omsg;
 
         omsg.timestamp           = Timestamp::now();
         omsg.userRefNum          = order.clordID();
@@ -52,11 +52,8 @@ public:
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
-
-private:
-    char m_buff[1024];
 };
 
 } // namespace OUCH::Modules::Factory::OUCH50

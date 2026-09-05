@@ -10,9 +10,7 @@ namespace OUCH::Modules::Factory::OUCH50 {
 //---------------------------------------------------------------------------------------------------------------------
 struct Parser
 {
-    using PacketHeader    = OUCH::OUCH50::PacketHeader;
-    using SequencedData   = OUCH::OUCH50::SequencedData;
-    using UnsequencedData = OUCH::OUCH50::UnsequencedData;
+    using PacketHeader = OUCH::OUCH50::PacketHeader;
 
     static std::pair<bool, const PacketHeader&> message(const char* buff, std::size_t size)
     {

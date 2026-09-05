@@ -36,49 +36,41 @@ struct Session
     {
     }
 
-    PacketHeader& heartbeat()
+    static auto heartbeat()
     {
-        return *reinterpret_cast<PacketHeader*>(new (m_buff) ServerHeartbeat);
+        return ServerHeartbeat();
     }
 
-    PacketHeader& loginRequest(std::string_view username, std::string_view password)
+    static auto loginRequest(std::string_view username, std::string_view password)
     {
-        auto* request = new (m_buff) LoginRequest;
-
-        request->userName = username;
-        request->password = password;
-
-        return *reinterpret_cast<PacketHeader*>(request);
+        return LoginRequest(username, password);
     }
 
-    PacketHeader& loginAccept()
+    static auto loginAccept()
     {
-        return *reinterpret_cast<PacketHeader*>(new (m_buff) LoginAccepted);
+        return LoginAccepted();
     }
 
-    PacketHeader& logoutRequest()
+    static auto logoutRequest()
     {
-        return *reinterpret_cast<PacketHeader*>(new (m_buff) LogoutRequest);
+        return LogoutRequest();
     }
 
-    PacketHeader& accountQuery()
+    static auto accountQuery()
     {
-        return *reinterpret_cast<PacketHeader*>(new (m_buff) AccountQuery);
+        return AccountQuery();
     }
 
-    PacketHeader& accountQueryResponse()
+    auto accountQueryResponse()
     {
-        auto* response = new (m_buff) AccountQueryResponse;
-
-        response->timestamp      = Timestamp::now();
-        response->nextUserRefNum = m_session.iSequence();
-
-        return *reinterpret_cast<PacketHeader*>(response);
+        AccountQueryResponse response;
+        response.timestamp      = Timestamp::now();
+        response.nextUserRefNum = m_session.iSequence();
+        return response;
     }
 
 private:
     Context::Session& m_session;
-    char              m_buff[1024];
 };
 
 } // namespace OUCH::Modules::Factory::OUCH50

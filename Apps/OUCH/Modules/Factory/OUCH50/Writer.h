@@ -24,13 +24,12 @@ struct Writer
     {
     }
 
-    PacketHeader& heartbeat()
+    auto heartbeat()
     {
-        return *reinterpret_cast<PacketHeader*>(new (m_buff) ServerHeartbeat);
+        return ServerHeartbeat();
     }
 
     Context::Session& m_session;
-    char              m_buff[1024];
 };
 
 } // namespace OUCH::Modules::Factory::OUCH50

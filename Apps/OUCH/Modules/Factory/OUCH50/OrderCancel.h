@@ -28,9 +28,9 @@ struct OrderCancel
     {
     }
 
-    PacketHeader& cancel(const Order& order, const Config::Table& params)
+    auto cancel(const Order& order, const Config::Table& params)
     {
-        auto& omsg = *new (m_buff) OrderCancelled;
+        OrderCancelled omsg;
 
         std::string reason = params["Reason"];
 
@@ -41,11 +41,8 @@ struct OrderCancel
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
-
-private:
-    char m_buff[1024];
 };
 
 } // namespace OUCH::Modules::Factory::OUCH50

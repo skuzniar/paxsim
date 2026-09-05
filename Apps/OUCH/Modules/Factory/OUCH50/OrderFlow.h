@@ -56,9 +56,9 @@ struct OrderFlow
         return Order(msg.userRefNum, msg.buySellIndicator, msg.orderBook, msg.quantity, msg.price);
     }
 
-    PacketHeader& reject(const EnterOrder& msg, RejectReason reason)
+    auto reject(const EnterOrder& msg, RejectReason reason)
     {
-        auto& omsg = *new (m_buff) OrderRejected;
+        OrderRejected omsg;
 
         omsg.timestamp  = Timestamp::now();
         omsg.userRefNum = msg.userRefNum;
@@ -66,12 +66,12 @@ struct OrderFlow
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
-    PacketHeader& accept(const EnterOrder& msg, const Order& order)
+    auto accept(const EnterOrder& msg, const Order& order)
     {
-        auto& omsg = *new (m_buff) OrderAccepted;
+        OrderAccepted omsg;
 
         omsg.timestamp                    = Timestamp::now();
         omsg.userRefNum                   = msg.userRefNum;
@@ -90,7 +90,7 @@ struct OrderFlow
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
     static auto clordID(const ReplaceOrder& msg)
@@ -104,9 +104,9 @@ struct OrderFlow
         return oo;
     }
 
-    PacketHeader& reject(const ReplaceOrder& msg, RejectReason reason)
+    auto reject(const ReplaceOrder& msg, RejectReason reason)
     {
-        auto& omsg = *new (m_buff) OrderRejected;
+        OrderRejected omsg;
 
         omsg.timestamp  = Timestamp::now();
         omsg.userRefNum = msg.newUserRefNum;
@@ -114,12 +114,12 @@ struct OrderFlow
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
-    PacketHeader& accept(const ReplaceOrder& msg, const Order& order)
+    auto accept(const ReplaceOrder& msg, const Order& order)
     {
-        auto& omsg = *new (m_buff) OrderReplaced;
+        OrderReplaced omsg;
 
         omsg.timestamp            = Timestamp::now();
         omsg.origUserRefNum       = msg.origUserRefNum;
@@ -133,7 +133,7 @@ struct OrderFlow
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
     static auto clordID(const CancelOrder& msg)
@@ -141,9 +141,9 @@ struct OrderFlow
         return msg.userRefNum;
     }
 
-    PacketHeader& reject(const CancelOrder& msg, RejectReason reason)
+    auto reject(const CancelOrder& msg, RejectReason reason)
     {
-        auto& omsg = *new (m_buff) CancelRejected;
+        CancelRejected omsg;
 
         omsg.timestamp  = Timestamp::now();
         omsg.userRefNum = msg.userRefNum;
@@ -151,12 +151,12 @@ struct OrderFlow
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
-    PacketHeader& accept(const CancelOrder& msg, const Order& order)
+    auto accept(const CancelOrder& msg, const Order& order)
     {
-        auto& omsg = *new (m_buff) OrderCancelled;
+        OrderCancelled omsg;
 
         omsg.timestamp         = Timestamp::now();
         omsg.userRefNum        = order.clordID();
@@ -165,12 +165,11 @@ struct OrderFlow
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
 private:
     Context::OrderBook& m_orderbook;
-    char                m_buff[1024];
 };
 
 } // namespace OUCH::Modules::Factory::OUCH50

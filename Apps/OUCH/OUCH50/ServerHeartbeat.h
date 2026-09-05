@@ -11,11 +11,6 @@ struct ServerHeartbeat
     static constexpr char Type = 'H';
 
     PacketHeader header = { Type, sizeof(ServerHeartbeat) };
-
-    std::size_t size() const
-    {
-        return header.size();
-    }
 };
 #pragma pack()
 

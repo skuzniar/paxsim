@@ -27,9 +27,9 @@ struct FillCancel
     {
     }
 
-    PacketHeader& cancel(const Fill& fill, const Order& order, const Config::Table& params)
+    auto cancel(const Fill& fill, const Order& order, const Config::Table& params)
     {
-        auto& omsg = *new (m_buff) TradeBroken;
+        TradeBroken omsg;
 
         std::string reason = params["Reason"];
 
@@ -43,11 +43,8 @@ struct FillCancel
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
-
-private:
-    char m_buff[1024];
 };
 
 } // namespace OUCH::Modules::Factory::OUCH50

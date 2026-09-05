@@ -34,9 +34,9 @@ public:
     {
     }
 
-    PacketHeader& enterOrder()
+    auto enterOrder()
     {
-        auto& omsg = *new (m_buff) EnterOrder;
+        EnterOrder omsg;
 
         omsg.userRefNum                   = m_session.oSequenceAdvance();
         omsg.buySellIndicator             = BuySellIndicator::Buy;
@@ -55,12 +55,12 @@ public:
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
-    PacketHeader& enterReject()
+    auto enterReject()
     {
-        auto& omsg = *new (m_buff) EnterOrder;
+        EnterOrder omsg;
 
         omsg.userRefNum                   = m_session.oSequenceAdvance();
         omsg.buySellIndicator             = BuySellIndicator::Buy;
@@ -79,12 +79,12 @@ public:
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
-    PacketHeader& replaceOrder()
+    auto replaceOrder()
     {
-        auto& omsg = *new (m_buff) ReplaceOrder;
+        ReplaceOrder omsg;
 
         omsg.origUserRefNum = m_clordid;
         omsg.newUserRefNum  = m_session.oSequenceAdvance();
@@ -96,12 +96,12 @@ public:
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
-    PacketHeader& replaceReject()
+    auto replaceReject()
     {
-        auto& omsg = *new (m_buff) ReplaceOrder;
+        ReplaceOrder omsg;
 
         omsg.origUserRefNum = m_clordid;
         omsg.newUserRefNum  = m_session.oSequenceAdvance();
@@ -113,12 +113,12 @@ public:
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
-    PacketHeader& cancelOrder()
+    auto cancelOrder()
     {
-        auto& omsg = *new (m_buff) CancelOrder;
+        CancelOrder omsg;
 
         omsg.userRefNum = m_clordid;
         omsg.quantity   = 600;
@@ -126,12 +126,12 @@ public:
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
-    PacketHeader& orderFill()
+    auto orderFill()
     {
-        auto& omsg = *new (m_buff) EnterOrder;
+        EnterOrder omsg;
 
         omsg.userRefNum                   = m_session.oSequenceAdvance();
         omsg.buySellIndicator             = BuySellIndicator::Buy;
@@ -150,12 +150,11 @@ public:
 
         log << level::debug << oflow << '[' << omsg << ']' << std::endl;
 
-        return reinterpret_cast<PacketHeader&>(omsg);
+        return omsg;
     }
 
 private:
     Context::Session& m_session;
-    char              m_buff[1024];
 
     // Keep some details across calls
     uint32_t m_clordid = 0;

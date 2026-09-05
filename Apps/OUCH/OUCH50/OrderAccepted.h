@@ -27,11 +27,6 @@ struct OrderAccepted
     Capacity           capacity;
     AlgoIndicator      algoIndicator;
     UInt16             appendageLength;
-
-    std::size_t size() const
-    {
-        return header.size();
-    }
 };
 #pragma pack()
 

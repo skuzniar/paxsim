@@ -14,11 +14,6 @@ struct CancelOrder
     UserRefNum      userRefNum;
     UInt32          quantity;
     Alpha<6>        user;
-
-    std::size_t size() const
-    {
-        return header.size();
-    }
 };
 #pragma pack()
 

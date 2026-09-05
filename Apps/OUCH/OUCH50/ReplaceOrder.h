@@ -18,11 +18,6 @@ struct ReplaceOrder
     Price           price;
     Alpha<6>        user;
     UInt16          appendageLength;
-
-    std::size_t size() const
-    {
-        return header.size();
-    }
 };
 #pragma pack()
 
@@ -46,7 +41,7 @@ template<typename App>
 ReplaceOrder&
 operator+=(ReplaceOrder& o, const App& a)
 {
-    auto* offset = reinterpret_cast<char*>(std::addressof(o)) + o.size();
+    auto* offset = reinterpret_cast<char*>(std::addressof(o)) + sizeof(o);
     new (offset) App(a);
     o.appendageLength += a.size();
     o.header.header.length += a.size();

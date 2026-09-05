@@ -16,6 +16,18 @@ struct AccountQueryResponse
 };
 #pragma pack()
 
+inline [[cppgen::auto]] std::ostream&
+operator<<(std::ostream& s, const AccountQueryResponse& o)
+{
+    // clang-format off
+    s << "[AccountQueryResponse]=";
+    s << "Header: "         << o.header         << ' ';
+    s << "Timestamp: "      << o.timestamp      << ' ';
+    s << "NextUserRefNum: " << o.nextUserRefNum;
+    // clang-format on
+    return s;
+}
+
 } // namespace OUCH::OUCH50
 
 #endif

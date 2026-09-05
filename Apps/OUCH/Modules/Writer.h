@@ -37,21 +37,9 @@ public:
     template<typename Message>
     bool put(const Message& msg)
     {
-        std::memcpy(m_obuf.wpos(), msg.data(), msg.size());
-        m_obuf.wmove(msg.size());
-
-        switch (msg.type) {
-            case SequencedData::Type:
-                log << level::info << out << '[' << reinterpret_cast<const SequencedData&>(msg) << ']' << std::endl;
-                break;
-            case UnsequencedData::Type:
-                log << level::info << out << '[' << reinterpret_cast<const UnsequencedData&>(msg) << ']' << std::endl;
-                break;
-            default:
-                log << level::info << out << '[' << msg << ']' << std::endl;
-                break;
-        }
-
+        std::memcpy(m_obuf.wpos(), msg.header.data(), msg.header.size());
+        m_obuf.wmove(sizeof(msg));
+        log << level::info << out << '[' << msg << ']' << std::endl;
         m_latest = std::chrono::steady_clock::now();
         return false;
     }

@@ -22,11 +22,6 @@ struct OrderReplaced
     UInt32           quantity;
     Alpha<6>         user;
     UInt16           appendageLength;
-
-    std::size_t size() const
-    {
-        return header.size();
-    }
 };
 #pragma pack()
 

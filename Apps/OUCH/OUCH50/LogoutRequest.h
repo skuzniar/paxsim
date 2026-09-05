@@ -11,11 +11,6 @@ struct LogoutRequest
     static constexpr char Type = 'O';
 
     PacketHeader header = { Type, sizeof(LogoutRequest) };
-
-    std::size_t size() const
-    {
-        return header.size();
-    }
 };
 #pragma pack()
 
