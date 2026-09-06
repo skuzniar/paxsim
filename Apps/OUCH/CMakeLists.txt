@@ -1,13 +1,9 @@
 target_sources(PAXSim 
-    PRIVATE
-    OUCH50Server.cpp
     PUBLIC
     OUCH50Server.h
 )
 
 target_sources(Client 
-    PRIVATE
-    OUCH50Client.cpp
     PUBLIC
     OUCH50Client.h
 )

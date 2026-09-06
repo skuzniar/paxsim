@@ -1,14 +1,10 @@
 #--- TODO
 target_sources(PAXSim 
-    PRIVATE
-    FIX42Server.cpp
     PUBLIC
     FIX42Server.h
 )
 
 target_sources(Client 
-    PRIVATE
-    FIX42Client.cpp
     PUBLIC
     FIX42Client.h
 )

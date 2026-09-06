@@ -3,8 +3,9 @@
 #include "FIX/FIX42Server.h"
 #include "OUCH/OUCH50Server.h"
 
+#include "PaxSim/Core/IOContext.h"
 #include "PaxSim/Core/Streamlog.h"
-#include <map>
+#include "PaxSim/Core/Acceptor.h"
 #include <filesystem>
 #include <unistd.h>
 
@@ -12,36 +13,32 @@ namespace PaxSim::Core {
 logstream log(std::clog);
 }
 
-using namespace Common;
-
 namespace {
 void
 usage(const char* program)
 {
     std::cerr << "Usage: " << program << " [-h: help] -c config" << '\n';
 }
-
-using IOContext = PaxSim::Core::IOContext;
-
-void
-run(const std::string& type, const Config& config, IOContext& ioctx)
-{
-    const static std::map<std::string, std::function<void(IOContext&, const Config&)>> kinds = {
-        // clang-format off
-        { "FIX42",  FIX::FIX42::execute },
-        { "OUCH50", OUCH::OUCH50::execute },
-        // clang-format on
-    };
-
-    if (const auto itr = kinds.find(type); itr != kinds.end()) {
-        itr->second(ioctx, config);
-    } else {
-        std::cerr << "Unknown Application type: " << type << '\n';
-    }
-}
 } // namespace
 
 using namespace PaxSim;
+
+template<typename Server, typename Config>
+void
+run(const Config& config, Core::IOContext& iocontext)
+{
+    // Expecting consistent connection configuration
+    const auto& concfg = config["Session.Acceptor"];
+
+    // Create application context
+    typename Server::Context context(config);
+
+    // Create acceptor that will activate server handler once the connection has been established
+    Core::Acceptor<typename Server::Handler> acceptor(iocontext, concfg["Port"]);
+
+    acceptor.listen(config, context);
+    iocontext.run();
+}
 
 int
 main(int argc, char* argv[])
@@ -70,7 +67,7 @@ main(int argc, char* argv[])
 
     try {
         // Create configuration object by parsing the file
-        Config config(cfgfile);
+        Common::Config config(cfgfile);
 
         const auto& appcfg = config["Application"];
 
@@ -107,16 +104,31 @@ main(int argc, char* argv[])
             Core::log.is(file);
         }
 
-        // Run the application
-        const std::string& simtype = appcfg["Type"];
-        if (simtype.empty()) {
-            std::cerr << "Missing Application type ('Type') property in: " << cfgfile << '\n';
+        // Select the type of server to run
+        const std::string& type = appcfg["Type"];
+        if (type.empty()) {
+            std::cerr << "Missing Simulator type ('Type') property in: " << cfgfile << '\n';
             return -1;
         }
 
-        IOContext ioctx;
+        Core::IOContext iocontext;
 
-        run(simtype, config, ioctx);
+        std::thread thread;
+        if (type == "FIX42") {
+            thread = std::thread([&]() { run<FIX::FIX42::Server>(config, iocontext); });
+        }
+        if (type == "OUCH50") {
+            thread = std::thread([&]() { run<OUCH::OUCH50::Server>(config, iocontext); });
+        }
+
+        char line[100];
+        do {
+            std::cout << "===> ";
+            std::cin.getline(line, 100);
+        } while (std::cin.clear(), line[0] != 'q');
+
+        iocontext.stop();
+        thread.join();
     } catch (const std::exception& e) {
         std::cerr << "Application failure: " << e.what() << '.' << '\n';
     }
