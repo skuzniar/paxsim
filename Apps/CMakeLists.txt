@@ -12,7 +12,7 @@ find_package(Threads REQUIRED)
 
 set(ALL_APPS
     PAXSim
-    Client
+    PAXSimClient
 )
 
 message("Apps to be built: ${ALL_APPS}")

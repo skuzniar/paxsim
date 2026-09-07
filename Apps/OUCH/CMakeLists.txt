@@ -3,7 +3,7 @@ target_sources(PAXSim
     OUCH50Server.h
 )
 
-target_sources(Client 
+target_sources(PAXSimClient 
     PUBLIC
     OUCH50Client.h
 )
@@ -16,21 +16,21 @@ list(APPEND CMAKE_MODULE_PATH
 find_package(Lua REQUIRED)
 find_package(Sol2 REQUIRED)
 
-target_include_directories(Client PRIVATE 
-    ${LUA_INCLUDE_DIR}
-    ${SOL2_INCLUDE_DIR}
-)
-
 target_include_directories(PAXSim PRIVATE 
     ${LUA_INCLUDE_DIR}
     ${SOL2_INCLUDE_DIR}
 )
 
-target_link_libraries(Client PRIVATE 
+target_link_libraries(PAXSim PRIVATE 
     ${LUA_LIBRARIES} 
 )
 
-target_link_libraries(PAXSim PRIVATE 
+target_include_directories(PAXSimClient PRIVATE 
+    ${LUA_INCLUDE_DIR}
+    ${SOL2_INCLUDE_DIR}
+)
+
+target_link_libraries(PAXSimClient PRIVATE 
     ${LUA_LIBRARIES} 
 )
 
