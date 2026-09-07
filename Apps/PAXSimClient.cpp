@@ -28,11 +28,11 @@ template<typename Client, typename Config>
 void
 run(const Config& config, Core::IOContext& iocontext)
 {
-    // Expecting consistent connection configuration
-    const auto& concfg = config["Session.Connector"];
-
     // Create application context
     typename Client::Context context(config);
+
+    // Expecting consistent connection configuration
+    const auto& concfg = config["Session.Connector"];
 
     // Create connector that will activate client handler once the connection has been established
     Core::Connector<typename Client::Handler> connector(iocontext, concfg["Host"], concfg["Port"], concfg["Retries"], concfg["Delay"]);
