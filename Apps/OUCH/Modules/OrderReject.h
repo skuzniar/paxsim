@@ -27,7 +27,15 @@ public:
     using CancelOrder     = Factory::CancelOrder;
 
     template<typename Context>
-    OrderReject(const Config& config, Context& context)
+    explicit OrderReject(Context& context)
+      : m_orderbook(context)
+      , m_params(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    OrderReject(const Config&, Context& context)
       : m_orderbook(context)
       , m_params(context)
       , m_factory(context)

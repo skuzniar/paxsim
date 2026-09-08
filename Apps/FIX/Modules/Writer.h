@@ -23,7 +23,15 @@ class Writer
 {
 public:
     template<typename Context>
-    Writer(ORWBuffer& obuf, const Config& config, Context& context)
+    Writer(ORWBuffer& obuf, Context& context)
+      : m_obuf(obuf)
+      , m_context(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    Writer(ORWBuffer& obuf, const Config&, Context& context)
       : m_obuf(obuf)
       , m_context(context)
       , m_factory(context)

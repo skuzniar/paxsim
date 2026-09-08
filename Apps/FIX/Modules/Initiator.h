@@ -24,7 +24,14 @@ public:
     using State = Context::Session::State;
 
     template<typename Context>
-    Initiator(const Config& config, Context& context)
+    explicit Initiator(Context& context)
+      : m_context(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    Initiator(const Config&, Context& context)
       : m_context(context)
       , m_factory(context)
     {

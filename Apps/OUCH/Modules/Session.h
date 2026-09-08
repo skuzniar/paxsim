@@ -33,7 +33,15 @@ public:
     using AccountQueryResponse = Factory::AccountQueryResponse;
 
     template<typename Context>
-    Session(const Config& config, Context& context)
+    explicit Session(Context& context)
+      : m_session(context)
+      , m_factory(context)
+    {
+        m_session.state(State::LogonWait);
+    }
+
+    template<typename Context>
+    Session(const Config&, Context& context)
       : m_session(context)
       , m_factory(context)
     {

@@ -23,7 +23,16 @@ class FillCorrect
 {
 public:
     template<typename Context>
-    explicit FillCorrect(const Config& config, Context& context)
+    explicit FillCorrect(Context& context)
+      : m_orderbook(context)
+      , m_fillsbook(context)
+      , m_params(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    FillCorrect(const Config&, Context& context)
       : m_orderbook(context)
       , m_fillsbook(context)
       , m_params(context)

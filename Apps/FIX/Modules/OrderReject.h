@@ -4,7 +4,6 @@
 #include "PaxSim/Core/Streamlog.h"
 
 #include "FIX/Context/OrderBook.h"
-// #include "FIX/Utils.h"
 
 #include "Common/Params/OrderReject.h"
 
@@ -27,7 +26,15 @@ public:
     using OrderCancelRequest        = Factory::OrderCancelRequest;
 
     template<typename Context>
-    OrderReject(const Config& config, Context& context)
+    explicit OrderReject(Context& context)
+      : m_orderbook(context)
+      , m_params(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    OrderReject(const Config&, Context& context)
       : m_orderbook(context)
       , m_params(context)
       , m_factory(context)

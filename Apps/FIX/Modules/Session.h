@@ -30,7 +30,15 @@ public:
     using ResendRequest = Factory::ResendRequest;
 
     template<typename Context>
-    Session(const Config& config, Context& context)
+    explicit Session(Context& context)
+      : m_context(context)
+      , m_factory(context)
+    {
+        m_context.state(State::LogonWait);
+    }
+
+    template<typename Context>
+    Session(const Config&, Context& context)
       : m_context(context)
       , m_factory(context)
     {

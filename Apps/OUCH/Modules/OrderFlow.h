@@ -28,7 +28,15 @@ public:
     using CancelOrder     = Factory::CancelOrder;
 
     template<typename Context>
-    OrderFlow(const Config& config, Context& context)
+    explicit OrderFlow(Context& context)
+      : m_session(context)
+      , m_orderbook(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    OrderFlow(const Config&, Context& context)
       : m_session(context)
       , m_orderbook(context)
       , m_factory(context)

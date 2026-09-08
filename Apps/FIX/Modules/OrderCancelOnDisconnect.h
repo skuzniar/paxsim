@@ -25,7 +25,15 @@ public:
     using State = Context::Session::State;
 
     template<typename Context>
-    explicit OrderCancelOnDisconnect(const Config& config, Context& context)
+    explicit OrderCancelOnDisconnect(Context& context)
+      : m_session(context)
+      , m_orderbook(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    OrderCancelOnDisconnect(const Config&, Context& context)
       : m_session(context)
       , m_orderbook(context)
       , m_factory(context)

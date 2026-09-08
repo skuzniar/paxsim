@@ -23,7 +23,16 @@ class OrderFill
 {
 public:
     template<typename Context>
-    explicit OrderFill(const Config& config, Context& context)
+    explicit OrderFill(Context& context)
+      : m_orderbook(context)
+      , m_fillsbook(context)
+      , m_params(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    OrderFill(const Config&, Context& context)
       : m_orderbook(context)
       , m_fillsbook(context)
       , m_params(context)

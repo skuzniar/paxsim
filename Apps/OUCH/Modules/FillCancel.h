@@ -23,7 +23,16 @@ class FillCancel
 {
 public:
     template<typename Context>
-    FillCancel(const Config& config, Context& context)
+    explicit FillCancel(Context& context)
+      : m_orderbook(context)
+      , m_fillsbook(context)
+      , m_params(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    FillCancel(const Config&, Context& context)
       : m_orderbook(context)
       , m_fillsbook(context)
       , m_params(context)

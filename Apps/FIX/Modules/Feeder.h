@@ -24,7 +24,14 @@ public:
     using State = Context::Session::State;
 
     template<typename Context>
-    explicit Feeder(const Config& config, Context& context)
+    explicit Feeder(Context& context)
+      : m_session(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    Feeder(const Config&, Context& context)
       : m_session(context)
       , m_factory(context)
     {

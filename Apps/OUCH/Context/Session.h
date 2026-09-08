@@ -4,6 +4,7 @@
 #include <string>
 #include <cstddef>
 #include <iostream>
+#include <utility>
 
 namespace OUCH::Context {
 
@@ -57,6 +58,12 @@ struct Session
 
             HBInterval = cfg["HBInterval"];
         }
+    }
+
+    Session(std::string user, std::string password)
+      : UserName(std::move(user))
+      , Password(std::move(password))
+    {
     }
 
     void reset()

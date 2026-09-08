@@ -61,6 +61,13 @@ struct Session
         }
     }
 
+    Session(std::string begstring, std::string targcompid, std::string sendcompid)
+      : BeginString(std::move(begstring))
+      , TargetCompID(std::move(targcompid))
+      , SenderCompID(std::move(sendcompid))
+    {
+    }
+
     void reset()
     {
         ISequenceNumber = 1;

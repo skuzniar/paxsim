@@ -24,7 +24,16 @@ class OrderCancel
 {
 public:
     template<typename Context>
-    OrderCancel(const Config& config, Context& context)
+    explicit OrderCancel(Context& context)
+      : m_orderbook(context)
+      , m_fillsbook(context)
+      , m_params(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    OrderCancel(const Config&, Context& context)
       : m_orderbook(context)
       , m_fillsbook(context)
       , m_params(context)
