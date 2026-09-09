@@ -9,9 +9,7 @@
 
 namespace OUCH::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
-
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -21,7 +19,8 @@ template<typename Factory>
 class Session
 {
 public:
-    using State = Context::Session::State;
+    using Config = Common::Config;
+    using State  = Context::Session::State;
 
     using PacketHeader         = typename Factory::PacketHeader;
     using SequencedData        = typename Factory::SequencedData;

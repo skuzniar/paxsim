@@ -17,7 +17,6 @@
 namespace OUCH::Modules::Factory::OUCH50 {
 
 using namespace PaxSim::Core;
-using Common::Config;
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -25,14 +24,15 @@ using PaxSim::Core::log;
 //---------------------------------------------------------------------------------------------------------------------
 struct OrderReject
 {
+    using Config = Common::Config;
+
     using PacketHeader    = OUCH::OUCH50::PacketHeader;
     using SequencedData   = OUCH::OUCH50::SequencedData;
     using UnsequencedData = OUCH::OUCH50::UnsequencedData;
 
-    using EnterOrder   = OUCH::OUCH50::EnterOrder;
-    using ReplaceOrder = OUCH::OUCH50::ReplaceOrder;
-    using CancelOrder  = OUCH::OUCH50::CancelOrder;
-
+    using EnterOrder     = OUCH::OUCH50::EnterOrder;
+    using ReplaceOrder   = OUCH::OUCH50::ReplaceOrder;
+    using CancelOrder    = OUCH::OUCH50::CancelOrder;
     using OrderRejected  = OUCH::OUCH50::OrderRejected;
     using CancelRejected = OUCH::OUCH50::CancelRejected;
 

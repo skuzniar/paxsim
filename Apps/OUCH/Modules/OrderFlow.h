@@ -10,9 +10,7 @@
 
 namespace OUCH::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
-
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -22,6 +20,8 @@ template<typename Factory>
 class OrderFlow
 {
 public:
+    using Config = Common::Config;
+
     using UnsequencedData = typename Factory::UnsequencedData;
     using EnterOrder      = typename Factory::EnterOrder;
     using ReplaceOrder    = typename Factory::ReplaceOrder;

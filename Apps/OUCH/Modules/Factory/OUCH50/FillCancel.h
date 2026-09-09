@@ -11,7 +11,6 @@
 namespace OUCH::Modules::Factory::OUCH50 {
 
 using namespace PaxSim::Core;
-using Common::Config;
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -19,6 +18,8 @@ using PaxSim::Core::log;
 //---------------------------------------------------------------------------------------------------------------------
 struct FillCancel
 {
+    using Config = Common::Config;
+
     using AlgoIndicator       = OUCH::OUCH50::AlgoIndicator;
     using TransactionCategory = OUCH::OUCH50::TransactionCategory;
     using TradingMode         = OUCH::OUCH50::TradingMode;

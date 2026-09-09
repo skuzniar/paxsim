@@ -9,7 +9,6 @@
 
 namespace OUCH::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
@@ -20,6 +19,8 @@ template<typename Factory>
 class OrderReject
 {
 public:
+    using Config = Common::Config;
+
     using PacketHeader    = typename Factory::PacketHeader;
     using UnsequencedData = typename Factory::UnsequencedData;
     using EnterOrder      = typename Factory::EnterOrder;
@@ -109,9 +110,9 @@ private:
         return true;
     }
 
-    Context::OrderBook&  m_orderbook;
-    Params::OrderReject& m_params;
-    Factory              m_factory;
+    Context::OrderBook&          m_orderbook;
+    Common::Params::OrderReject& m_params;
+    Factory                      m_factory;
 };
 
 } // namespace OUCH::Modules

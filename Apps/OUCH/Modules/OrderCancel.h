@@ -11,9 +11,7 @@
 
 namespace OUCH::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
-
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -22,6 +20,8 @@ using PaxSim::Core::log;
 template<typename Factory>
 class OrderCancel
 {
+    using Config = Common::Config;
+
 public:
     template<typename Context>
     explicit OrderCancel(Context& context)
@@ -85,10 +85,10 @@ private:
         next.put(m_factory.cancel(order, params));
     }
 
-    Context::OrderBook&  m_orderbook;
-    Context::FillsBook&  m_fillsbook;
-    Params::OrderCancel& m_params;
-    Factory              m_factory;
+    Context::OrderBook&          m_orderbook;
+    Context::FillsBook&          m_fillsbook;
+    Common::Params::OrderCancel& m_params;
+    Factory                      m_factory;
 };
 
 } // namespace OUCH::Modules

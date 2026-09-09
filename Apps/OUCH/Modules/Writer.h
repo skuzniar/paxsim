@@ -11,9 +11,7 @@
 
 namespace OUCH::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
-
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -23,6 +21,8 @@ template<typename Factory>
 class Writer
 {
 public:
+    using Config = Common::Config;
+
     using SequencedData   = typename Factory::SequencedData;
     using UnsequencedData = typename Factory::UnsequencedData;
 

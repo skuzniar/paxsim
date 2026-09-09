@@ -10,9 +10,7 @@
 
 namespace OUCH::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
-
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -22,6 +20,8 @@ template<typename Factory>
 class FillCancel
 {
 public:
+    using Config = Common::Config;
+
     template<typename Context>
     explicit FillCancel(Context& context)
       : m_orderbook(context)
@@ -52,7 +52,7 @@ private:
     template<typename Next>
     void cancel(Next& next)
     {
-        using Key = Params::FillCancel::Key;
+        using Key = Common::Params::FillCancel::Key;
         for (const auto& fill : m_fillsbook.fills) {
             if (fill.live()) {
                 if (auto itr = m_params.cancel.find(Key(fill.quantity(), fill.price())); itr != m_params.cancel.end()) {
@@ -81,10 +81,10 @@ private:
         next.put(m_factory.cancel(fill, order, params));
     }
 
-    Context::OrderBook& m_orderbook;
-    Context::FillsBook& m_fillsbook;
-    Params::FillCancel& m_params;
-    Factory             m_factory;
+    Context::OrderBook&         m_orderbook;
+    Context::FillsBook&         m_fillsbook;
+    Common::Params::FillCancel& m_params;
+    Factory                     m_factory;
 };
 
 } // namespace OUCH::Modules

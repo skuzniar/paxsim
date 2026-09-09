@@ -8,9 +8,7 @@
 
 namespace OUCH::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
-
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -20,7 +18,8 @@ template<typename Factory>
 class Initiator
 {
 public:
-    using State = Context::Session::State;
+    using Config = Common::Config;
+    using State  = Context::Session::State;
 
     template<typename Context>
     explicit Initiator(Context& context)

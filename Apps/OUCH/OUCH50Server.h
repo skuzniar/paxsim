@@ -37,12 +37,11 @@
 namespace OUCH::OUCH50 {
 
 using namespace PaxSim;
-using namespace Common;
 
 struct Server
 {
     // Params is an aggregate of parameter classes.
-    using Params = Core::Aggregate<Params::OrderReject, Params::OrderFill, Params::OrderCancel, Params::FillCancel>;
+    using Params = Core::Aggregate<Common::Params::OrderReject, Common::Params::OrderFill, Common::Params::OrderCancel, Common::Params::FillCancel>;
 
     // Context is an aggregate of context classes.
     using Context = Core::Aggregate<Context::Session, Context::OrderBook, Context::FillsBook, Params>;

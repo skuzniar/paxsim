@@ -13,7 +13,6 @@ namespace OUCH::Modules {
 
 using namespace Common;
 using namespace PaxSim::Core;
-
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -23,6 +22,8 @@ template<typename Factory>
 class OrderFill
 {
 public:
+    using Config = Common::Config;
+
     template<typename Context>
     explicit OrderFill(Context& context)
       : m_orderbook(context)
@@ -64,7 +65,7 @@ private:
     }
 
     template<typename Next>
-    void fill(const Order& order, const Params::OrderFill::Fills& fills, Next& next)
+    void fill(const Order& order, const Common::Params::OrderFill::Fills& fills, Next& next)
     {
         log << level::trace << ts << ' ' << here << std::endl;
         for (const auto& f : fills) {
@@ -88,10 +89,10 @@ private:
         }
     }
 
-    Context::OrderBook& m_orderbook;
-    Context::FillsBook& m_fillsbook;
-    Params::OrderFill&  m_params;
-    Factory             m_factory;
+    Context::OrderBook&        m_orderbook;
+    Context::FillsBook&        m_fillsbook;
+    Common::Params::OrderFill& m_params;
+    Factory                    m_factory;
 };
 
 } // namespace OUCH::Modules

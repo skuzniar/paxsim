@@ -8,9 +8,7 @@
 
 namespace OUCH::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
-
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -20,6 +18,8 @@ template<typename Factory>
 class Parser
 {
 public:
+    using Config = Common::Config;
+
     template<typename Context>
     Parser(IRWBuffer& ibuf, Context&)
       : m_ibuf(ibuf)
