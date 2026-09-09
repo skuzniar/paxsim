@@ -10,7 +10,6 @@
 
 namespace OUCH::Modules::Factory::OUCH50 {
 
-using namespace OUCH::OUCH50;
 using namespace PaxSim::Core;
 using Common::Config;
 using PaxSim::Core::log;
@@ -20,7 +19,11 @@ using PaxSim::Core::log;
 //---------------------------------------------------------------------------------------------------------------------
 struct FillCancel
 {
-    using TradeBroken = TradeBroken;
+    using AlgoIndicator       = OUCH::OUCH50::AlgoIndicator;
+    using TransactionCategory = OUCH::OUCH50::TransactionCategory;
+    using TradingMode         = OUCH::OUCH50::TradingMode;
+    using TradeBroken         = OUCH::OUCH50::TradeBroken;
+    using Timestamp           = OUCH::OUCH50::Timestamp;
 
     template<typename Context>
     explicit FillCancel(Context& context)

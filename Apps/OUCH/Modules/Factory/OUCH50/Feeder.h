@@ -12,7 +12,6 @@
 
 namespace OUCH::Modules::Factory::OUCH50 {
 
-using namespace OUCH::OUCH50;
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
@@ -21,11 +20,18 @@ using PaxSim::Core::log;
 //---------------------------------------------------------------------------------------------------------------------
 class Feeder
 {
-    using PacketHeader = PacketHeader;
+    using PacketHeader = OUCH::OUCH50::PacketHeader;
 
-    using EnterOrder   = EnterOrder;
-    using ReplaceOrder = ReplaceOrder;
-    using CancelOrder  = CancelOrder;
+    using EnterOrder   = OUCH::OUCH50::EnterOrder;
+    using ReplaceOrder = OUCH::OUCH50::ReplaceOrder;
+    using CancelOrder  = OUCH::OUCH50::CancelOrder;
+
+    using AlgoIndicator               = OUCH::OUCH50::AlgoIndicator;
+    using Capacity                    = OUCH::OUCH50::Capacity;
+    using BuySellIndicator            = OUCH::OUCH50::BuySellIndicator;
+    using ClientIdentification        = OUCH::OUCH50::ClientIdentification;
+    using InvestmentDecisionMaker     = OUCH::OUCH50::InvestmentDecisionMaker;
+    using ExecutionDecisionWithinFirm = OUCH::OUCH50::ExecutionDecisionWithinFirm;
 
 public:
     template<typename Context>

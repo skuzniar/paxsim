@@ -20,23 +20,23 @@ using namespace PaxSim::Core;
 using Common::Config;
 using PaxSim::Core::log;
 
-using namespace OUCH::OUCH50;
-
 //---------------------------------------------------------------------------------------------------------------------
 // OUCH 4.2 protocol message factory.
 //---------------------------------------------------------------------------------------------------------------------
 struct OrderReject
 {
-    using PacketHeader    = PacketHeader;
-    using SequencedData   = SequencedData;
-    using UnsequencedData = UnsequencedData;
+    using PacketHeader    = OUCH::OUCH50::PacketHeader;
+    using SequencedData   = OUCH::OUCH50::SequencedData;
+    using UnsequencedData = OUCH::OUCH50::UnsequencedData;
 
-    using EnterOrder   = EnterOrder;
-    using ReplaceOrder = ReplaceOrder;
-    using CancelOrder  = CancelOrder;
+    using EnterOrder   = OUCH::OUCH50::EnterOrder;
+    using ReplaceOrder = OUCH::OUCH50::ReplaceOrder;
+    using CancelOrder  = OUCH::OUCH50::CancelOrder;
 
-    using OrderRejected  = OrderRejected;
-    using CancelRejected = CancelRejected;
+    using OrderRejected  = OUCH::OUCH50::OrderRejected;
+    using CancelRejected = OUCH::OUCH50::CancelRejected;
+
+    using Timestamp = OUCH::OUCH50::Timestamp;
 
     template<typename Context>
     OrderReject(Context& context)

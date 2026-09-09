@@ -9,8 +9,6 @@
 
 namespace OUCH::Modules::Factory::OUCH50 {
 
-using namespace OUCH::OUCH50;
-
 using namespace PaxSim::Core;
 
 using PaxSim::Core::log;
@@ -21,11 +19,22 @@ using PaxSim::Core::log;
 class OrderFill
 {
 public:
-    using PacketHeader    = PacketHeader;
-    using SequencedData   = SequencedData;
-    using UnsequencedData = UnsequencedData;
+    using PacketHeader    = OUCH::OUCH50::PacketHeader;
+    using SequencedData   = OUCH::OUCH50::SequencedData;
+    using UnsequencedData = OUCH::OUCH50::UnsequencedData;
+    using OrderExecuted   = OUCH::OUCH50::OrderExecuted;
 
-    using OrderExecute = OrderExecuted;
+    using AlgoIndicator         = OUCH::OUCH50::AlgoIndicator;
+    using Market                = OUCH::OUCH50::Market;
+    using TransactionCategory   = OUCH::OUCH50::TransactionCategory;
+    using TradingMode           = OUCH::OUCH50::TradingMode;
+    using Timestamp             = OUCH::OUCH50::Timestamp;
+    using LiquidityAttributes   = OUCH::OUCH50::LiquidityAttributes;
+    using LiquidityIndicator    = OUCH::OUCH50::LiquidityIndicator;
+    using LiquidityInternalized = OUCH::OUCH50::LiquidityInternalized;
+    using LiquidityTopOfBook    = OUCH::OUCH50::LiquidityTopOfBook;
+    using LiquiditySelfTrade    = OUCH::OUCH50::LiquiditySelfTrade;
+    using LiquidityFlag         = OUCH::OUCH50::LiquidityFlag;
 
     template<typename Context>
     explicit OrderFill(Context& context)

@@ -20,7 +20,6 @@
 namespace OUCH::OUCH50 {
 
 using namespace PaxSim;
-using namespace PaxSim::Core;
 
 struct Client
 {

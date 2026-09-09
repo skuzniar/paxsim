@@ -17,7 +17,6 @@
 
 namespace OUCH::Modules::Factory::OUCH50 {
 
-using namespace OUCH::OUCH50;
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
@@ -26,19 +25,22 @@ using PaxSim::Core::log;
 //---------------------------------------------------------------------------------------------------------------------
 struct OrderFlow
 {
-    using PacketHeader    = PacketHeader;
-    using SequencedData   = SequencedData;
-    using UnsequencedData = UnsequencedData;
+    using PacketHeader    = OUCH::OUCH50::PacketHeader;
+    using SequencedData   = OUCH::OUCH50::SequencedData;
+    using UnsequencedData = OUCH::OUCH50::UnsequencedData;
 
-    using EnterOrder   = EnterOrder;
-    using ReplaceOrder = ReplaceOrder;
-    using CancelOrder  = CancelOrder;
+    using EnterOrder   = OUCH::OUCH50::EnterOrder;
+    using ReplaceOrder = OUCH::OUCH50::ReplaceOrder;
+    using CancelOrder  = OUCH::OUCH50::CancelOrder;
 
-    using OrderAccepted  = OrderAccepted;
-    using OrderRejected  = OrderRejected;
-    using OrderReplaced  = OrderReplaced;
-    using OrderCancelled = OrderCancelled;
-    using CancelRejected = CancelRejected;
+    using OrderAccepted  = OUCH::OUCH50::OrderAccepted;
+    using OrderRejected  = OUCH::OUCH50::OrderRejected;
+    using OrderReplaced  = OUCH::OUCH50::OrderReplaced;
+    using OrderCancelled = OUCH::OUCH50::OrderCancelled;
+    using CancelRejected = OUCH::OUCH50::CancelRejected;
+
+    using RejectReason = OUCH::OUCH50::RejectReason;
+    using Timestamp    = OUCH::OUCH50::Timestamp;
 
     template<typename Context>
     explicit OrderFlow(Context& context)

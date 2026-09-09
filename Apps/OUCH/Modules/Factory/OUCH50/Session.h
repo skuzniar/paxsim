@@ -12,23 +12,22 @@
 
 namespace OUCH::Modules::Factory::OUCH50 {
 
-using namespace OUCH::OUCH50;
-
 //---------------------------------------------------------------------------------------------------------------------
 // OUCH 50 protocol message factory.
 //---------------------------------------------------------------------------------------------------------------------
 struct Session
 {
-    using PacketHeader    = PacketHeader;
-    using SequencedData   = SequencedData;
-    using UnsequencedData = UnsequencedData;
+    using PacketHeader    = OUCH::OUCH50::PacketHeader;
+    using SequencedData   = OUCH::OUCH50::SequencedData;
+    using UnsequencedData = OUCH::OUCH50::UnsequencedData;
 
-    using ServerHeartbeat      = ServerHeartbeat;
-    using LoginRequest         = LoginRequest;
-    using LoginAccepted        = LoginAccepted;
-    using LogoutRequest        = LogoutRequest;
-    using AccountQuery         = AccountQuery;
-    using AccountQueryResponse = AccountQueryResponse;
+    using ServerHeartbeat      = OUCH::OUCH50::ServerHeartbeat;
+    using LoginRequest         = OUCH::OUCH50::LoginRequest;
+    using LoginAccepted        = OUCH::OUCH50::LoginAccepted;
+    using LogoutRequest        = OUCH::OUCH50::LogoutRequest;
+    using AccountQuery         = OUCH::OUCH50::AccountQuery;
+    using AccountQueryResponse = OUCH::OUCH50::AccountQueryResponse;
+    using Timestamp            = OUCH::OUCH50::Timestamp;
 
     template<typename Context>
     explicit Session(Context& context)

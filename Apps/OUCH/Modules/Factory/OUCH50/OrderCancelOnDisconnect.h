@@ -10,7 +10,6 @@
 
 namespace OUCH::Modules::Factory::OUCH50 {
 
-using namespace OUCH::OUCH50;
 using namespace PaxSim::Core;
 using Common::Config;
 using PaxSim::Core::log;
@@ -20,8 +19,10 @@ using PaxSim::Core::log;
 //---------------------------------------------------------------------------------------------------------------------
 struct OrderCancelOnDisconnect
 {
-    using PacketHeader   = PacketHeader;
-    using OrderCancelled = OrderCancelled;
+    using PacketHeader   = OUCH::OUCH50::PacketHeader;
+    using OrderCancelled = OUCH::OUCH50::OrderCancelled;
+
+    using Timestamp = OUCH::OUCH50::Timestamp;
 
     template<typename Context>
     explicit OrderCancelOnDisconnect(Context& context)

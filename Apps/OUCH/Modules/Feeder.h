@@ -45,7 +45,7 @@ public:
         if (now >= m_expr && m_session.state() == State::Normal) {
             feed(next);
         }
-        return m_expr = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+        return m_expr = std::chrono::steady_clock::now() + std::chrono::seconds(50);
     }
 
 private:
@@ -63,7 +63,7 @@ private:
     Context::Session& m_session;
     Factory           m_factory;
 
-    timepoint m_expr = std::chrono::steady_clock::now() + std::chrono::seconds(1);
+    timepoint m_expr = std::chrono::steady_clock::now() + std::chrono::seconds(50);
 };
 
 } // namespace OUCH::Modules

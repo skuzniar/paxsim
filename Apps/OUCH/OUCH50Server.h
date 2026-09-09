@@ -37,13 +37,12 @@
 namespace OUCH::OUCH50 {
 
 using namespace PaxSim;
-using namespace PaxSim::Core;
 using namespace Common;
 
 struct Server
 {
     // Params is an aggregate of parameter classes.
-    using Params = Aggregate<Params::OrderReject, Params::OrderFill, Params::OrderCancel, Params::FillCancel>;
+    using Params = Core::Aggregate<Params::OrderReject, Params::OrderFill, Params::OrderCancel, Params::FillCancel>;
 
     // Context is an aggregate of context classes.
     using Context = Core::Aggregate<Context::Session, Context::OrderBook, Context::FillsBook, Params>;
@@ -59,7 +58,8 @@ struct Server
     using Writer                  = OUCH::Modules::Writer<OUCH::Modules::Factory::OUCH50::Writer>;
 
     // Handler will be used once the session has been created.
-    using Handler = Pipeline<Parser, Flareout<Session, OrderReject, OrderFlow, OrderCancelOnDisconnect, OrderCancel, FillCancel, OrderFill>, Writer>;
+    using Handler =
+        Core::Pipeline<Parser, Core::Flareout<Session, OrderReject, OrderFlow, OrderCancelOnDisconnect, OrderCancel, FillCancel, OrderFill>, Writer>;
 };
 } // namespace OUCH::OUCH50
 
