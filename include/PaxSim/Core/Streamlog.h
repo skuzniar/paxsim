@@ -164,9 +164,9 @@ operator<<(std::ostream& s, level l)
 //----------------------------------------------------------------------------------------------------------------------
 // Static instance of the logging stream uses std::clog as the default output stream.
 //----------------------------------------------------------------------------------------------------------------------
-struct logstream : public std::ostream
+struct Logstream : public std::ostream
 {
-    explicit logstream(std::ostream& os)
+    explicit Logstream(std::ostream& os)
       : std::ostream(os.rdbuf())
     {
     }
@@ -187,7 +187,7 @@ private:
 };
 
 // Must be defined in the user code
-extern logstream log;
+extern Logstream log;
 
 namespace detail {
 

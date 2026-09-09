@@ -13,7 +13,7 @@
 #include <iostream>
 
 namespace PaxSim::Core {
-logstream log(std::clog);
+Logstream log(std::clog);
 }
 
 using namespace PaxSim;

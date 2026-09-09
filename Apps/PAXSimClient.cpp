@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 namespace PaxSim::Core {
-logstream log(std::clog);
+Logstream log(std::clog);
 }
 
 namespace {

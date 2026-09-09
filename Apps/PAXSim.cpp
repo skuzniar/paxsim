@@ -1,3 +1,4 @@
+
 #include "Common/Config.h"
 
 #include "FIX/FIX42Server.h"
@@ -10,7 +11,7 @@
 #include <unistd.h>
 
 namespace PaxSim::Core {
-logstream log(std::clog);
+Logstream log(std::clog);
 }
 
 namespace {
