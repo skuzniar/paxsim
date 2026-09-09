@@ -6,7 +6,7 @@
 namespace OUCH::Modules::Factory::OUCH50 {
 
 //---------------------------------------------------------------------------------------------------------------------
-// OUCH 50 protocol message factory. Attempt to get complete message from the buffer.
+// OUCH50 protocol message factory. Attempt to get complete message from the buffer.
 //---------------------------------------------------------------------------------------------------------------------
 struct Parser
 {
