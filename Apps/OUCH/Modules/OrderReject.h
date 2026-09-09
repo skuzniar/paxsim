@@ -20,11 +20,11 @@ template<typename Factory>
 class OrderReject
 {
 public:
-    using PacketHeader    = Factory::PacketHeader;
-    using UnsequencedData = Factory::UnsequencedData;
-    using EnterOrder      = Factory::EnterOrder;
-    using ReplaceOrder    = Factory::ReplaceOrder;
-    using CancelOrder     = Factory::CancelOrder;
+    using PacketHeader    = typename Factory::PacketHeader;
+    using UnsequencedData = typename Factory::UnsequencedData;
+    using EnterOrder      = typename Factory::EnterOrder;
+    using ReplaceOrder    = typename Factory::ReplaceOrder;
+    using CancelOrder     = typename Factory::CancelOrder;
 
     template<typename Context>
     explicit OrderReject(Context& context)

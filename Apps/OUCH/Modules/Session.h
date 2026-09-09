@@ -23,14 +23,14 @@ class Session
 public:
     using State = Context::Session::State;
 
-    using SequencedData   = Factory::SequencedData;
-    using UnsequencedData = Factory::UnsequencedData;
-
-    using LoginRequest         = Factory::LoginRequest;
-    using LogoutRequest        = Factory::LogoutRequest;
-    using LoginAccepted        = Factory::LoginAccepted;
-    using AccountQuery         = Factory::AccountQuery;
-    using AccountQueryResponse = Factory::AccountQueryResponse;
+    using PacketHeader         = typename Factory::PacketHeader;
+    using SequencedData        = typename Factory::SequencedData;
+    using UnsequencedData      = typename Factory::UnsequencedData;
+    using LoginRequest         = typename Factory::LoginRequest;
+    using LogoutRequest        = typename Factory::LogoutRequest;
+    using LoginAccepted        = typename Factory::LoginAccepted;
+    using AccountQuery         = typename Factory::AccountQuery;
+    using AccountQueryResponse = typename Factory::AccountQueryResponse;
 
     template<typename Context>
     explicit Session(Context& context)
@@ -80,13 +80,13 @@ public:
     }
 
 private:
-    void validate(const Factory::PacketHeader& msg)
+    void validate(const PacketHeader& msg)
     {
         log << level::trace << ts << here << std::endl;
-        if (auto state = m_session.state(); state == State::LogonSent && msg.type != Factory::LoginAccepted::Type) {
+        if (auto state = m_session.state(); state == State::LogonSent && msg.type != LoginAccepted::Type) {
             throw std::runtime_error("Logon Accepted must be the first message.");
         }
-        if (auto state = m_session.state(); state == State::LogonWait && msg.type != Factory::LoginRequest::Type) {
+        if (auto state = m_session.state(); state == State::LogonWait && msg.type != LoginRequest::Type) {
             throw std::runtime_error("Logon Request must be the first message.");
         }
     }

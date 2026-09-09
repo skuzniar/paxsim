@@ -23,8 +23,8 @@ template<typename Factory>
 class Writer
 {
 public:
-    using SequencedData   = Factory::SequencedData;
-    using UnsequencedData = Factory::UnsequencedData;
+    using SequencedData   = typename Factory::SequencedData;
+    using UnsequencedData = typename Factory::UnsequencedData;
 
     template<typename Context>
     Writer(ORWBuffer& obuf, Context& context)

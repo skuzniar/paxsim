@@ -22,10 +22,10 @@ template<typename Factory>
 class OrderFlow
 {
 public:
-    using UnsequencedData = Factory::UnsequencedData;
-    using EnterOrder      = Factory::EnterOrder;
-    using ReplaceOrder    = Factory::ReplaceOrder;
-    using CancelOrder     = Factory::CancelOrder;
+    using UnsequencedData = typename Factory::UnsequencedData;
+    using EnterOrder      = typename Factory::EnterOrder;
+    using ReplaceOrder    = typename Factory::ReplaceOrder;
+    using CancelOrder     = typename Factory::CancelOrder;
 
     template<typename Context>
     explicit OrderFlow(Context& context)

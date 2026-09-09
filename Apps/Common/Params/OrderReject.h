@@ -10,7 +10,6 @@
 
 namespace Common::Params {
 
-using namespace Common;
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
 

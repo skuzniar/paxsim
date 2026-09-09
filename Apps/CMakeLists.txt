@@ -24,7 +24,6 @@ foreach(app ${ALL_APPS})
 
     target_include_directories(${app} PRIVATE 
         .
-        Protocol
         ${LUA_INCLUDE_DIR}
         ${SOL2_INCLUDE_DIR}
     )
