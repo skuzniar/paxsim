@@ -8,17 +8,6 @@
 #include "Context/OrderBook.h"
 #include "Context/FillsBook.h"
 
-#include "Modules/Factory/FIX42/Parser.h"
-#include "Modules/Factory/FIX42/Session.h"
-#include "Modules/Factory/FIX42/OrderFlow.h"
-#include "Modules/Factory/FIX42/OrderReject.h"
-#include "Modules/Factory/FIX42/OrderFill.h"
-#include "Modules/Factory/FIX42/OrderCancel.h"
-#include "Modules/Factory/FIX42/OrderCancelOnDisconnect.h"
-#include "Modules/Factory/FIX42/FillCancel.h"
-#include "Modules/Factory/FIX42/FillCorrect.h"
-#include "Modules/Factory/FIX42/Writer.h"
-
 #include "Modules/Parser.h"
 #include "Modules/Session.h"
 #include "Modules/OrderFlow.h"
@@ -29,6 +18,8 @@
 #include "Modules/FillCancel.h"
 #include "Modules/FillCorrect.h"
 #include "Modules/Writer.h"
+
+#include "FIX/FIX42/Factory.h"
 
 #include "Common/Params/OrderReject.h"
 #include "Common/Params/OrderCancel.h"
@@ -51,16 +42,16 @@ struct Server
     // Context is an aggregate of context classes.
     using Context = Aggregate<Context::Session, Context::OrderBook, Context::FillsBook, Params>;
 
-    using Parser                  = FIX::Modules::Parser<FIX::Modules::Factory::FIX42::Parser>;
-    using Writer                  = FIX::Modules::Writer<FIX::Modules::Factory::FIX42::Writer>;
-    using Session                 = FIX::Modules::Session<FIX::Modules::Factory::FIX42::Session>;
-    using OrderFlow               = FIX::Modules::OrderFlow<FIX::Modules::Factory::FIX42::OrderFlow>;
-    using OrderReject             = FIX::Modules::OrderReject<FIX::Modules::Factory::FIX42::OrderReject>;
-    using OrderFill               = FIX::Modules::OrderFill<FIX::Modules::Factory::FIX42::OrderFill>;
-    using OrderCancel             = FIX::Modules::OrderCancel<FIX::Modules::Factory::FIX42::OrderCancel>;
-    using OrderCancelOnDisconnect = FIX::Modules::OrderCancelOnDisconnect<FIX::Modules::Factory::FIX42::OrderCancelOnDisconnect>;
-    using FillCancel              = FIX::Modules::FillCancel<FIX::Modules::Factory::FIX42::FillCancel>;
-    using FillCorrect             = FIX::Modules::FillCorrect<FIX::Modules::Factory::FIX42::FillCorrect>;
+    using Parser                  = FIX::Modules::Parser<FIX::FIX42::Factory>;
+    using Writer                  = FIX::Modules::Writer<FIX::FIX42::Factory>;
+    using Session                 = FIX::Modules::Session<FIX::FIX42::Factory>;
+    using OrderFlow               = FIX::Modules::OrderFlow<FIX::FIX42::Factory>;
+    using OrderReject             = FIX::Modules::OrderReject<FIX::FIX42::Factory>;
+    using OrderFill               = FIX::Modules::OrderFill<FIX::FIX42::Factory>;
+    using OrderCancel             = FIX::Modules::OrderCancel<FIX::FIX42::Factory>;
+    using OrderCancelOnDisconnect = FIX::Modules::OrderCancelOnDisconnect<FIX::FIX42::Factory>;
+    using FillCancel              = FIX::Modules::FillCancel<FIX::FIX42::Factory>;
+    using FillCorrect             = FIX::Modules::FillCorrect<FIX::FIX42::Factory>;
 
     // Handler will be used once the session has been created.
     using Handler =

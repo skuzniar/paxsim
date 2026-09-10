@@ -68,7 +68,7 @@ private:
     {
         log << level::trace << ts << here << std::endl;
         order.status(Order::Status::Canceled);
-        next.put(m_factory.cancel(order));
+        next.put(m_factory.cancel(order, "Cancel on disconnect"));
     }
 
     Context::Session&   m_session;

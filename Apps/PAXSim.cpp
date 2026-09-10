@@ -1,4 +1,3 @@
-
 #include "Common/Config.h"
 
 #include "FIX/FIX42Server.h"

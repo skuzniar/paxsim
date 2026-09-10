@@ -40,7 +40,7 @@ public:
     {
         log << level::trace << ts << here << std::endl;
         if (m_context.state() == State::LogonWait) {
-            next.put(m_factory.loginRequest(m_context.UserName, m_context.Password));
+            next.put(m_factory.loginRequest());
             m_context.state(State::LogonSent);
         }
     }

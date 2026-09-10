@@ -21,14 +21,16 @@ class Parser
 {
 public:
     template<typename Context>
-    Parser(IRWBuffer& ibuf, Context&)
+    Parser(IRWBuffer& ibuf, Context& context)
       : m_ibuf(&ibuf)
+      , m_factory(context)
     {
     }
 
     template<typename Context>
-    Parser(IRWBuffer& ibuf, const Config&, Context&)
+    Parser(IRWBuffer& ibuf, const Config&, Context& context)
       : m_ibuf(&ibuf)
+      , m_factory(context)
     {
     }
 

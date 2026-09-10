@@ -8,16 +8,6 @@
 #include "Context/OrderBook.h"
 #include "Context/FillsBook.h"
 
-#include "Modules/Factory/OUCH50/Parser.h"
-#include "Modules/Factory/OUCH50/Session.h"
-#include "Modules/Factory/OUCH50/OrderFlow.h"
-#include "Modules/Factory/OUCH50/OrderReject.h"
-#include "Modules/Factory/OUCH50/OrderFill.h"
-#include "Modules/Factory/OUCH50/OrderCancel.h"
-#include "Modules/Factory/OUCH50/OrderCancelOnDisconnect.h"
-#include "Modules/Factory/OUCH50/FillCancel.h"
-#include "Modules/Factory/OUCH50/Writer.h"
-
 #include "Modules/Parser.h"
 #include "Modules/Session.h"
 #include "Modules/OrderFlow.h"
@@ -28,10 +18,11 @@
 #include "Modules/FillCancel.h"
 #include "Modules/Writer.h"
 
+#include "OUCH50/Factory.h"
+
 #include "Common/Params/OrderReject.h"
 #include "Common/Params/OrderCancel.h"
 #include "Common/Params/OrderFill.h"
-
 #include "Common/Params/FillCancel.h"
 
 namespace OUCH::OUCH50 {
@@ -46,15 +37,15 @@ struct Server
     // Context is an aggregate of context classes.
     using Context = Core::Aggregate<Context::Session, Context::OrderBook, Context::FillsBook, Params>;
 
-    using Parser                  = OUCH::Modules::Parser<OUCH::Modules::Factory::OUCH50::Parser>;
-    using Session                 = OUCH::Modules::Session<OUCH::Modules::Factory::OUCH50::Session>;
-    using OrderFlow               = OUCH::Modules::OrderFlow<OUCH::Modules::Factory::OUCH50::OrderFlow>;
-    using OrderReject             = OUCH::Modules::OrderReject<OUCH::Modules::Factory::OUCH50::OrderReject>;
-    using OrderFill               = OUCH::Modules::OrderFill<OUCH::Modules::Factory::OUCH50::OrderFill>;
-    using OrderCancel             = OUCH::Modules::OrderCancel<OUCH::Modules::Factory::OUCH50::OrderCancel>;
-    using OrderCancelOnDisconnect = OUCH::Modules::OrderCancelOnDisconnect<OUCH::Modules::Factory::OUCH50::OrderCancelOnDisconnect>;
-    using FillCancel              = OUCH::Modules::FillCancel<OUCH::Modules::Factory::OUCH50::FillCancel>;
-    using Writer                  = OUCH::Modules::Writer<OUCH::Modules::Factory::OUCH50::Writer>;
+    using Parser                  = OUCH::Modules::Parser<OUCH::OUCH50::Factory>;
+    using Session                 = OUCH::Modules::Session<OUCH::OUCH50::Factory>;
+    using OrderFlow               = OUCH::Modules::OrderFlow<OUCH::OUCH50::Factory>;
+    using OrderReject             = OUCH::Modules::OrderReject<OUCH::OUCH50::Factory>;
+    using OrderFill               = OUCH::Modules::OrderFill<OUCH::OUCH50::Factory>;
+    using OrderCancel             = OUCH::Modules::OrderCancel<OUCH::OUCH50::Factory>;
+    using OrderCancelOnDisconnect = OUCH::Modules::OrderCancelOnDisconnect<OUCH::OUCH50::Factory>;
+    using FillCancel              = OUCH::Modules::FillCancel<OUCH::OUCH50::Factory>;
+    using Writer                  = OUCH::Modules::Writer<OUCH::OUCH50::Factory>;
 
     // Handler will be used once the session has been created.
     using Handler =

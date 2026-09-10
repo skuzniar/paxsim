@@ -23,9 +23,6 @@ class Writer
 public:
     using Config = Common::Config;
 
-    using SequencedData   = typename Factory::SequencedData;
-    using UnsequencedData = typename Factory::UnsequencedData;
-
     template<typename Context>
     Writer(ORWBuffer& obuf, Context& context)
       : m_obuf(obuf)
@@ -57,7 +54,7 @@ public:
     {
         if (m_session.state() == Context::Session::State::Normal) {
             if (now >= m_latest + std::chrono::seconds(m_session.HBInterval)) {
-                put(m_factory.heartbeat());
+                put(m_factory.serverHeartbeat());
             }
         }
         return m_latest + std::chrono::seconds(m_session.HBInterval);
