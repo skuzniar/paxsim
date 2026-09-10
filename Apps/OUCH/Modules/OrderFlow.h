@@ -19,7 +19,6 @@ using PaxSim::Core::log;
 template<typename Factory>
 class OrderFlow
 {
-public:
     using Config = Common::Config;
 
     using UnsequencedData = typename Factory::UnsequencedData;
@@ -27,6 +26,7 @@ public:
     using ReplaceOrder    = typename Factory::ReplaceOrder;
     using CancelOrder     = typename Factory::CancelOrder;
 
+public:
     template<typename Context>
     explicit OrderFlow(Context& context)
       : m_session(context)

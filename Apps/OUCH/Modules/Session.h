@@ -18,7 +18,6 @@ using PaxSim::Core::log;
 template<typename Factory>
 class Session
 {
-public:
     using Config = Common::Config;
     using State  = Context::Session::State;
 
@@ -31,6 +30,7 @@ public:
     using AccountQuery         = typename Factory::AccountQuery;
     using AccountQueryResponse = typename Factory::AccountQueryResponse;
 
+public:
     template<typename Context>
     explicit Session(Context& context)
       : m_session(context)

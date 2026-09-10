@@ -45,10 +45,10 @@ class Factory
 {
     using Config = Common::Config;
 
-public:
     //-----------------------------------------------------------------------------------------------------------------
     // Expose version specific types
     //-----------------------------------------------------------------------------------------------------------------
+public:
     using PacketHeader    = OUCH50::PacketHeader;
     using SequencedData   = OUCH50::SequencedData;
     using UnsequencedData = OUCH50::UnsequencedData;

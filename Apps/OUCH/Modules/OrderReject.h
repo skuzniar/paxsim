@@ -18,15 +18,14 @@ using PaxSim::Core::log;
 template<typename Factory>
 class OrderReject
 {
-public:
     using Config = Common::Config;
 
-    using PacketHeader    = typename Factory::PacketHeader;
     using UnsequencedData = typename Factory::UnsequencedData;
     using EnterOrder      = typename Factory::EnterOrder;
     using ReplaceOrder    = typename Factory::ReplaceOrder;
     using CancelOrder     = typename Factory::CancelOrder;
 
+public:
     template<typename Context>
     explicit OrderReject(Context& context)
       : m_orderbook(context)
