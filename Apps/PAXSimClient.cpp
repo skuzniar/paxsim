@@ -5,7 +5,6 @@
 
 #include "PaxSim/Core/IOContext.h"
 #include "PaxSim/Core/Streamlog.h"
-#include "PaxSim/Core/Connector.h"
 
 #include <filesystem>
 #include <unistd.h>
@@ -23,23 +22,6 @@ usage(const char* program)
 } // namespace
 
 using namespace PaxSim;
-
-template<typename Client, typename Config>
-void
-run(const Config& config, Core::IOContext& iocontext)
-{
-    // Create application context
-    typename Client::Context context(config);
-
-    // Expecting consistent connection configuration
-    const auto& concfg = config["Session.Connector"];
-
-    // Create connector that will activate client handler once the connection has been established
-    Core::Connector<typename Client::Handler> connector(iocontext, concfg["Host"], concfg["Port"], concfg["Retries"], concfg["Delay"]);
-
-    connector.connect(config, context);
-    iocontext.run();
-}
 
 int
 main(int argc, char* argv[])
@@ -116,10 +98,10 @@ main(int argc, char* argv[])
 
         std::thread thread;
         if (type == "FIX42") {
-            thread = std::thread([&]() { run<FIX::FIX42::Client>(config, iocontext); });
+            thread = std::thread([&]() { FIX::FIX42::run(config, iocontext); });
         }
         if (type == "OUCH50") {
-            thread = std::thread([&]() { run<OUCH::OUCH50::Client>(config, iocontext); });
+            thread = std::thread([&]() { OUCH::OUCH50::run(config, iocontext); });
         }
 
         char line[100];

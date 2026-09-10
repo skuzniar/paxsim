@@ -1,12 +1,15 @@
-#--- TODO
 target_sources(PAXSim 
     PUBLIC
     FIX42Server.h
+    PRIVATE
+    FIX42Server.cpp
 )
 
 target_sources(PAXSimClient 
     PUBLIC
     FIX42Client.h
+    PRIVATE
+    FIX42Client.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-Wno-unknown-attributes")

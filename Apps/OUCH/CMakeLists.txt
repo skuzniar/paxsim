@@ -1,11 +1,15 @@
 target_sources(PAXSim 
     PUBLIC
     OUCH50Server.h
+    PRIVATE
+    OUCH50Server.cpp
 )
 
 target_sources(PAXSimClient 
     PUBLIC
     OUCH50Client.h
+    PRIVATE
+    OUCH50Client.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-Wno-unknown-attributes")
