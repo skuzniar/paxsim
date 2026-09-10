@@ -1,0 +1,72 @@
+#ifndef BOE_Modules_Writer_dot_h
+#define BOE_Modules_Writer_dot_h
+
+#include "PaxSim/Core/RWBuffer.h"
+#include "PaxSim/Core/Streamlog.h"
+#include "PaxSim/Core/Types.h"
+
+#include "BOE/Context/Session.h"
+
+#include "Common/Config.h"
+
+namespace BOE::Modules {
+
+using namespace PaxSim::Core;
+using PaxSim::Core::log;
+
+//---------------------------------------------------------------------------------------------------------------------
+// BOE protocol output handler. Outgoing messages must have been created in the output buffer.
+//---------------------------------------------------------------------------------------------------------------------
+template<typename Factory>
+class Writer
+{
+public:
+    using Config = Common::Config;
+
+    template<typename Context>
+    Writer(ORWBuffer& obuf, Context& context)
+      : m_obuf(obuf)
+      , m_session(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Context>
+    Writer(ORWBuffer& obuf, const Config&, Context& context)
+      : m_obuf(obuf)
+      , m_session(context)
+      , m_factory(context)
+    {
+    }
+
+    template<typename Message>
+    bool put(const Message& msg)
+    {
+        std::memcpy(m_obuf.wpos(), msg.header.data(), msg.header.size());
+        m_obuf.wmove(sizeof(msg));
+        log << level::info << out << '[' << msg << ']' << std::endl;
+        m_latest = std::chrono::steady_clock::now();
+        return false;
+    }
+
+    // Send heartbeat message if no other message was sent for the heartbeat interval
+    timepoint timeout(timepoint now)
+    {
+        if (m_session.state() == Context::Session::State::Normal) {
+            if (now >= m_latest + std::chrono::seconds(m_session.HBInterval)) {
+                put(m_factory.serverHeartbeat());
+            }
+        }
+        return m_latest + std::chrono::seconds(m_session.HBInterval);
+    }
+
+private:
+    ORWBuffer&        m_obuf;
+    Context::Session& m_session;
+    Factory           m_factory;
+
+    timepoint m_latest = std::chrono::steady_clock::now();
+};
+
+} // namespace BOE::Modules
+#endif

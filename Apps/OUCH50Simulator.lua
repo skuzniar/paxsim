@@ -3,7 +3,7 @@ Config = {
         Type = "OUCH50",
         Log = {
             Level = "debug",
-            --File = "server.log",
+            --File = "OUCH50Simulator.log",
         },
     },
     Session = {

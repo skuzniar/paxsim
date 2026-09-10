@@ -3,7 +3,7 @@ Config = {
         Type = "FIX42",
         Log = {
             Level = "info",
-            --File = "FIX42Server.log",
+            --File = "FIX42Simulator.log",
         },
     },
     Session = {
