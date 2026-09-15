@@ -7,26 +7,20 @@
 #include "BOE/BOE2/ClientHeartbeat.h"
 
 #include "BOE/BOE2/LoginRequest.h"
-#include "BOE/BOE2/LoginAccepted.h"
-#include "BOE/BOE2/LoginRejected.h"
+#include "BOE/BOE2/LoginResponse.h"
 #include "BOE/BOE2/LogoutRequest.h"
-#include "BOE/BOE2/AccountQuery.h"
-#include "BOE/BOE2/AccountQueryResponse.h"
 
-#include "BOE/BOE2/EnterOrder.h"
-#include "BOE/BOE2/ReplaceOrder.h"
+#include "BOE/BOE2/NewOrder.h"
+#include "BOE/BOE2/ModifyOrder.h"
 #include "BOE/BOE2/CancelOrder.h"
 
-#include "BOE/BOE2/OrderAccepted.h"
+#include "BOE/BOE2/OrderAcknowledgement.h"
 #include "BOE/BOE2/OrderRejected.h"
 
-#include "BOE/BOE2/OrderReplaced.h"
+#include "BOE/BOE2/OrderModified.h"
 
 #include "BOE/BOE2/OrderCancelled.h"
 #include "BOE/BOE2/CancelRejected.h"
-
-#include "BOE/BOE2/OrderExecuted.h"
-#include "BOE/BOE2/TradeBroken.h"
 
 #include "BOE/Context/Session.h"
 #include "BOE/Types.h"
@@ -49,21 +43,15 @@ class Factory
     // Expose version specific types
     //-----------------------------------------------------------------------------------------------------------------
 public:
-    using PacketHeader    = BOE2::PacketHeader;
-    using SequencedData   = BOE2::SequencedData;
-    using UnsequencedData = BOE2::UnsequencedData;
+    using MessageHeader = BOE2::MessageHeader;
 
     using LoginRequest  = BOE2::LoginRequest;
-    using LoginAccepted = BOE2::LoginAccepted;
-    using LoginRejected = BOE2::LoginRejected;
+    using LoginResponse = BOE2::LoginResponse;
     using LogoutRequest = BOE2::LogoutRequest;
 
-    using AccountQuery         = BOE2::AccountQuery;
-    using AccountQueryResponse = BOE2::AccountQueryResponse;
-
-    using EnterOrder   = BOE2::EnterOrder;
-    using ReplaceOrder = BOE2::ReplaceOrder;
-    using CancelOrder  = BOE2::CancelOrder;
+    using NewOrder    = BOE2::NewOrder;
+    using ModifyOrder = BOE2::ModifyOrder;
+    using CancelOrder = BOE2::CancelOrder;
 
     template<typename Context>
     explicit Factory(Context& context)
@@ -74,10 +62,10 @@ public:
     //-----------------------------------------------------------------------------------------------------------------
     // Message arrival.
     //-----------------------------------------------------------------------------------------------------------------
-    static std::pair<bool, const PacketHeader&> message(const char* buff, std::size_t size)
+    static std::pair<bool, const MessageHeader&> message(const char* buff, std::size_t size)
     {
-        const auto* header = reinterpret_cast<const PacketHeader*>(buff);
-        if (size >= sizeof(PacketHeader)) {
+        const auto* header = reinterpret_cast<const MessageHeader*>(buff);
+        if (size >= sizeof(MessageHeader)) {
             std::size_t length = header->size();
             if (size >= length) {
                 return { true, *header };
@@ -106,7 +94,20 @@ public:
 
     static auto loginAccept()
     {
-        return LoginAccepted();
+        LoginResponse response(LoginResponseStatus::LoginAccepted);
+
+        // TODO - filll the optionals
+
+        return response;
+    }
+
+    static auto loginReject()
+    {
+        LoginResponse response(LoginResponseStatus::NotAuthorized);
+
+        // TODO - filll the optionals
+
+        return response;
     }
 
     static auto logoutRequest()
@@ -114,21 +115,9 @@ public:
         return LogoutRequest();
     }
 
-    static auto accountQuery()
-    {
-        return AccountQuery();
-    }
-
-    auto accountQueryResponse()
-    {
-        AccountQueryResponse response;
-        response.timestamp      = Timestamp::now();
-        response.nextUserRefNum = m_session.iSequence();
-        return response;
-    }
-
+    /**
     //-----------------------------------------------------------------------------------------------------------------
-    // Enter Order handling
+    // New Order handling
     //-----------------------------------------------------------------------------------------------------------------
     static auto clordID(const EnterOrder& msg)
     {
@@ -383,6 +372,7 @@ public:
 
         return omsg;
     }
+    **/
 
 private:
     Context::Session& m_session;

@@ -1,20 +1,20 @@
-#ifndef OrderRejected_h
-#define OrderRejected_h
+#ifndef UserModifyRejected_h
+#define UserModifyRejected_h
 
 #include "MessageHeader.h"
 
 namespace BOE::BOE2 {
 
 #pragma pack(1)
-struct OrderRejected
+struct UserModifyRejected
 {
-    static constexpr MessageType Type = MessageType::OrderRejected;
+    static constexpr MessageType Type = MessageType::UserModifyRejected;
 
-    MessageHeader header = { Type, sizeof(OrderRejected) };
+    MessageHeader header = { Type, sizeof(UserModifyRejected) };
 
     DateTime  transactionTime;
     Text<20>  clOrdID;
-    Text<1>   orderRejectReason;
+    Text<1>   modifyRejectReason;
     Text<60>  text;
     Binary<1> reservedInternal;
     Binary<1> numberOfReturnBitfields;

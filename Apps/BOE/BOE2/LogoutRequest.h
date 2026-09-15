@@ -1,16 +1,16 @@
 #ifndef LogoutRequest_h
 #define LogoutRequest_h
 
-#include "PacketHeader.h"
+#include "MessageHeader.h"
 
 namespace BOE::BOE2 {
 
 #pragma pack(1)
 struct LogoutRequest
 {
-    static constexpr char Type = 'O';
+    static constexpr MessageType Type = MessageType::LogoutRequest;
 
-    PacketHeader header = { Type, sizeof(LogoutRequest) };
+    MessageHeader header = { Type, sizeof(LogoutRequest) };
 };
 #pragma pack()
 

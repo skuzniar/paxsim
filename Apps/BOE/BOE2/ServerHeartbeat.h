@@ -1,16 +1,16 @@
 #ifndef ServerHeartbeat_h
 #define ServerHeartbeat_h
 
-#include "PacketHeader.h"
+#include "MessageHeader.h"
 
 namespace BOE::BOE2 {
 
 #pragma pack(1)
 struct ServerHeartbeat
 {
-    static constexpr char Type = 'H';
+    static constexpr MessageType Type = MessageType::ServerHeartbeat;
 
-    PacketHeader header = { Type, sizeof(ServerHeartbeat) };
+    MessageHeader header = { Type, sizeof(ServerHeartbeat) };
 };
 #pragma pack()
 

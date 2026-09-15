@@ -21,14 +21,10 @@ class Session
     using Config = Common::Config;
     using State  = Context::Session::State;
 
-    using PacketHeader         = typename Factory::PacketHeader;
-    using SequencedData        = typename Factory::SequencedData;
-    using UnsequencedData      = typename Factory::UnsequencedData;
-    using LoginRequest         = typename Factory::LoginRequest;
-    using LogoutRequest        = typename Factory::LogoutRequest;
-    using LoginAccepted        = typename Factory::LoginAccepted;
-    using AccountQuery         = typename Factory::AccountQuery;
-    using AccountQueryResponse = typename Factory::AccountQueryResponse;
+    using MessageHeader = typename Factory::MessageHeader;
+    using LoginRequest  = typename Factory::LoginRequest;
+    using LogoutRequest = typename Factory::LogoutRequest;
+    using LoginResponse = typename Factory::LoginResponse;
 
 public:
     template<typename Context>
@@ -54,38 +50,26 @@ public:
 
         validate(msg);
 
-        if (msg.type == LoginRequest::Type) {
+        if (msg.messageType == LoginRequest::Type) {
             return process(reinterpret_cast<const LoginRequest&>(msg), next);
         }
-        if (msg.type == LoginAccepted::Type) {
-            return process(reinterpret_cast<const LoginAccepted&>(msg), next);
+        if (msg.messageType == LoginResponse::Type) {
+            return process(reinterpret_cast<const LoginResponse&>(msg), next);
         }
-        if (msg.type == LogoutRequest::Type) {
+        if (msg.messageType == LogoutRequest::Type) {
             return process(reinterpret_cast<const LogoutRequest&>(msg), next);
-        }
-        if (msg.type == UnsequencedData::Type) {
-            const auto& header = reinterpret_cast<const UnsequencedData&>(msg);
-            if (header.type == AccountQuery::Type) {
-                return process(reinterpret_cast<const AccountQuery&>(msg), next);
-            }
-        }
-        if (msg.type == SequencedData::Type) {
-            const auto& header = reinterpret_cast<const SequencedData&>(msg);
-            if (header.type == AccountQueryResponse::Type) {
-                return process(reinterpret_cast<const AccountQueryResponse&>(msg), next);
-            }
         }
         return true;
     }
 
 private:
-    void validate(const PacketHeader& msg)
+    void validate(const MessageHeader& msg)
     {
         log << level::trace << ts << here << std::endl;
-        if (auto state = m_session.state(); state == State::LogonSent && msg.type != LoginAccepted::Type) {
-            throw std::runtime_error("Logon Accepted must be the first message.");
+        if (auto state = m_session.state(); state == State::LogonSent && msg.messageType != LoginResponse::Type) {
+            throw std::runtime_error("Logon Response must be the first message.");
         }
-        if (auto state = m_session.state(); state == State::LogonWait && msg.type != LoginRequest::Type) {
+        if (auto state = m_session.state(); state == State::LogonWait && msg.messageType != LoginRequest::Type) {
             throw std::runtime_error("Logon Request must be the first message.");
         }
     }
@@ -98,8 +82,8 @@ private:
         if (auto state = m_session.state(); state != State::LogonWait) {
             throw std::runtime_error("Unexpected Logon Request message at this time. " + to_string(m_session.state()));
         }
-        if (msg.userName != m_session.UserName) {
-            throw std::runtime_error("Invalid user name. Expecting: " + m_session.UserName + ", got: " + std::string(msg.userName));
+        if (msg.username != m_session.UserName) {
+            throw std::runtime_error("Invalid user name. Expecting: " + m_session.UserName + ", got: " + std::string(msg.username));
         }
         if (msg.password != m_session.Password) {
             throw std::runtime_error("Invalid password. Expecting: " + m_session.Password + ", got: " + std::string(msg.password));
@@ -114,14 +98,13 @@ private:
     }
 
     template<typename Next>
-    bool process(const LoginAccepted& msg, Next& next)
+    bool process(const LoginResponse& msg, Next& next)
     {
         log << level::trace << ts << here << std::endl;
 
         if (auto state = m_session.state(); state != State::LogonSent) {
             throw std::runtime_error("Unexpected Logon Accepted message at this time. " + to_string(m_session.state()));
         }
-        next.put(m_factory.accountQuery());
         m_session.state(State::Normal);
         return false;
     }
@@ -134,25 +117,6 @@ private:
         next.put(m_factory.logoutRequest());
         m_session.state(State::LogonWait);
         throw std::runtime_error("Terminating session after logout.");
-    }
-
-    template<typename Next>
-    bool process(const AccountQuery& msg, Next& next)
-    {
-        log << level::trace << ts << here << std::endl;
-
-        next.put(m_factory.accountQueryResponse());
-        return false;
-    }
-
-    template<typename Next>
-    bool process(const AccountQueryResponse& msg, Next& next)
-    {
-        log << level::trace << ts << here << std::endl;
-
-        m_session.oSequence(msg.nextUserRefNum);
-
-        return false;
     }
 
 private:

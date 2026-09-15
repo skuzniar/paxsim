@@ -54,7 +54,11 @@ public:
     {
         if (m_session.state() == Context::Session::State::Normal) {
             if (now >= m_latest + std::chrono::seconds(m_session.HBInterval)) {
-                put(m_factory.serverHeartbeat());
+                if (m_session.type() == Context::Session::Type::Client) {
+                    put(m_factory.clientHeartbeat());
+                } else {
+                    put(m_factory.serverHeartbeat());
+                }
             }
         }
         return m_latest + std::chrono::seconds(m_session.HBInterval);

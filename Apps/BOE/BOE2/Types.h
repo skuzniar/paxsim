@@ -13,263 +13,339 @@
 
 namespace BOE::BOE2 {
 
-#pragma pack(1)
-template<std::integral T>
-struct big_endian
-{
-    big_endian() = default;
-
-    big_endian(T value)
-    {
-        if constexpr (std::endian::native != std::endian::big) {
-            if constexpr (sizeof(T) == sizeof(uint8_t)) {
-                m_value = value;
-            } else if constexpr (sizeof(T) == sizeof(uint16_t)) {
-                m_value = __builtin_bswap16(static_cast<uint16_t>(value));
-            } else if constexpr (sizeof(T) == sizeof(uint32_t)) {
-                m_value = __builtin_bswap32(static_cast<uint32_t>(value));
-            } else if constexpr (sizeof(T) == sizeof(uint64_t)) {
-                m_value = __builtin_bswap64(static_cast<uint64_t>(value));
-            } else {
-                static_assert(sizeof(T), "Unsupported type");
-            }
-        } else {
-            m_value = value;
-        }
-    }
-
-    big_endian(std::string_view v)
-    {
-        T value;
-        std::from_chars(v.data(), v.data() + v.size(), value);
-        *this = value;
-    }
-
-    operator T() const
-    {
-        if constexpr (std::endian::native != std::endian::big) {
-            if constexpr (sizeof(T) == sizeof(uint8_t)) {
-                return m_value;
-            } else if constexpr (sizeof(T) == sizeof(uint16_t)) {
-                return static_cast<T>(__builtin_bswap16(m_value));
-            } else if constexpr (sizeof(T) == sizeof(uint32_t)) {
-                return static_cast<T>(__builtin_bswap32(m_value));
-            } else if constexpr (sizeof(T) == sizeof(uint64_t)) {
-                return static_cast<T>(__builtin_bswap64(m_value));
-            } else {
-                static_assert(sizeof(T), "Unsupported type");
-            }
-        } else {
-            return m_value;
-        }
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, big_endian<T> value)
-    {
-        return os << static_cast<T>(value);
-    }
-
-private:
-    std::make_unsigned_t<T> m_value{ 0 };
-};
-
-template<std::integral T>
-struct little_endian
-{
-    little_endian() = default;
-
-    little_endian(T value)
-    {
-        if constexpr (std::endian::native != std::endian::little) {
-            if constexpr (sizeof(T) == sizeof(uint8_t)) {
-                m_value = value;
-            } else if constexpr (sizeof(T) == sizeof(uint16_t)) {
-                m_value = __builtin_bswap16(static_cast<uint16_t>(value));
-            } else if constexpr (sizeof(T) == sizeof(uint32_t)) {
-                m_value = __builtin_bswap32(static_cast<uint32_t>(value));
-            } else if constexpr (sizeof(T) == sizeof(uint64_t)) {
-                m_value = __builtin_bswap64(static_cast<uint64_t>(value));
-            } else {
-                static_assert(sizeof(T), "Unsupported type");
-            }
-        } else {
-            m_value = value;
-        }
-    }
-
-    little_endian(std::string_view v)
-    {
-        T value;
-        std::from_chars(v.data(), v.data() + v.size(), value);
-        *this = value;
-    }
-
-    operator T() const
-    {
-        if constexpr (std::endian::native != std::endian::little) {
-            if constexpr (sizeof(T) == sizeof(uint8_t)) {
-                return m_value;
-            } else if constexpr (sizeof(T) == sizeof(uint16_t)) {
-                return static_cast<T>(__builtin_bswap16(m_value));
-            } else if constexpr (sizeof(T) == sizeof(uint32_t)) {
-                return static_cast<T>(__builtin_bswap32(m_value));
-            } else if constexpr (sizeof(T) == sizeof(uint64_t)) {
-                return static_cast<T>(__builtin_bswap64(m_value));
-            } else {
-                static_assert(sizeof(T), "Unsupported type");
-            }
-        } else {
-            return m_value;
-        }
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, little_endian<T> value)
-    {
-        return os << static_cast<T>(value);
-    }
-
-private:
-    std::make_unsigned_t<T> m_value{ 0 };
-};
-#pragma pack()
-
 //---------------------------------------------------------------------------------------------------------------------
-// Alpha field. Left justified and padded on the right with spaces.
+// Message types.
 //---------------------------------------------------------------------------------------------------------------------
-#pragma pack(1)
-template<size_t N>
-struct Alpha
+enum class MessageType : uint8_t
 {
-    std::array<char, N> value{};
+    LoginRequest    = 0x37,
+    LogoutRequest   = 0x02,
+    ClientHeartbeat = 0x03,
+    NewOrder        = 0x38,
+    CancelOrder     = 0x39,
+    ModifyOrder     = 0x3A,
+    PurgeOrders     = 0x47,
 
-    Alpha()
-    {
-        std::fill(value.data(), value.end(), ' ');
-    }
-
-    Alpha(std::string_view v)
-    {
-        std::size_t len = std::min(value.size(), v.size());
-        std::copy(v.data(), v.data() + len, value.data());
-        std::fill(value.data() + len, value.end(), ' ');
-    }
-
-    template<typename I>
-    Alpha(I v)
-    {
-        ritoa(value.data(), value.size(), v);
-    }
-
-    template<size_t K>
-    Alpha(const char (&array)[K])
-      : Alpha(std::string_view(std::addressof(array[0]), strnlen(std::addressof(array[0]), K)))
-    {
-    }
-
-    Alpha& operator=(std::string_view v)
-    {
-        std::size_t len = std::min(value.size(), v.size());
-        std::copy(v.data(), v.data() + len, value.data());
-        std::fill(value.data() + len, value.end(), ' ');
-        return *this;
-    }
-
-    char* data()
-    {
-        return value.data();
-    }
-
-    const char* data() const
-    {
-        return value.data();
-    }
-
-    std::size_t size() const
-    {
-        return value.size();
-    }
-
-    // Contrary to what the specification says, we get null characters in Alpha fields.
-    operator std::string_view() const
-    {
-        static std::array<char, 2> tc = { ' ', '\0' };
-        static std::string_view    tv = { tc.data(), tc.size() };
-
-        std::string_view sv = { value.data(), value.size() };
-        auto             tp = sv.find_last_not_of(tv);
-        tp                  = tp == std::string_view::npos ? 0 : tp + 1;
-        return value[0] == 0 ? std::string_view() : sv.substr(0, tp);
-    }
-
-    bool operator==(std::string_view v) const
-    {
-        return v == static_cast<std::string_view>(*this);
-    }
-    bool operator!=(std::string_view v) const
-    {
-        return not operator==(v);
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const Alpha& a)
-    {
-        return os << std::string_view(a);
-    }
+    LoginResponse            = 0x24,
+    Logout                   = 0x08,
+    ServerHeartbeat          = 0x09,
+    ReplayComplete           = 0x13,
+    OrderAcknowledgment      = 0x25,
+    OrderRejected            = 0x26,
+    OrderModified            = 0x27,
+    OrderRestated            = 0x28,
+    UserModifyRejected       = 0x29,
+    OrderCancelled           = 0x2A,
+    CancelRejected           = 0x2B,
+    OrderExecution           = 0x2C,
+    TradeCancelOrCorrect     = 0x2D,
+    MassCancelAcknowledgment = 0x36,
+    PurgeRejected            = 0x48,
 };
-#pragma pack()
 
-template<size_t N>
-std::string
-to_string(const Alpha<N>& a)
+inline [[cppgen::auto]] std::ostream&
+operator<<(std::ostream& s, MessageType o)
 {
-    return std::string(std::string_view(a));
+    switch (o) {
+            // clang-format off
+        case MessageType::LoginRequest:             s << "55(LoginRequest)";             break;
+        case MessageType::LogoutRequest:            s << "2(LogoutRequest)";             break;
+        case MessageType::ClientHeartbeat:          s << "3(ClientHeartbeat)";           break;
+        case MessageType::NewOrder:                 s << "56(NewOrder)";                 break;
+        case MessageType::CancelOrder:              s << "57(CancelOrder)";              break;
+        case MessageType::ModifyOrder:              s << "58(ModifyOrder)";              break;
+        case MessageType::PurgeOrders:              s << "71(PurgeOrders)";              break;
+        case MessageType::LoginResponse:            s << "36(LoginResponse)";            break;
+        case MessageType::Logout:                   s << "8(Logout)";                    break;
+        case MessageType::ServerHeartbeat:          s << "9(ServerHeartbeat)";           break;
+        case MessageType::ReplayComplete:           s << "19(ReplayComplete)";           break;
+        case MessageType::OrderAcknowledgment:      s << "37(OrderAcknowledgment)";      break;
+        case MessageType::OrderRejected:            s << "38(OrderRejected)";            break;
+        case MessageType::OrderModified:            s << "39(OrderModified)";            break;
+        case MessageType::OrderRestated:            s << "40(OrderRestated)";            break;
+        case MessageType::UserModifyRejected:       s << "41(UserModifyRejected)";       break;
+        case MessageType::OrderCancelled:           s << "42(OrderCancelled)";           break;
+        case MessageType::CancelRejected:           s << "43(CancelRejected)";           break;
+        case MessageType::OrderExecution:           s << "44(OrderExecution)";           break;
+        case MessageType::TradeCancelOrCorrect:     s << "45(TradeCancelOrCorrect)";     break;
+        case MessageType::MassCancelAcknowledgment: s << "54(MassCancelAcknowledgment)"; break;
+        case MessageType::PurgeRejected:            s << "72(PurgeRejected)";            break;
+        default: s << std::to_string(static_cast<std::underlying_type_t<MessageType>>(o)) + "(Invalid MessageTypes)"; break;
+            // clang-format on
+    };
+    return s;
 }
 
-using UInt8  = big_endian<uint8_t>;
-using UInt16 = big_endian<uint16_t>;
-using UInt32 = big_endian<uint32_t>;
-using UInt64 = big_endian<uint64_t>;
+//---------------------------------------------------------------------------------------------------------------------
+// Binary. Little Endian byte order, unsigned binary value. The number of bytes used depends on the context.
+//---------------------------------------------------------------------------------------------------------------------
+template<size_t N>
+struct Binary;
 
-using Int8  = big_endian<int8_t>;
-using Int16 = big_endian<int16_t>;
-using Int32 = big_endian<int32_t>;
-using Int64 = big_endian<int64_t>;
+#pragma pack(1)
+template<>
+struct Binary<1>
+{
+    uint8_t value = 0;
+
+    Binary() = default;
+
+    Binary(uint8_t v)
+      : value(v)
+    {
+    }
+
+    operator uint8_t() const
+    {
+        return value;
+    }
+
+    uint8_t v() const
+    {
+        return value;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Binary& o)
+    {
+        return os << unsigned(o.value);
+    }
+};
+#pragma pack()
+
+#pragma pack(1)
+template<>
+struct Binary<2>
+{
+    uint16_t value = 0;
+
+    Binary() = default;
+
+    Binary(uint16_t v)
+      : value(v)
+    {
+    }
+
+    operator uint16_t() const
+    {
+        return value;
+    }
+
+    uint16_t v() const
+    {
+        return value;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Binary& o)
+    {
+        return os << o.value;
+    }
+};
+#pragma pack()
+
+#pragma pack(1)
+template<>
+struct Binary<4>
+{
+    uint32_t value = 0;
+
+    Binary() = default;
+
+    Binary(uint32_t v)
+      : value(v)
+    {
+    }
+
+    operator uint32_t() const
+    {
+        return value;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Binary& o)
+    {
+        return os << o.value;
+    }
+};
+#pragma pack()
+
+#pragma pack(1)
+template<>
+struct Binary<8>
+{
+    uint64_t value = 0;
+
+    Binary() = default;
+
+    Binary(uint64_t v)
+      : value(v)
+    {
+    }
+
+    operator uint64_t() const
+    {
+        return value;
+    }
+
+    uint64_t v() const
+    {
+        return value;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Binary& o)
+    {
+        return os << o.value;
+    }
+};
+#pragma pack()
 
 //---------------------------------------------------------------------------------------------------------------------
-// Price is a four byte integer, fixed format with six whole digits and four decimal digits.
+// SignedBinary. Little Endian byte order, signed binary value. The number of bytes used depends on the context.
 //---------------------------------------------------------------------------------------------------------------------
+template<size_t N>
+struct SignedBinary;
+
+#pragma pack(1)
+template<>
+struct SignedBinary<1>
+{
+    int8_t value = 0;
+
+    SignedBinary() = default;
+
+    SignedBinary(int8_t v)
+      : value(v)
+    {
+    }
+
+    operator int8_t() const
+    {
+        return value;
+    }
+
+    int8_t v() const
+    {
+        return value;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const SignedBinary& o)
+    {
+        return os << unsigned(o.value);
+    }
+};
+#pragma pack()
+
+#pragma pack(1)
+template<>
+struct SignedBinary<2>
+{
+    int16_t value = 0;
+
+    SignedBinary() = default;
+
+    SignedBinary(int16_t v)
+      : value(v)
+    {
+    }
+
+    operator int16_t() const
+    {
+        return value;
+    }
+
+    int16_t v() const
+    {
+        return value;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const SignedBinary& o)
+    {
+        return os << o.value;
+    }
+};
+#pragma pack()
+
+#pragma pack(1)
+template<>
+struct SignedBinary<4>
+{
+    int32_t value = 0;
+
+    SignedBinary() = default;
+
+    SignedBinary(int32_t v)
+      : value(v)
+    {
+    }
+
+    operator int32_t() const
+    {
+        return value;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const SignedBinary& o)
+    {
+        return os << o.value;
+    }
+};
+#pragma pack()
+
+#pragma pack(1)
+template<>
+struct SignedBinary<8>
+{
+    int64_t value = 0;
+
+    SignedBinary() = default;
+
+    SignedBinary(int64_t v)
+      : value(v)
+    {
+    }
+
+    operator int64_t() const
+    {
+        return value;
+    }
+
+    int64_t v() const
+    {
+        return value;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const SignedBinary& o)
+    {
+        return os << o.value;
+    }
+};
+#pragma pack()
+
+//---------------------------------------------------------------------------------------------------------------------
+// Price: Little Endian byte order value, signed two's complement, eight bytes, DP implied decimal places.
+//---------------------------------------------------------------------------------------------------------------------
+#pragma pack(1)
+template<std::size_t DP>
 struct Price
 {
-    static const long multiplier = 10'000;
+    // DP implied decimal places
+    static constexpr long multiplier = std::pow(10, DP);
 
-    UInt32 value = 0;
+    int64_t value = 0;
 
     Price() = default;
 
-    Price& operator=(double v)
+    Price(double v)
+      : value(std::lrint(v * multiplier))
     {
-        value = v * multiplier;
-        return *this;
     }
 
-    Price& operator=(std::string_view v)
+    Price& operator=(double v)
     {
-        int32_t price;
-        auto    res = std::from_chars(v.begin(), v.end(), price);
-        price *= multiplier;
-
-        if (res.ptr != v.end() && *res.ptr == '.') {
-            long        lv  = 0;
-            const auto* beg = std::next(res.ptr);
-            res             = std::from_chars(beg, v.end(), lv);
-            price += (lv * multiplier) / std::pow(10, std::distance(beg, res.ptr));
-        }
-        value = price;
+        value = std::lrint(v * multiplier);
         return *this;
     }
 
     operator double() const
     {
-        auto div = std::lldiv(value, multiplier);
+        auto div = lldiv(value, multiplier);
         return div.quot + double(div.rem) / multiplier;
     }
 
@@ -282,47 +358,399 @@ struct Price
 #pragma pack()
 
 //---------------------------------------------------------------------------------------------------------------------
-// Timestamp. Number of nanoseconds since midnight
+// Short Price: Little Endian byte order value, signed two's complement, four bytes, DP implied decimal places.
 //---------------------------------------------------------------------------------------------------------------------
 #pragma pack(1)
-struct Timestamp
+template<std::size_t DP>
+struct ShortPrice
 {
-    UInt64 value = 0;
+    // DP implied decimal places
+    static constexpr long multiplier = std::pow(10, DP);
 
-    Timestamp() = default;
+    int32_t value = 0;
 
-    Timestamp(uint64_t v)
+    ShortPrice() = default;
+
+    ShortPrice(double v)
+      : value(std::lrint(v * multiplier))
+    {
+    }
+
+    ShortPrice& operator=(double v)
+    {
+        value = std::lrint(v * multiplier);
+        return *this;
+    }
+
+    operator double() const
+    {
+        auto div = lldiv(value, multiplier);
+        return div.quot + double(div.rem) / multiplier;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const ShortPrice& p)
+    {
+        os << p.value;
+        return os;
+    }
+};
+#pragma pack()
+
+//---------------------------------------------------------------------------------------------------------------------
+// Binary Price , Short Binary Price and Binary Fee.
+//---------------------------------------------------------------------------------------------------------------------
+using BinaryPrice      = Price<4>;
+using ShortBinaryPrice = ShortPrice<4>;
+using BinaryFee        = Price<5>;
+
+//---------------------------------------------------------------------------------------------------------------------
+// Alpha. ASCII (A-Z), (a-z) only. ASCII NUL (0x00) filled on the right, if necessary.
+//---------------------------------------------------------------------------------------------------------------------
+#pragma pack(1)
+template<size_t N>
+struct Alpha
+{
+    std::array<char, N> value{};
+
+    Alpha() = default;
+
+    Alpha(std::string_view v)
+    {
+        std::size_t len = std::min(value.size(), v.size());
+        std::copy(v.data(), v.data() + len, value.data());
+        std::fill(value.data() + len, value.end(), '\0');
+    }
+
+    Alpha(const char* v)
+      : Alpha(std::string_view(v))
+    {
+    }
+
+    Alpha(char v)
+      : Alpha(std::string_view(&v, 1))
+    {
+    }
+
+    template<size_t K>
+    Alpha(const char (&array)[K])
+      : Alpha(std::string_view(std::addressof(array[0]), K))
+    {
+    }
+
+    Alpha& operator=(std::string_view v)
+    {
+        std::size_t len = std::min(value.size(), v.size());
+        std::copy(v.data(), v.data() + len, value.data());
+        std::fill(value.data() + len, value.end(), '\0');
+        return *this;
+    }
+
+    Alpha& operator=(const char* v)
+    {
+        *this = std::string_view(v);
+        return *this;
+    }
+
+    Alpha& operator=(const char v)
+    {
+        *this = Alpha(v);
+        return *this;
+    }
+
+    template<size_t K>
+    Alpha& operator=(const char (&array)[K])
+    {
+        *this = std::string_view(std::addressof(array[0]), K);
+        return *this;
+    }
+
+    char& operator[](size_t index)
+    {
+        return value[index];
+    }
+
+    const char& operator[](size_t index) const
+    {
+        return value[index];
+    }
+
+    operator std::string_view() const
+    {
+        return { value.data(), static_cast<std::size_t>(std::distance(value.begin(), std::find(value.begin(), value.end(), 0))) };
+    }
+
+    std::string to_string() const
+    {
+        return std::string(value.begin(), static_cast<size_t>(std::distance(value.begin(), std::find(value.begin(), value.end(), 0))));
+    }
+
+    bool operator==(std::string_view v) const
+    {
+        return v == static_cast<std::string_view>(*this);
+    }
+
+    bool operator!=(std::string_view v) const
+    {
+        return not operator==(v);
+    }
+
+    [[nodiscard]] char* begin()
+    {
+        return value.begin();
+    }
+    [[nodiscard]] char* end()
+    {
+        return value.end();
+    }
+
+    [[nodiscard]] const char* begin() const
+    {
+        return value.begin();
+    }
+    [[nodiscard]] const char* end() const
+    {
+        return value.end();
+    }
+
+    auto size() const
+    {
+        return value.size();
+    }
+
+    bool empty() const
+    {
+        return value[0] == 0;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Alpha& s)
+    {
+        os.write(s.value.data(), std::distance(s.value.begin(), std::find(s.value.begin(), s.value.end(), 0)));
+        return os;
+    }
+
+    template<typename T>
+    bool from_chars(T& v)
+    {
+        auto r = std::from_chars(value.begin(), value.end(), v);
+        // When converting into a number we want to ensure that all content is consumed
+        return r.ec == std::errc() && (r.ptr == value.end() || *r.ptr == 0);
+    };
+};
+#pragma pack()
+
+template<size_t N>
+std::string
+to_string(const Alpha<N>& a)
+{
+    return { a.value.data(), static_cast<std::size_t>(std::distance(a.value.begin(), std::find(a.value.begin(), a.value.end(), 0))) };
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// Alphanumeric. ASCII (A-Z), (a-z), (0-9) only. ASCII NUL (0x00) filled on the right, if necessary.
+//---------------------------------------------------------------------------------------------------------------------
+template<size_t N>
+using Alphanumeric = Alpha<N>;
+
+//---------------------------------------------------------------------------------------------------------------------
+// Text. Printable ASCII characters. ASCII NUL (0x00) filled on the right, if necessary.
+//---------------------------------------------------------------------------------------------------------------------
+template<size_t N>
+using Text = Alpha<N>;
+
+//---------------------------------------------------------------------------------------------------------------------
+// DateTime. Little Endian, unsigned, eight bytes. Nanoseconds past the UNIX epoch (00:00:00 UTC on 1 January 1970).
+//---------------------------------------------------------------------------------------------------------------------
+#pragma pack(1)
+struct DateTime
+{
+    uint64_t value = 0;
+
+    DateTime() = default;
+
+    DateTime(uint64_t v)
       : value(v)
     {
     }
 
-    static Timestamp now()
+    static DateTime now()
     {
-        // TODO
         return { static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) };
     }
 
-    operator uint64_t() const
+    DateTime operator+(std::chrono::seconds s) const
     {
-        return static_cast<uint64_t>(value);
+        return { this->value + std::chrono::duration_cast<std::chrono::nanoseconds>(s).count() };
+    }
+
+    DateTime operator+(std::chrono::minutes m) const
+    {
+        return { this->value + std::chrono::duration_cast<std::chrono::nanoseconds>(m).count() };
+    }
+
+    DateTime operator+(std::chrono::hours h) const
+    {
+        return { this->value + std::chrono::duration_cast<std::chrono::nanoseconds>(h).count() };
+    }
+
+    DateTime& operator=(uint64_t v)
+    {
+        value = v;
+        return *this;
+    }
+
+    DateTime& operator=(std::string_view v)
+    {
+        std::from_chars(v.data(), v.data() + v.size(), value);
+        return *this;
+    }
+};
+#pragma pack()
+
+//---------------------------------------------------------------------------------------------------------------------
+// Date. Little Endian, unsigned, four bytes. The YYYYMMDD expresses as an integer.
+//---------------------------------------------------------------------------------------------------------------------
+#pragma pack(1)
+struct Date
+{
+    uint32_t value = 0;
+
+    Date() = default;
+
+    Date(uint32_t v)
+      : value(v)
+    {
+    }
+
+    Date(int y, int m, int d)
+      : value(y * 10000 + m * 100 + d)
+    {
+    }
+
+    Date& operator=(uint32_t v)
+    {
+        value = v;
+        return *this;
+    }
+
+    Date& operator=(std::string_view v)
+    {
+        std::from_chars(v.data(), v.data() + v.size(), value);
+        return *this;
+    }
+
+    bool operator==(const Date& date) const
+    {
+        return value == date.value;
     }
 };
 #pragma pack()
 
 inline std::string
-to_string(const Timestamp& o)
+to_string(const Date& o)
 {
-    constexpr long secsinday = 60L * 60 * 24;
-    long           days      = time(nullptr) / secsinday;
-    return to_utcstring(std::chrono::nanoseconds(days * secsinday * 1000000000 + o.value), 9);
+    static char buffer[16];
+    std::snprintf(buffer, sizeof(buffer), "%d", o.value);
+    buffer[8] = '\0';
+    return buffer;
 }
 
-inline std::ostream&
-operator<<(std::ostream& os, const Timestamp& o)
+//---------------------------------------------------------------------------------------------------------------------
+// Woptional Field. Holds data and bitfield position as type attributes.
+//---------------------------------------------------------------------------------------------------------------------
+#pragma pack(1)
+template<uint8_t BYTE, uint8_t BIT, typename V>
+struct OptionalField
 {
-    return os << to_string(o);
+    enum
+    {
+        Byte = BYTE
+    };
+    enum
+    {
+        Bit = BIT
+    };
+
+    V value;
+
+    OptionalField(V&& v)
+      : value(v)
+    {
+    }
+
+    OptionalField(const OptionalField& a) = default;
+    OptionalField(OptionalField&& a)      = default;
+
+    static std::size_t size()
+    {
+        return sizeof(OptionalField);
+    }
+};
+#pragma pack()
+
+//---------------------------------------------------------------------------------------------------------------------
+// Side
+//---------------------------------------------------------------------------------------------------------------------
+enum class Side : uint8_t
+{
+    Buy             = '1',
+    Sell            = '2',
+    SellShort       = '5',
+    SellShortExempt = '6',
+};
+
+inline [[cppgen::auto]] std::ostream&
+operator<<(std::ostream& s, Side o)
+{
+    switch (o) {
+            // clang-format off
+        case Side::Buy:             s << "'1'(Buy)";             break;
+        case Side::Sell:            s << "'2'(Sell)";            break;
+        case Side::SellShort:       s << "'5'(SellShort)";       break;
+        case Side::SellShortExempt: s << "'6'(SellShortExempt)"; break;
+        default: s << std::to_string(static_cast<std::underlying_type_t<Side>>(o)) + "(Invalid Side)"; break;
+            // clang-format on
+    };
+    return s;
 }
 
+enum class ReasonCodes : uint8_t
+{
+    Admin                                = 'A',
+    CapacityUndefined                    = 'C',
+    DuplicateIdentifier                  = 'D',
+    SizeReductionDueToSwpRestatement     = 'E',
+    FailedToQuote                        = 'F',
+    Halted                               = 'H',
+    IncorrectDataCenter                  = 'I',
+    TooLateToCancel                      = 'J',
+    OrderRateThresholdExceeded           = 'K',
+    OrderWouldLockOrCrossNbbo            = 'L',
+    OrderSizeExceeded                    = 'M',
+    RanOutOfLiquidityToExecuteAgainst    = 'N',
+    ClordidDoesntMatchAKnownOrder        = 'O',
+    CantModifyAnOrderThatIsPendingFill   = 'P',
+    WaitingForFirstTrade                 = 'Q',
+    RoutingUnavailable                   = 'R',
+    ShortSalePriceViolation              = 'S',
+    UserRequested                        = 'U',
+    WouldWash                            = 'V',
+    AddLiquidityOnlyOrderWouldRemove     = 'W',
+    OrderExpired                         = 'X',
+    SymbolNotSupported                   = 'Y',
+    UnforeseenReason                     = 'Z',
+    RiskManagementMpidOrRiskgroupidLevel = 'f',
+    MarketAccessRiskLimitExceeded        = 'm',
+    MaxOpenOrdersCountExceeded           = 'o',
+    ReserveReload                        = 'r',
+    RiskManagementSymbolLevel            = 's',
+    LimitUpLimitDown                     = 'u',
+    WouldRemoveOnUnslide                 = 'w',
+    CrossedMarket                        = 'x',
+    OrderReceivedByCboeDuringReplay      = 'y',
+};
+
+/*
+XXXX
 //---------------------------------------------------------------------------------------------------------------------
 // Party Role Qualifier.
 //---------------------------------------------------------------------------------------------------------------------
@@ -981,6 +1409,7 @@ operator<<(std::ostream& s, Market o)
     };
     return s;
 }
+*/
 
 } // namespace BOE::BOE2
 

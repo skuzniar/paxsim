@@ -1,34 +1,25 @@
 #ifndef CancelRejected_h
 #define CancelRejected_h
 
-#include "PacketHeader.h"
+#include "MessageHeader.h"
 
 namespace BOE::BOE2 {
 
 #pragma pack(1)
 struct CancelRejected
 {
-    static constexpr char Type = 'I';
+    static constexpr MessageType Type = MessageType::CancelRejected;
 
-    SequencedData header = { Type, sizeof(CancelRejected) };
-    Timestamp     timestamp;
-    UserRefNum    userRefNum;
-    RejectReason  reason;
+    MessageHeader header = { Type, sizeof(CancelRejected) };
+
+    DateTime  transactionTime;
+    Text<20>  clOrdID;
+    Text<1>   cancelRejectReason;
+    Text<60>  text;
+    Binary<1> reservedInternal;
+    Binary<1> numberOfReturnBitfields;
 };
 #pragma pack()
-
-inline [[cppgen::auto]] std::ostream&
-operator<<(std::ostream& s, const CancelRejected& o)
-{
-    // clang-format off
-    s << "[CancelRejected]=";
-    s << "Header: "     << o.header     << ' ';
-    s << "Timestamp: "  << o.timestamp  << ' ';
-    s << "UserRefNum: " << o.userRefNum << ' ';
-    s << "Reason: "     << o.reason;
-    // clang-format on
-    return s;
-}
 
 } // namespace BOE::BOE2
 

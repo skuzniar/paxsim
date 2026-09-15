@@ -1,20 +1,20 @@
-#ifndef OrderCancelled_h
-#define OrderCancelled_h
+#ifndef OrderModified_h
+#define OrderModified_h
 
 #include "MessageHeader.h"
 
 namespace BOE::BOE2 {
 
 #pragma pack(1)
-struct OrderCancelled
+struct OrderModified
 {
-    static constexpr MessageType Type = MessageType::OrderCancelled;
+    static constexpr MessageType Type = MessageType::OrderModified;
 
-    MessageHeader header = { Type, sizeof(OrderCancelled) };
+    MessageHeader header = { Type, sizeof(OrderModified) };
 
     DateTime  transactionTime;
     Text<20>  clOrdID;
-    Text<1>   cancelReason;
+    Binary<8> orderID;
     Binary<1> reservedInternal;
     Binary<1> numberOfReturnBitfields;
 };

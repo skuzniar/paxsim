@@ -1,28 +1,28 @@
 #ifndef LoginRequest_h
 #define LoginRequest_h
 
-#include "PacketHeader.h"
+#include "MessageHeader.h"
 
 namespace BOE::BOE2 {
 
 #pragma pack(1)
 struct LoginRequest
 {
-    static constexpr char Type = 'L';
+    static constexpr MessageType Type = MessageType::LoginRequest;
 
     LoginRequest() = default;
 
     LoginRequest(std::string_view user, std::string_view password)
-      : userName(user)
+      : username(user)
       , password(password)
     {
     }
 
-    PacketHeader header = { Type, sizeof(LoginRequest) };
-    Alpha<6>     userName;
-    Alpha<10>    password;
-    Alpha<10>    requestedSession;
-    Alpha<20>    requestedSequenceNumber = 0;
+    MessageHeader    header = { Type, sizeof(LoginRequest) };
+    Alphanumeric<4>  sessionSubID;
+    Alphanumeric<4>  username;
+    Alphanumeric<10> password;
+    Binary<1>        numberOfParams;
 };
 #pragma pack()
 
@@ -31,14 +31,41 @@ operator<<(std::ostream& s, const LoginRequest& o)
 {
     // clang-format off
     s << "[LoginRequest]=";
-    s << "Header: "                  << o.header                  << ' ';
-    s << "UserName: "                << o.userName                << ' ';
-    s << "Password: "                << o.password                << ' ';
-    s << "RequestedSession: "        << o.requestedSession        << ' ';
-    s << "RequestedSequenceNumber: " << o.requestedSequenceNumber;
+    s << "Header: "         << o.header         << ' ';
+    s << "SessionSubID: "   << o.sessionSubID   << ' ';
+    s << "Username: "       << o.username       << ' ';
+    s << "Password: "       << o.password       << ' ';
+    s << "NumberOfParams: " << o.numberOfParams;
     // clang-format on
     return s;
 }
+
+struct UnitSequencesParameterGroup
+{
+    Binary<2> paramGroupLength;
+    Binary<1> paramGroupType = 0x80;
+    Binary<1> noUnspecifiedUnitReplay;
+    Binary<1> numberOfUnits;
+};
+
+struct UnitSequence
+{
+    Binary<1> unitNumber;
+    Binary<4> unitSequence;
+};
+
+struct ReturnBitfieldsParameterGroup
+{
+    Binary<2> paramGroupLength;
+    Binary<1> paramGroupType = 0x81;
+    Binary<1> messageType;
+    Binary<1> numberOfReturnBitfields;
+};
+
+struct ReturnBitfield
+{
+    Binary<1> returnBitfield;
+};
 
 } // namespace BOE::BOE2
 

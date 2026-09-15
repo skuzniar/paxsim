@@ -13,6 +13,13 @@ namespace BOE::Context {
 //---------------------------------------------------------------------------------------------------------------------
 struct Session
 {
+    // Session type
+    enum class Type
+    {
+        Client,
+        Server,
+    };
+
     // Session state
     enum class State
     {
@@ -57,6 +64,9 @@ struct Session
             Password = cfg["Password"];
 
             HBInterval = cfg["HBInterval"];
+            if (const auto& connector = cfg["Connector"]; connector.valid()) {
+                m_type = Type::Client;
+            }
         }
     }
 
@@ -103,6 +113,11 @@ struct Session
         return OSequenceNumber++;
     }
 
+    Type type() const
+    {
+        return m_type;
+    }
+
     State state() const
     {
         return m_state;
@@ -112,6 +127,7 @@ struct Session
         m_state = s;
     }
 
+    Type  m_type  = Type::Server;
     State m_state = State::LogonWait;
 
     std::string UserName;
