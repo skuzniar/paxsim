@@ -6,7 +6,7 @@
 #include <iostream>
 #include <utility>
 
-namespace BOE::Context {
+namespace boe::Context {
 
 //---------------------------------------------------------------------------------------------------------------------
 // Session context. Captures relevant configuration parameters.
@@ -139,5 +139,5 @@ struct Session
     int OSequenceNumber = 1;
 };
 
-} // namespace BOE::Context
+} // namespace boe::Context
 #endif

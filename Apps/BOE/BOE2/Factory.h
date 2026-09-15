@@ -27,7 +27,7 @@
 
 #include "Common/Config.h"
 
-namespace BOE::BOE2 {
+namespace boe::boe2 {
 
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
@@ -43,15 +43,15 @@ class Factory
     // Expose version specific types
     //-----------------------------------------------------------------------------------------------------------------
 public:
-    using MessageHeader = BOE2::MessageHeader;
+    using MessageHeader = boe2::MessageHeader;
 
-    using LoginRequest  = BOE2::LoginRequest;
-    using LoginResponse = BOE2::LoginResponse;
-    using LogoutRequest = BOE2::LogoutRequest;
+    using LoginRequest  = boe2::LoginRequest;
+    using LoginResponse = boe2::LoginResponse;
+    using LogoutRequest = boe2::LogoutRequest;
 
-    using NewOrder    = BOE2::NewOrder;
-    using ModifyOrder = BOE2::ModifyOrder;
-    using CancelOrder = BOE2::CancelOrder;
+    using NewOrder    = boe2::NewOrder;
+    using ModifyOrder = boe2::ModifyOrder;
+    using CancelOrder = boe2::CancelOrder;
 
     template<typename Context>
     explicit Factory(Context& context)
@@ -378,5 +378,5 @@ private:
     Context::Session& m_session;
 };
 
-} // namespace BOE::BOE2
+} // namespace boe::boe2
 #endif

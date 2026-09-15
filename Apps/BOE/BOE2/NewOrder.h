@@ -4,7 +4,7 @@
 #include "MessageHeader.h"
 #include "Optional.h"
 
-namespace BOE::BOE2 {
+namespace boe::boe2 {
 
 #pragma pack(1)
 struct NewOrder
@@ -73,6 +73,6 @@ struct NewOrder
 };
 #pragma pack()
 
-} // namespace BOE::BOE2
+} // namespace boe::boe2
 
 #endif

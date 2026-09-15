@@ -8,7 +8,7 @@
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 
-namespace BOE::Context {
+namespace boe::Context {
 
 namespace bmi = boost::multi_index;
 
@@ -53,5 +53,5 @@ struct FillsBook
     }
 };
 
-} // namespace BOE::Context
+} // namespace boe::Context
 #endif

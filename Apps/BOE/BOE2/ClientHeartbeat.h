@@ -3,7 +3,7 @@
 
 #include "MessageHeader.h"
 
-namespace BOE::BOE2 {
+namespace boe::boe2 {
 
 #pragma pack(1)
 struct ClientHeartbeat
@@ -24,6 +24,6 @@ operator<<(std::ostream& s, const ClientHeartbeat& o)
     return s;
 }
 
-} // namespace BOE::BOE2
+} // namespace boe::boe2
 
 #endif

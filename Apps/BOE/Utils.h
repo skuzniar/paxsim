@@ -6,7 +6,7 @@
 #include <chrono>
 #include <cstddef>
 
-namespace BOE {
+namespace boe {
 
 //---------------------------------------------------------------------------------------------------------------------
 // Utilities to fill fixed size characted arrays
@@ -202,6 +202,6 @@ to_utchmsn(std::chrono::nanoseconds n)
     return buffer;
 }
 
-} // namespace BOE
+} // namespace boe
 
 #endif

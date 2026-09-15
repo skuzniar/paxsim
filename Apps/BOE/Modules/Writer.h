@@ -9,7 +9,7 @@
 
 #include "Common/Config.h"
 
-namespace BOE::Modules {
+namespace boe::Modules {
 
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
@@ -72,5 +72,5 @@ private:
     timepoint m_latest = std::chrono::steady_clock::now();
 };
 
-} // namespace BOE::Modules
+} // namespace boe::Modules
 #endif

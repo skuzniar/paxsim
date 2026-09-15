@@ -8,7 +8,7 @@
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 
-namespace BOE::Context {
+namespace boe::Context {
 
 //---------------------------------------------------------------------------------------------------------------------
 // Order book. Collection of orders
@@ -41,5 +41,5 @@ struct OrderBook
     }
 };
 
-} // namespace BOE::Context
+} // namespace boe::Context
 #endif

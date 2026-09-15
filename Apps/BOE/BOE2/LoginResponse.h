@@ -3,7 +3,7 @@
 
 #include "MessageHeader.h"
 
-namespace BOE::BOE2 {
+namespace boe::boe2 {
 
 enum class LoginResponseStatus : char
 {
@@ -81,6 +81,6 @@ operator<<(std::ostream& s, const LoginResponse& o)
     return s;
 }
 
-} // namespace BOE::BOE2
+} // namespace boe::boe2
 
 #endif

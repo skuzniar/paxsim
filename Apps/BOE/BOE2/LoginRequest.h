@@ -3,7 +3,7 @@
 
 #include "MessageHeader.h"
 
-namespace BOE::BOE2 {
+namespace boe::boe2 {
 
 #pragma pack(1)
 struct LoginRequest
@@ -67,6 +67,6 @@ struct ReturnBitfield
     Binary<1> returnBitfield;
 };
 
-} // namespace BOE::BOE2
+} // namespace boe::boe2
 
 #endif

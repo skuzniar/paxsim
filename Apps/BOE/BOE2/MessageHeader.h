@@ -3,7 +3,7 @@
 
 #include "Types.h"
 
-namespace BOE::BOE2 {
+namespace boe::boe2 {
 
 #pragma pack(1)
 struct MessageHeader
@@ -45,6 +45,6 @@ operator<<(std::ostream& s, const MessageHeader& o)
     return s;
 }
 
-} // namespace BOE::BOE2
+} // namespace boe::boe2
 
 #endif

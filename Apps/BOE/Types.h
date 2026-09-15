@@ -6,7 +6,7 @@
 #include <ostream>
 #include <iostream>
 
-namespace BOE {
+namespace boe {
 
 //-----------------------------------------------------------------------------------------------------------------
 // Exchange order. Keeps track of order state.
@@ -292,7 +292,7 @@ public:
 
     Order() = default;
 
-    Order(uint32_t clord_id, BOE2::Side side, uint32_t book_id, unsigned quantity, double price)
+    Order(uint32_t clord_id, boe2::Side side, uint32_t book_id, unsigned quantity, double price)
       : m_clord_id(clord_id)
       , m_side(side)
       , m_book_id(book_id)
@@ -379,7 +379,7 @@ private:
     }
 
 private:
-    using Side = BOE2::Side;
+    using Side = boe2::Side;
 
     ID             m_order_id = create_id();
     ID             m_clord_id;
@@ -482,6 +482,6 @@ public:
     mutable bool     m_live     = true;
 };
 
-} // namespace BOE
+} // namespace boe
 
 #endif

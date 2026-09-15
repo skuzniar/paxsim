@@ -6,7 +6,7 @@
 
 #include "Common/Config.h"
 
-namespace BOE::Modules {
+namespace boe::Modules {
 
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
@@ -49,5 +49,5 @@ private:
     Factory    m_factory;
 };
 
-} // namespace BOE::Modules
+} // namespace boe::Modules
 #endif

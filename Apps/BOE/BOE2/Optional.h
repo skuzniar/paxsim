@@ -3,7 +3,7 @@
 
 #include "Types.h"
 
-namespace BOE::BOE2::Optional {
+namespace boe::boe2::Optional {
 using Account                = Text<16>;
 using AttributedQuote        = Alphanumeric<1>;
 using BaseLiquidityIndicator = Alphanumeric<1>;
@@ -54,6 +54,6 @@ using Symbol                 = Alphanumeric<8>;
 using SymbolSfx              = Alphanumeric<8>;
 using TimeInForce            = Alphanumeric<1>;
 using WorkingPrice           = BinaryPrice;
-} // namespace BOE::BOE2::Optional
+} // namespace boe::boe2::Optional
 
 #endif

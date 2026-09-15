@@ -11,7 +11,7 @@
 #include <chrono>
 #include <type_traits>
 
-namespace BOE::BOE2 {
+namespace boe::boe2 {
 
 //---------------------------------------------------------------------------------------------------------------------
 // Message types.
@@ -1411,6 +1411,6 @@ operator<<(std::ostream& s, Market o)
 }
 */
 
-} // namespace BOE::BOE2
+} // namespace boe::boe2
 
 #endif

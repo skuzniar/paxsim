@@ -3,7 +3,7 @@
 
 #include "MessageHeader.h"
 
-namespace BOE::BOE2 {
+namespace boe::boe2 {
 
 #pragma pack(1)
 struct ModifyOrder
@@ -18,6 +18,6 @@ struct ModifyOrder
 };
 #pragma pack()
 
-} // namespace BOE::BOE2
+} // namespace boe::boe2
 
 #endif

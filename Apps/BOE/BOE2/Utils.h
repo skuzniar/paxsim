@@ -28,7 +28,7 @@
 #include "SystemEvent.h"
 #include "TradeBroken.h"
 
-namespace BOE::BOE2 {
+namespace boe::boe2 {
 
 // TODO - confess
 struct PHeader : public PacketHeader
@@ -58,6 +58,6 @@ operator<<(std::ostream& s, const PHeader& o)
     return s;
 }
 
-} // namespace BOE::BOE2
+} // namespace boe::boe2
 
 #endif

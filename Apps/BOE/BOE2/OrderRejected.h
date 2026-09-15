@@ -3,7 +3,7 @@
 
 #include "MessageHeader.h"
 
-namespace BOE::BOE2 {
+namespace boe::boe2 {
 
 #pragma pack(1)
 struct OrderRejected
@@ -21,6 +21,6 @@ struct OrderRejected
 };
 #pragma pack()
 
-} // namespace BOE::BOE2
+} // namespace boe::boe2
 
 #endif

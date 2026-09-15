@@ -13,16 +13,16 @@
 
 #include "Common/Config.h"
 
-namespace BOE::BOE2 {
+namespace boe::boe2 {
 
 struct Server
 {
     // Context is an aggregate of context classes.
     using Context = PaxSim::Core::Aggregate<Context::Session>;
 
-    using Parser  = BOE::Modules::Parser<BOE::BOE2::Factory>;
-    using Session = BOE::Modules::Session<BOE::BOE2::Factory>;
-    using Writer  = BOE::Modules::Writer<BOE::BOE2::Factory>;
+    using Parser  = boe::Modules::Parser<boe::boe2::Factory>;
+    using Session = boe::Modules::Session<boe::boe2::Factory>;
+    using Writer  = boe::Modules::Writer<boe::boe2::Factory>;
 
     // Handler will be used once the session has been created.
     using Handler = PaxSim::Core::Pipeline<Parser, PaxSim::Core::Flareout<Session>, Writer>;
@@ -44,4 +44,4 @@ run(const Common::Config& config, PaxSim::Core::IOContext& iocontext)
     iocontext.run();
 }
 
-} // namespace BOE::BOE2
+} // namespace boe::boe2

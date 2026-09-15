@@ -104,7 +104,7 @@ main(int argc, char* argv[])
             thread = std::thread([&]() { OUCH::OUCH50::run(config, iocontext); });
         }
         if (type == "BOE2") {
-            thread = std::thread([&]() { BOE::BOE2::run(config, iocontext); });
+            thread = std::thread([&]() { boe::boe2::run(config, iocontext); });
         }
 
         char line[100];

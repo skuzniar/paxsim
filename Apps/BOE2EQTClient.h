@@ -13,7 +13,7 @@ using namespace PaxSim;
 //---------------------------------------------------------------------------------------------------------------------
 // Self contained client class.
 //---------------------------------------------------------------------------------------------------------------------
-struct Client : public BOE::BOE2::Client
+struct Client : public boe::boe2::Client
 {
 public:
     Client(const std::string& host, int port, const std::string& user, const std::string& password)
@@ -47,7 +47,7 @@ public:
     }
 
 private:
-    using Handler = BOE::BOE2::Client::Handler;
+    using Handler = boe::boe2::Client::Handler;
 
     Core::IOContext          m_iocontext;
     Context::Session         m_apcontext;
