@@ -2,7 +2,7 @@
 
 #include "FIX/FIX42Server.h"
 #include "OUCH/OUCH50Server.h"
-#include "BOE/BOE2Server.h"
+#include "BOE/BOE2EQTServer.h"
 
 #include "PaxSim/Core/IOContext.h"
 #include "PaxSim/Core/Streamlog.h"

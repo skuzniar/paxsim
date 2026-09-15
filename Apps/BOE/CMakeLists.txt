@@ -1,15 +1,15 @@
 target_sources(PAXSim 
     PUBLIC
-    BOE2Server.h
+    BOE2EQTServer.h
     PRIVATE
-    BOE2Server.cpp
+    BOE2EQTServer.cpp
 )
 
 target_sources(PAXSimClient 
     PUBLIC
-    BOE2Client.h
+    BOE2EQTClient.h
     PRIVATE
-    BOE2Client.cpp
+    BOE2EQTClient.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-Wno-unknown-attributes")
