@@ -18,7 +18,7 @@ namespace {
 void
 usage(const char* program)
 {
-    std::cerr << "Usage: " << program << " [-h: help] -c config" << '\n';
+    std::cerr << "Usage: " << program << " [-h: help] [-i: interactive] -c config" << '\n';
 }
 } // namespace
 
@@ -32,13 +32,18 @@ main(int argc, char* argv[])
         return 1;
     }
 
+    bool                  interactove = false;
     std::filesystem::path cfgfile;
 
     int c = 0;
-    while ((c = getopt(argc, argv, "c:h")) != -1) {
+    while ((c = getopt(argc, argv, "c:h:i")) != -1) {
         switch (c) {
             case 'c':
                 cfgfile = optarg;
+                break;
+            case 'i':
+                interactove = true;
+                ;
                 break;
             case 'h':
                 usage(argv[0]);
@@ -111,13 +116,16 @@ main(int argc, char* argv[])
             thread = std::thread([&]() { boe::boe3::eqt::run(config, iocontext); });
         }
 
-        char line[100];
-        do {
-            std::cout << "===> ";
-            std::cin.getline(line, 100);
-        } while (std::cin.clear(), line[0] != 'q');
+        if (interactove) {
+            char line[100];
+            do {
+                std::cout << "===> ";
+                std::cin.getline(line, 100);
+            } while (std::cin.clear(), line[0] != 'q');
 
-        iocontext.stop();
+            iocontext.stop();
+        }
+
         thread.join();
     } catch (const std::exception& e) {
         std::cerr << "Application failure: " << e.what() << '.' << '\n';
