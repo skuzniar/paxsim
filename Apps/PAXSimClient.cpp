@@ -3,6 +3,7 @@
 #include "FIX/FIX42Client.h"
 #include "OUCH/OUCH50Client.h"
 #include "BOE/BOE2EQTClient.h"
+#include "BOE/BOE3EQTClient.h"
 
 #include "PaxSim/Core/IOContext.h"
 #include "PaxSim/Core/Streamlog.h"
@@ -104,8 +105,11 @@ main(int argc, char* argv[])
         if (type == "OUCH50") {
             thread = std::thread([&]() { OUCH::OUCH50::run(config, iocontext); });
         }
-        if (type == "BOE2") {
+        if (type == "BOE2EQT") {
             thread = std::thread([&]() { boe::boe2::run(config, iocontext); });
+        }
+        if (type == "BOE3EQT") {
+            thread = std::thread([&]() { boe::boe3::eqt::run(config, iocontext); });
         }
 
         char line[100];

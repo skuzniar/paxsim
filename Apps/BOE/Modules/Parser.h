@@ -39,7 +39,7 @@ public:
     {
         if (const auto& [valid, msg] = m_factory.message(m_ibuf.rpos(), m_ibuf.rsize()); valid) {
             log << level::info << in << '[' << msg << ']' << std::endl;
-            m_ibuf.rmove(msg.size());
+            m_ibuf.rmove(msg.length());
             next.put(msg);
         }
     }

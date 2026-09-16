@@ -1,9 +1,9 @@
 Config = {
     Application = {
-        Type = "BOE2EQT",
+        Type = "BOE3EQT",
         Log = {
             Level = "debug",
-            --File = "BOE2EQTSimulator.log",
+            --File = "BOE3EQTSimulator.log",
         },
     },
     Session = {

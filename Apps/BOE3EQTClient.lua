@@ -1,9 +1,9 @@
 Config = {
     Application = {
-        Type = "BOE2EQT",
+        Type = "BOE3EQT",
         Log = {
             Level = "info",
-            --File = "BOE2Client.log"
+            --File = "BOE3EQTClient.log"
         },
     },
     Session = {

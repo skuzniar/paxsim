@@ -1,6 +1,8 @@
 #ifndef LoginRequest_h
 #define LoginRequest_h
 
+#include "BOE/Traits.h"
+
 #include "MessageHeader.h"
 
 namespace boe::boe2 {
@@ -68,5 +70,25 @@ struct ReturnBitfield
 };
 
 } // namespace boe::boe2
+
+namespace boe {
+//-----------------------------------------------------------------------------------------------------------------
+// Message traits specialization.
+//-----------------------------------------------------------------------------------------------------------------
+template<>
+class Authentication<boe2::LoginRequest>
+{
+public:
+    static std::string_view user(const boe2::LoginRequest& msg)
+    {
+        return msg.username;
+    }
+    static std::string_view password(const boe2::LoginRequest& msg)
+    {
+        return msg.password;
+    }
+};
+
+} // namespace boe
 
 #endif

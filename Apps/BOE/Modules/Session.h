@@ -1,6 +1,7 @@
 #ifndef BOE_Modules_Session_dot_h
 #define BOE_Modules_Session_dot_h
 
+#include "BOE/Traits.h"
 #include "PaxSim/Core/Streamlog.h"
 
 #include "BOE/Context/Session.h"
@@ -82,14 +83,20 @@ private:
         if (auto state = m_session.state(); state != State::LogonWait) {
             throw std::runtime_error("Unexpected Logon Request message at this time. " + to_string(m_session.state()));
         }
-        if (msg.username != m_session.UserName) {
-            throw std::runtime_error("Invalid user name. Expecting: " + m_session.UserName + ", got: " + std::string(msg.username));
+
+        auto user = Authentication<LoginRequest>::user(msg);
+        if (user != m_session.UserName) {
+            throw std::runtime_error("Invalid user name. Expecting: " + m_session.UserName + ", got: " + std::string(user));
         }
-        if (msg.password != m_session.Password) {
-            throw std::runtime_error("Invalid password. Expecting: " + m_session.Password + ", got: " + std::string(msg.password));
+
+        auto password = Authentication<LoginRequest>::password(msg);
+        if (password != m_session.Password) {
+            throw std::runtime_error("Invalid password. Expecting: " + m_session.Password + ", got: " + std::string(password));
         }
 
         if (m_session.state() == State::LogonWait) {
+            auto response = m_factory.loginAccept();
+            // log << level::trace << ts << here << ' ' << std::endl;
             next.put(m_factory.loginAccept());
         }
 
