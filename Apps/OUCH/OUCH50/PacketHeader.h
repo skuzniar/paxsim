@@ -8,18 +8,18 @@ namespace OUCH::OUCH50 {
 #pragma pack(1)
 struct PacketHeader
 {
-    UInt16 length;
+    UInt16 msgLength;
     char   type = 0;
 
     PacketHeader(char type, uint16_t size)
-      : length(size - sizeof(UInt16))
+      : msgLength(size - sizeof(UInt16))
       , type(type)
     {
     }
 
-    std::size_t size() const
+    std::size_t length() const
     {
-        return this->length + sizeof(UInt16);
+        return this->msgLength + sizeof(UInt16);
     }
 
     const char* data() const
@@ -34,7 +34,7 @@ operator<<(std::ostream& s, const PacketHeader& o)
 {
     // clang-format off
     s << "[PacketHeader]=";
-    s << "Length: " << o.length << ' ';
+    s << "Length: " << o.msgLength << ' ';
     s << "Type: "   << o.type;
     // clang-format on
     return s;
@@ -54,9 +54,9 @@ struct SequencedData
     {
     }
 
-    std::size_t size() const
+    std::size_t length() const
     {
-        return header.size();
+        return header.length();
     }
     const char* data() const
     {
@@ -90,9 +90,9 @@ struct UnsequencedData
     {
     }
 
-    std::size_t size() const
+    std::size_t length() const
     {
-        return header.size();
+        return header.length();
     }
     const char* data() const
     {

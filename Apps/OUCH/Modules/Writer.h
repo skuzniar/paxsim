@@ -42,8 +42,8 @@ public:
     template<typename Message>
     bool put(const Message& msg)
     {
-        std::memcpy(m_obuf.wpos(), msg.header.data(), msg.header.size());
-        m_obuf.wmove(sizeof(msg));
+        std::memcpy(m_obuf.wpos(), msg.header.data(), msg.header.length());
+        m_obuf.wmove(msg.header.length());
         log << level::info << out << '[' << msg << ']' << std::endl;
         m_latest = std::chrono::steady_clock::now();
         return false;

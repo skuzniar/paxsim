@@ -78,7 +78,7 @@ public:
     {
         const auto* header = reinterpret_cast<const PacketHeader*>(buff);
         if (size >= sizeof(PacketHeader)) {
-            std::size_t length = header->size();
+            std::size_t length = header->length();
             if (size >= length) {
                 return { true, *header };
             }

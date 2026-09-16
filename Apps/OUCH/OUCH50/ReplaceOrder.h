@@ -44,7 +44,7 @@ operator+=(ReplaceOrder& o, const App& a)
     auto* offset = reinterpret_cast<char*>(std::addressof(o)) + sizeof(o);
     new (offset) App(a);
     o.appendageLength += a.size();
-    o.header.header.length += a.size();
+    o.header.header.msgLength += a.size();
     return o;
 }
 
