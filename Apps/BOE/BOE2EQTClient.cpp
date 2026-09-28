@@ -35,10 +35,11 @@ run(const Common::Config& config, PaxSim::Core::IOContext& iocontext)
     Client::Context context(config);
 
     // Expecting consistent connection configuration
-    const auto& concfg = config["Session.Connector"];
+    const auto& cfg = config["Session.Connector"];
 
     // Create connector that will activate client handler once the connection has been established
-    PaxSim::Core::Connector<Client::Handler> connector(iocontext, concfg["Host"], concfg["Port"], concfg["Retries"], concfg["Delay"]);
+    PaxSim::Core::Connector<Client::Handler> connector(
+        iocontext, static_cast<std::string>(cfg["Host"]), static_cast<int>(cfg["Port"]), static_cast<int>(cfg["Retries"]), static_cast<int>(cfg["Delay"]));
 
     connector.connect(config, context);
     iocontext.run();

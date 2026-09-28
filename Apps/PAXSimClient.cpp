@@ -54,12 +54,7 @@ main(int argc, char* argv[])
         // Create configuration object by parsing the file
         Common::Config config(cfgfile);
 
-        const auto& appcfg = config["Application"];
-
-        // Get the log level
-        const auto& logcfg = appcfg["Log"];
-
-        if (const std::string& level = logcfg["Level"]; !level.empty()) {
+        if (const std::string& level = static_cast<std::string>(config["Application.Log.Level"]); !level.empty()) {
             switch (std::tolower(level[0])) {
                 case 't':
                     Core::log << Core::threshold::trace;
@@ -84,13 +79,13 @@ main(int argc, char* argv[])
         }
 
         // Redirect log if needed
-        if (const std::string& file = logcfg["File"]; !file.empty()) {
+        if (const std::string& file = static_cast<std::string>(config["Application.Log.File"]); !file.empty()) {
             Core::log << Core::level::info << "Redirecting log output to: " << file << '\n';
             Core::log.is(file);
         }
 
         // Select the type of client to run
-        const std::string& type = appcfg["Type"];
+        const std::string& type = static_cast<std::string>(config["Appliction.Type"]);
         if (type.empty()) {
             std::cerr << "Missing Client type ('Type') property in: " << cfgfile << '\n';
             return -1;

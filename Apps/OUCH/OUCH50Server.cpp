@@ -54,14 +54,11 @@ struct Server
 void
 run(const Common::Config& config, PaxSim::Core::IOContext& iocontext)
 {
-    // Expecting consistent connection configuration
-    const auto& concfg = config["Session.Acceptor"];
-
     // Create application context
     Server::Context context(config);
 
     // Create acceptor that will activate server handler once the connection has been established
-    PaxSim::Core::Acceptor<typename Server::Handler> acceptor(iocontext, concfg["Port"]);
+    PaxSim::Core::Acceptor<typename Server::Handler> acceptor(iocontext, static_cast<int>(config["Session.Acceptor.Port"]));
 
     acceptor.listen(config, context);
     iocontext.run();
