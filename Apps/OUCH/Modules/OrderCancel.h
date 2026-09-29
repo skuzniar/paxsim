@@ -79,7 +79,7 @@ private:
     }
 
     template<typename Next>
-    void cancel(const Order& order, const Config::Table& params, Next& next)
+    void cancel(const Order& order, const Config& params, Next& next)
     {
         order.status(Order::Status::Canceled);
         next.put(m_factory.cancel(order, params));

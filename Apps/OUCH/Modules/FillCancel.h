@@ -63,7 +63,7 @@ private:
     }
 
     template<typename Next>
-    void cancel(const Fill& fill, const Config::Table& params, Next& next)
+    void cancel(const Fill& fill, const Config& params, Next& next)
     {
         auto& idx = m_orderbook.orders.get<Context::OrderBook::orderid>();
         auto  itr = idx.find(fill.orderID());
@@ -75,7 +75,7 @@ private:
     }
 
     template<typename Next>
-    void cancel(const Fill& fill, const Order& order, const Config::Table& params, Next& next)
+    void cancel(const Fill& fill, const Order& order, const Config& params, Next& next)
     {
         fill.cancel();
         next.put(m_factory.cancel(fill, order, params));

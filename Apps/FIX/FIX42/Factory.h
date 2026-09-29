@@ -185,12 +185,12 @@ public:
         return omsg.commit();
     }
 
-    OMessage reject(const NewOrderSingle& msg, const Config::Table& params)
+    OMessage reject(const NewOrderSingle& msg, const Config& params)
     {
         auto omsg = make(msg_type::ExecutionReport);
 
-        int         code = params["Error"];
-        std::string text = params["Message"];
+        int         code = static_cast<int>(params["Error"]);
+        std::string text = static_cast<std::string>(params["Message"]);
 
         omsg.push_back_string(tag::ClOrdID, msg[tag::ClOrdID]);
         omsg.push_back_string(tag::Symbol, msg[tag::Symbol]);
@@ -289,12 +289,12 @@ public:
         return omsg.commit();
     }
 
-    OMessage reject(const OrderCancelReplaceRequest& msg, const Order& order, const Config::Table& params)
+    OMessage reject(const OrderCancelReplaceRequest& msg, const Order& order, const Config& params)
     {
         auto omsg = make(msg_type::OrderCancelReject);
 
-        int         code = params["Error"];
-        std::string text = params["Message"];
+        int         code = static_cast<int>(params["Error"]);
+        std::string text = static_cast<std::string>(params["Message"]);
 
         omsg.push_back_string(tag::OrderID, "NONE");
         omsg.push_back_string(tag::ClOrdID, msg[tag::ClOrdID]);
@@ -375,12 +375,12 @@ public:
         return omsg.commit();
     }
 
-    OMessage reject(const OrderCancelRequest& msg, const Order& order, const Config::Table& params)
+    OMessage reject(const OrderCancelRequest& msg, const Order& order, const Config& params)
     {
         auto omsg = make(msg_type::OrderCancelReject);
 
-        int         code = params["Error"];
-        std::string text = params["Message"];
+        int         code = static_cast<int>(params["Error"]);
+        std::string text = static_cast<std::string>(params["Message"]);
 
         omsg.push_back_string(tag::ClOrdID, msg[tag::ClOrdID]);
         omsg.push_back_string(tag::OrigClOrdID, msg[tag::OrigClOrdID]);
@@ -417,13 +417,13 @@ public:
         return omsg.commit();
     }
 
-    OMessage cancel(const Order& o, const Config::Table& params)
+    OMessage cancel(const Order& o, const Config& params)
     {
         log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);
 
-        int         code = params["Error"];
-        std::string text = params["Message"];
+        int         code = static_cast<int>(params["Error"]);
+        std::string text = static_cast<std::string>(params["Message"]);
 
         omsg.push_back_string(tag::ClOrdID, o.clordID());
         omsg.push_back_string(tag::Symbol, o.symbol());
@@ -468,7 +468,7 @@ public:
         return omsg.commit();
     }
 
-    OMessage cancel(const Fill& fill, const Order& o, const Config::Table& params)
+    OMessage cancel(const Fill& fill, const Order& o, const Config& params)
     {
         log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);
@@ -490,7 +490,7 @@ public:
         return omsg.commit();
     }
 
-    OMessage correct(const Fill& fill, const Order& o, const Config::Table& params)
+    OMessage correct(const Fill& fill, const Order& o, const Config& params)
     {
         log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);

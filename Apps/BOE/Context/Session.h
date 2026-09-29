@@ -59,14 +59,14 @@ struct Session
     template<typename Config>
     explicit Session(Config& config)
     {
-        if (const auto& cfg = config["Session"]; cfg.valid()) {
-            UserName = cfg["UserName"];
-            Password = cfg["Password"];
+        const auto& cfg = config["Session"];
 
-            HBInterval = cfg["HBInterval"];
-            if (const auto& connector = cfg["Connector"]; connector.valid()) {
-                m_type = Type::Client;
-            }
+        UserName   = static_cast<std::string>(cfg["UserName"]);
+        Password   = static_cast<std::string>(cfg["Password"]);
+        HBInterval = static_cast<int>(cfg["HBInterval"]);
+
+        if (cfg("Connector")) {
+            m_type = Type::Client;
         }
     }
 

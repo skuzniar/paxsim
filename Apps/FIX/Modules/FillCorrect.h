@@ -63,7 +63,7 @@ private:
     }
 
     template<typename Next>
-    void correct(const Fill& fill, const Config::Table& params, Next& next)
+    void correct(const Fill& fill, const Config& params, Next& next)
     {
         auto& idx = m_orderbook.orders.get<Context::OrderBook::orderid>();
         auto  itr = idx.find(fill.orderID());
@@ -75,11 +75,11 @@ private:
     }
 
     template<typename Next>
-    void correct(const Fill& fill, const Order& order, const Config::Table& params, Next& next)
+    void correct(const Fill& fill, const Order& order, const Config& params, Next& next)
     {
         log << level::trace << ts << here << std::endl;
-        fill.m_quantity = params["NewQuantity"];
-        fill.m_price    = params["NewPrice"];
+        fill.m_quantity = static_cast<int>(params["NewQuantity"]);
+        fill.m_price    = static_cast<double>(params["NewPrice"]);
         next.put(m_factory.correct(fill, order, params));
     }
 

@@ -24,20 +24,17 @@ public:
         init(config);
     }
 
-    std::map<int, Config::Table> enter;
-    std::map<int, Config::Table> replace;
-    std::map<int, Config::Table> cancel;
+    std::map<int, Config> enter;
+    std::map<int, Config> replace;
+    std::map<int, Config> cancel;
 
 private:
-    static auto load(const Config& config, const char* path)
+    static auto load(const Config& config)
     {
-        std::map<int, Config::Table> map;
-        if (Config::Table table = config[path]; table.valid()) {
-            for (int i = 1; i <= table.size(); ++i) {
-                Config::Table entry = table[i];
-                if (auto [i, b] = map.emplace(entry["Quantity"], entry); b) {
-                    log << level::debug << path << ':' << i->second << std::endl;
-                }
+        std::map<int, Config> map;
+        for (const auto& entry : config) {
+            if (auto [i, b] = map.emplace(entry["Quantity"], entry); b) {
+                log << level::debug << i->second << std::endl;
             }
         }
         return map;
@@ -45,9 +42,9 @@ private:
 
     void init(const Config& config)
     {
-        enter   = load(config, "Modules.OrderReject.Enter");
-        replace = load(config, "Modules.OrderReject.Replace");
-        cancel  = load(config, "Modules.OrderReject.Cancel");
+        enter   = load(config["Modules.OrderReject.Enter"]);
+        replace = load(config["Modules.OrderReject.Replace"]);
+        cancel  = load(config["Modules.OrderReject.Cancel"]);
     }
 };
 

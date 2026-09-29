@@ -177,12 +177,12 @@ public:
         return omsg;
     }
 
-    auto reject(const EnterOrder& msg, const Config::Table& params)
+    auto reject(const EnterOrder& msg, const Config& params)
     {
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
         OrderRejected omsg;
 
-        int reason = params["Error"];
+        int reason = static_cast<int>(params["Error"]);
 
         omsg.timestamp  = Timestamp::now();
         omsg.userRefNum = msg.userRefNum;
@@ -239,12 +239,12 @@ public:
         return omsg;
     }
 
-    auto reject(const ReplaceOrder& msg, const Order& order, const Config::Table& params)
+    auto reject(const ReplaceOrder& msg, const Order& order, const Config& params)
     {
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
         OrderRejected omsg;
 
-        int reason = params["Error"];
+        int reason = static_cast<int>(params["Error"]);
 
         omsg.timestamp  = Timestamp::now();
         omsg.userRefNum = msg.newUserRefNum;
@@ -290,12 +290,12 @@ public:
         return omsg;
     }
 
-    auto reject(const CancelOrder& msg, const Order& order, const Config::Table& params)
+    auto reject(const CancelOrder& msg, const Order& order, const Config& params)
     {
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
         CancelRejected omsg;
 
-        int reason = params["Error"];
+        int reason = static_cast<int>(params["Error"]);
 
         omsg.timestamp  = Timestamp::now();
         omsg.userRefNum = msg.userRefNum;
@@ -309,11 +309,11 @@ public:
     //-----------------------------------------------------------------------------------------------------------------
     // Unsolicited Order cancel handling
     //-----------------------------------------------------------------------------------------------------------------
-    auto cancel(const Order& order, const Config::Table& params)
+    auto cancel(const Order& order, const Config& params)
     {
         OrderCancelled omsg;
 
-        std::string reason = params["Reason"];
+        std::string reason = static_cast<std::string>(params["Reason"]);
 
         omsg.timestamp         = Timestamp::now();
         omsg.userRefNum        = order.clordID();
@@ -365,11 +365,11 @@ public:
         return omsg;
     }
 
-    auto cancel(const Fill& fill, const Order& order, const Config::Table& params)
+    auto cancel(const Fill& fill, const Order& order, const Config& params)
     {
         TradeBroken omsg;
 
-        std::string reason = params["Reason"];
+        std::string reason = static_cast<std::string>(params["Reason"]);
 
         omsg.timestamp           = Timestamp::now();
         omsg.userRefNum          = order.clordID();

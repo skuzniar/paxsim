@@ -74,10 +74,10 @@ private:
     }
 
     template<typename Next>
-    void fill(const Order& order, const Config::Table& fill, Next& next)
+    void fill(const Order& order, const Config& fill, Next& next)
     {
         log << level::trace << ts << ' ' << here << ' ' << fill << std::endl;
-        Fill f = Fill(order, fill["Quantity"], fill["Price"]);
+        Fill f = Fill(order, static_cast<int>(fill["Quantity"]), static_cast<double>(fill["Price"]));
 
         auto [cumqty, avgprx] = m_fillsbook.cumulative(order.orderID());
         if (order.quantity() - cumqty > f.quantity()) {

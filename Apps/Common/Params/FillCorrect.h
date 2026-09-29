@@ -26,23 +26,19 @@ public:
     }
 
     using Key = std::pair<unsigned, double>;
-    std::map<Key, Config::Table> correct;
+    std::map<Key, Config> correct;
 
-    auto load(const Config& config, const char* path)
+    auto load(const Config& config)
     {
-        if (Config::Table table = config[path]; table.valid()) {
-            for (int i = 1; i <= table.size(); ++i) {
-                Config::Table entry = table[i];
-                if (auto [i, b] = this->correct.emplace(Key(entry["Quantity"], entry["Price"]), entry); b) {
-                    log << level::debug << path << ':' << i->second << std::endl;
-                }
-            }
+        for (const auto& entry : config) {
+            this->correct.emplace(Key(static_cast<int>(entry["Quantity"]), static_cast<double>(entry["Price"])), entry);
+            log << level::debug << entry << std::endl;
         }
     }
 
     void init(const Config& config)
     {
-        load(config, "Modules.FillCorrect");
+        load(config["Modules.FillCorrect"]);
     }
 };
 

@@ -25,38 +25,32 @@ public:
         init(config);
     }
 
-    std::map<int, Config::Table> quantity;
-    std::map<int, Config::Table> leaves;
-    std::map<int, Config::Table> below;
+    std::map<int, Config> quantity;
+    std::map<int, Config> leaves;
+    std::map<int, Config> below;
 
 private:
-    auto load(const Config& config, const char* path)
+    auto load(const Config& config)
     {
-        if (Config::Table table = config[path]; table.valid()) {
-            for (int i = 1; i <= table.size(); ++i) {
-                Config::Table entry = table[i];
-                if (const auto quantity = entry["Quantity"]; quantity.valid()) {
-                    if (auto [i, b] = this->quantity.emplace(quantity, entry); b) {
-                        log << level::debug << path << ':' << i->second << std::endl;
-                    }
-                }
-                if (const auto quantity = entry["Leaves"]; quantity.valid()) {
-                    if (auto [i, b] = this->leaves.emplace(quantity, entry); b) {
-                        log << level::debug << path << ':' << i->second << std::endl;
-                    }
-                }
-                if (const auto quantity = entry["Below"]; quantity.valid()) {
-                    if (auto [i, b] = this->below.emplace(quantity, entry); b) {
-                        log << level::debug << path << ':' << i->second << std::endl;
-                    }
-                }
+        for (const auto& entry : config) {
+            if (const auto quantity = static_cast<int>(entry["Quantity"]); quantity != 0) {
+                this->quantity.emplace(quantity, entry);
+                log << level::debug << entry << std::endl;
+            }
+            if (const auto quantity = static_cast<int>(entry["Leaves"]); quantity != 0) {
+                this->leaves.emplace(quantity, entry);
+                log << level::debug << entry << std::endl;
+            }
+            if (const auto quantity = static_cast<int>(entry["Below"]); quantity != 0) {
+                this->below.emplace(quantity, entry);
+                log << level::debug << entry << std::endl;
             }
         }
     }
 
     void init(const Config& config)
     {
-        load(config, "Modules.OrderCancel");
+        load(config["Modules.OrderCancel"]);
     }
 };
 

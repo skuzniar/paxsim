@@ -51,14 +51,12 @@ struct Session
     template<typename Config>
     explicit Session(Config& config)
     {
-        if (const auto& cfg = config["Session"]; cfg.valid()) {
-            BeginString = cfg["BeginString"];
+        const auto& cfg = config["Session"];
 
-            TargetCompID = cfg["TargetCompID"];
-            SenderCompID = cfg["SenderCompID"];
-
-            HBInterval = cfg["HBInterval"];
-        }
+        BeginString  = static_cast<std::string>(cfg["BeginString"]);
+        TargetCompID = static_cast<std::string>(cfg["TargetCompID"]);
+        SenderCompID = static_cast<std::string>(cfg["SenderCompID"]);
+        HBInterval   = static_cast<int>(cfg["HBInterval"]);
     }
 
     Session(std::string begstring, std::string targcompid, std::string sendcompid)

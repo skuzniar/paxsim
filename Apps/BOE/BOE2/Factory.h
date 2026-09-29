@@ -166,7 +166,7 @@ public:
         return omsg;
     }
 
-    auto reject(const EnterOrder& msg, const Config::Table& params)
+    auto reject(const EnterOrder& msg, const Config& params)
     {
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
         OrderRejected omsg;
@@ -228,7 +228,7 @@ public:
         return omsg;
     }
 
-    auto reject(const ReplaceOrder& msg, const Order& order, const Config::Table& params)
+    auto reject(const ReplaceOrder& msg, const Order& order, const Config& params)
     {
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
         OrderRejected omsg;
@@ -279,7 +279,7 @@ public:
         return omsg;
     }
 
-    auto reject(const CancelOrder& msg, const Order& order, const Config::Table& params)
+    auto reject(const CancelOrder& msg, const Order& order, const Config& params)
     {
         log << level::trace << ts << ' ' << here << ' ' << '[' << msg << ']' << std::endl;
         CancelRejected omsg;
@@ -298,7 +298,7 @@ public:
     //-----------------------------------------------------------------------------------------------------------------
     // Unsolicited Order cancel handling
     //-----------------------------------------------------------------------------------------------------------------
-    auto cancel(const Order& order, const Config::Table& params)
+    auto cancel(const Order& order, const Config& params)
     {
         OrderCancelled omsg;
 
@@ -354,7 +354,7 @@ public:
         return omsg;
     }
 
-    auto cancel(const Fill& fill, const Order& order, const Config::Table& params)
+    auto cancel(const Fill& fill, const Order& order, const Config& params)
     {
         TradeBroken omsg;
 

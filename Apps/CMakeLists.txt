@@ -6,7 +6,6 @@ list(APPEND CMAKE_MODULE_PATH
 
 set(CMAKE_CXX_FLAGS "-Wno-unknown-attributes")
 
-find_package(Lua REQUIRED)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -24,17 +23,17 @@ foreach(app ${ALL_APPS})
 
     target_include_directories(${app} PRIVATE 
         .
-        ${LUA_INCLUDE_DIR}
-        ${SOL2_INCLUDE_DIR}
     )
 
     target_link_libraries(${app} PRIVATE
         PaxSim::Core
-        ${LUA_LIBRARIES} 
         Boost::boost 
         Threads::Threads
+        az-json
     )
 endforeach()
+
+add_subdirectory(Common)
 
 add_subdirectory(FIX)
 add_subdirectory(OUCH)

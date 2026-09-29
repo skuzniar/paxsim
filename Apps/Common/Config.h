@@ -3,83 +3,90 @@
 
 #include "PaxSim/Core/Types.h"
 
-#include <sol/sol.hpp>
-#include <cstddef>
+#include <az/json/Reader.h>
+
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 
 namespace Common {
 //---------------------------------------------------------------------------------------------------------------------
 // Configuration parser. Parses configuration file and makes options available to the caller.
 //---------------------------------------------------------------------------------------------------------------------
-struct Config
+class Config
 {
-    using Table = sol::table;
-
+public:
     explicit Config(const std::filesystem::path& file)
     {
         if (!std::filesystem::is_regular_file(file)) {
             throw std::runtime_error(file.string() + " is not a regular file.");
         }
 
-        lua.open_libraries(sol::lib::base);
-
-        if (!file.empty()) {
-            lua.script_file(file);
+        std::ifstream ifs(file);
+        if (!ifs) {
+            throw std::runtime_error("Unable to read " + file.string() + ".");
         }
-        cfg = lua["Config"];
+
+        try {
+            az::json::Reader(m_json).strictly().parse(ifs);
+        } catch (const az::json::Error& e) {
+            std::cout << "Error parising " << file << ". " << e.what() << " line: " << e.line() << " column: " << e.column() << '.' << std::endl;
+        }
     }
 
-    explicit Config(const std::string_view script)
+    explicit Config(az::json::Value value)
+      : m_json(value)
     {
-        lua.open_libraries(sol::lib::base);
-
-        if (!script.empty()) {
-            lua.safe_script(script);
-        }
-        cfg = lua["Config"];
     }
 
-    auto operator[](std::string_view option) const
+    Config operator[](std::string_view option) const
     {
-        sol::table t = cfg;
+        const az::json::Value* json = &m_json;
         for (const auto& token : PaxSim::Core::tokenize(option, ".")) {
-            if (sol::table tt = t[token]; tt.valid()) {
-                t = tt;
+            if (std::string stoken(token); json->has(stoken)) {
+                json = &json->operator[](stoken);
             } else {
-                throw std::runtime_error("Invalid configuration path: " + std::string(option) + " @" + std::string(token));
+                throw std::runtime_error("Invalid configuration path: " + std::string(option) + " @" + stoken);
             }
         }
-        return t;
+        return Config(*json);
+    }
+
+    bool operator()(std::string_view option) const
+    {
+        try {
+            this->operator[](option);
+        } catch (...) {
+            return false;
+        }
+        return true;
+    }
+
+    explicit operator int() const
+    {
+        return m_json.operator int();
+    }
+    explicit operator double() const
+    {
+        return m_json.operator double();
+    }
+    explicit operator std::string() const
+    {
+        return m_json.operator std::string();
+    }
+
+    auto begin() const
+    {
+        return m_json.begin();
+    }
+    auto end() const
+    {
+        return m_json.end();
     }
 
 private:
-    sol::state lua;
-    sol::table cfg;
+    az::json::Value m_json;
 };
-
-inline std::ostream&
-operator<<(std::ostream& os, const Config::Table& tbl)
-{
-    os << '{';
-    for (auto it = tbl.begin(); it != tbl.end(); ++it) {
-        if (it != tbl.begin()) {
-            os << ", ";
-        }
-        if ((*it).first.is<std::string>()) {
-            os << (*it).first.as<std::string>();
-        } else {
-            os << "[" << (*it).first.as<std::string>() << "]";
-        }
-        os << " = ";
-        if ((*it).second.is<sol::table>()) {
-            os << (*it).second.as<sol::table>();
-        } else {
-            os << (*it).second.as<std::string>();
-        }
-    }
-    return os << '}';
-}
 
 } // namespace Common
 
