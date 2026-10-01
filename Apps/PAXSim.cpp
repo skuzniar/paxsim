@@ -83,32 +83,29 @@ main(int argc, char* argv[])
         }
 
         // Redirect log if needed
-        if (const std::string& file = static_cast<std::string>(config["Application.Log.File"]); !file.empty()) {
+        if (auto [ind, file] = config("Application.Log.File"); ind) {
             Core::log << Core::level::info << "Redirecting log output to: " << file << '\n';
-            Core::log.is(file);
-        }
-
-        // Select the type of server to run
-        const std::string& type = static_cast<std::string>(config["Appliction.Type"]);
-        if (type.empty()) {
-            std::cerr << "Missing Simulator type ('Type') property in: " << cfgfile << '\n';
-            return -1;
+            Core::log.is(static_cast<std::string>(file));
         }
 
         Core::IOContext iocontext;
 
         std::thread thread;
+
+        // Select the type of server to run
+        const std::string& type = static_cast<std::string>(config["Application.Type"]);
+
         if (type == "FIX42") {
             thread = std::thread([&]() { FIX::FIX42::run(config, iocontext); });
-        }
-        if (type == "OUCH50") {
+        } else if (type == "OUCH50") {
             thread = std::thread([&]() { OUCH::OUCH50::run(config, iocontext); });
-        }
-        if (type == "BOE2EQT") {
+        } else if (type == "BOE2EQT") {
             thread = std::thread([&]() { boe::boe2::run(config, iocontext); });
-        }
-        if (type == "BOE3EQT") {
+        } else if (type == "BOE3EQT") {
             thread = std::thread([&]() { boe::boe3::eqt::run(config, iocontext); });
+        } else {
+            std::cerr << "Unknown 'Application.Type' property: " << type << '\n';
+            return -1;
         }
 
         if (interactive) {

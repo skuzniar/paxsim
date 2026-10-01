@@ -33,9 +33,7 @@ private:
     {
         std::map<int, Config> map;
         for (const auto& entry : config) {
-            if (auto [i, b] = map.emplace(entry["Quantity"], entry); b) {
-                log << level::debug << i->second << std::endl;
-            }
+            map.emplace(static_cast<int>(entry["Quantity"]), entry);
         }
         return map;
     }
@@ -45,6 +43,10 @@ private:
         enter   = load(config["Modules.OrderReject.Enter"]);
         replace = load(config["Modules.OrderReject.Replace"]);
         cancel  = load(config["Modules.OrderReject.Cancel"]);
+
+        log << level::debug << here << " Loaded " << enter.size() << " enter entries." << std::endl;
+        log << level::debug << here << " Loaded " << replace.size() << " replace entries." << std::endl;
+        log << level::debug << here << " Loaded " << cancel.size() << " cancel entries." << std::endl;
     }
 };
 

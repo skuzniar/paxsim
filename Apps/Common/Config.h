@@ -52,27 +52,26 @@ public:
         return Config(*json);
     }
 
-    bool operator()(std::string_view option) const
+    std::pair<bool, Config> operator()(std::string_view option) const
     {
         try {
-            this->operator[](option);
+            return { true, this->operator[](option) };
         } catch (...) {
-            return false;
+            return { false, Config{ az::json::Value() } };
         }
-        return true;
     }
 
     explicit operator int() const
     {
-        return m_json.operator int();
+        return m_json.isInteger() ? m_json.operator int() : int();
     }
     explicit operator double() const
     {
-        return m_json.operator double();
+        return m_json.isReal() ? m_json.operator double() : double();
     }
     explicit operator std::string() const
     {
-        return m_json.operator std::string();
+        return m_json.isString() ? m_json.operator std::string() : std::string();
     }
 
     auto begin() const

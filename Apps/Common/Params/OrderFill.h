@@ -32,12 +32,12 @@ private:
     void load(const Config& config)
     {
         for (const auto& entry : config) {
-            int quantity = entry["Quantity"];
+            int quantity = static_cast<int>(entry["Quantity"]);
             for (const auto& fill : entry["Fills"]) {
                 this->fills[quantity].emplace_back(fill);
             }
-            log << level::debug << entry << std::endl;
         }
+        log << level::debug << here << " Loaded " << fills.size() << " fills entries." << std::endl;
     }
     void init(const Config& config)
     {

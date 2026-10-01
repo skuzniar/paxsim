@@ -32,8 +32,8 @@ public:
     {
         for (const auto& entry : config) {
             this->cancel.emplace(Key(static_cast<int>(entry["Quantity"]), static_cast<double>(entry["Price"])), entry);
-            log << level::debug << entry << std::endl;
         }
+        log << level::debug << here << " Loaded " << cancel.size() << " cancel entries." << std::endl;
     }
 
     void init(const Config& config)

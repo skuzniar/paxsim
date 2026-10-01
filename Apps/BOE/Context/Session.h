@@ -65,7 +65,7 @@ struct Session
         Password   = static_cast<std::string>(cfg["Password"]);
         HBInterval = static_cast<int>(cfg["HBInterval"]);
 
-        if (cfg("Connector")) {
+        if (cfg("Connector").first) {
             m_type = Type::Client;
         }
     }

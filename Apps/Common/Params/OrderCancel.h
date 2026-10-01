@@ -35,17 +35,17 @@ private:
         for (const auto& entry : config) {
             if (const auto quantity = static_cast<int>(entry["Quantity"]); quantity != 0) {
                 this->quantity.emplace(quantity, entry);
-                log << level::debug << entry << std::endl;
             }
             if (const auto quantity = static_cast<int>(entry["Leaves"]); quantity != 0) {
                 this->leaves.emplace(quantity, entry);
-                log << level::debug << entry << std::endl;
             }
             if (const auto quantity = static_cast<int>(entry["Below"]); quantity != 0) {
                 this->below.emplace(quantity, entry);
-                log << level::debug << entry << std::endl;
             }
         }
+        log << level::debug << here << " Loaded " << quantity.size() << " quantity entries." << std::endl;
+        log << level::debug << here << " Loaded " << leaves.size() << " leaves entries." << std::endl;
+        log << level::debug << here << " Loaded " << below.size() << " below entries." << std::endl;
     }
 
     void init(const Config& config)
