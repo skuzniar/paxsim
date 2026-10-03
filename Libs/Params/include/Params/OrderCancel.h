@@ -8,9 +8,8 @@
 #include <map>
 #include <cstddef>
 
-namespace Common::Params {
+namespace Params {
 
-using namespace Common;
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
@@ -19,6 +18,8 @@ using PaxSim::Core::log;
 //---------------------------------------------------------------------------------------------------------------------
 class OrderCancel
 {
+    using Config = Common::Config;
+
 public:
     explicit OrderCancel(const Config& config)
     {
@@ -54,5 +55,5 @@ private:
     }
 };
 
-} // namespace Common::Params
+} // namespace Params
 #endif

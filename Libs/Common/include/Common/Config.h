@@ -1,44 +1,14 @@
-#ifndef PaxSim_Core_types_dot_h
-#define PaxSim_Core_types_dot_h
+#ifndef Common_Config_dot_h
+#define Common_Config_dot_h
 
-#include <utility>
-#include <chrono>
+#include <az/json/Reader.h>
+
+#include <filesystem>
+#include <fstream>
 #include <iostream>
-#include <string_view>
 
-namespace PaxSim::Core {
-
-//----------------------------------------------------------------------------------------------------------------------
-// Tri-bool
-//----------------------------------------------------------------------------------------------------------------------
-enum class Result : uint8_t
-{
-    True,
-    False,
-    Maybe
-};
-
-//----------------------------------------------------------------------------------------------------------------------
-// Common timepoint definition
-//----------------------------------------------------------------------------------------------------------------------
-using timepoint = std::chrono::time_point<std::chrono::steady_clock>;
-
-//----------------------------------------------------------------------------------------------------------------------
-// Type aggregate
-//---------------------------------------------------------------------------------------------------------------------
-template<typename... Parts>
-class Aggregate : public Parts...
-{
-public:
-    Aggregate() = default;
-
-    template<typename... Args>
-    explicit Aggregate(Args&&... args)
-      : Parts(std::forward<Args>(args)...)...
-    {
-    }
-};
-
+namespace Common {
+namespace detail {
 //----------------------------------------------------------------------------------------------------------------------
 // String view tokenizer
 //----------------------------------------------------------------------------------------------------------------------
@@ -194,38 +164,92 @@ private:
     std::string_view m_sep;
     bool             m_skip_empty = false;
 };
+} // namespace detail
 
-inline tokenizer
-tokenize(std::string_view str, std::string_view sep, bool skip_empty = false)
+//---------------------------------------------------------------------------------------------------------------------
+// Configuration parser. Parses configuration file and makes options available to the caller.
+//---------------------------------------------------------------------------------------------------------------------
+class Config
 {
-    return { str, sep, skip_empty };
-}
+public:
+    using tokenizer = detail::tokenizer;
 
-//----------------------------------------------------------------------------------------------------------------------
-// Message processing module feature detection
-//----------------------------------------------------------------------------------------------------------------------
-template<typename T, typename R, typename... Args>
-concept has_generic = requires(R (T::*m)(Args...)) { m = &T::generic; };
+    explicit Config(const std::filesystem::path& file)
+    {
+        if (!std::filesystem::is_regular_file(file)) {
+            throw std::runtime_error(file.string() + " is not a regular file.");
+        }
 
-template<typename T, typename... Args>
-concept has_init = requires(void (T::*m)(std::add_lvalue_reference_t<Args>...)) { m = &T::init; };
+        std::ifstream ifs(file);
+        if (!ifs) {
+            throw std::runtime_error("Unable to read " + file.string() + ".");
+        }
 
-template<typename T, typename... Args>
-concept has_eval = requires(void (T::*m)(std::add_lvalue_reference_t<Args>...)) { m = &T::eval; };
+        try {
+            az::json::Reader(m_json).strictly().parse(ifs);
+        } catch (const az::json::Error& e) {
+            std::cout << "Error parising " << file << ". " << e.what() << " line: " << e.line() << " column: " << e.column() << '.' << std::endl;
+        }
+    }
 
-template<typename T, typename... Args>
-concept has_timeout = requires(timepoint (T::*m)(timepoint, std::add_lvalue_reference_t<Args>...)) { m = &T::timeout; };
+    explicit Config(az::json::Value value)
+      : m_json(value)
+    {
+    }
 
-template<typename T, typename... Args>
-concept has_put_generic = requires(bool (T::*m)(Args...)) { m = &T::put; };
+    Config operator[](std::string_view option) const
+    {
+        const az::json::Value* json = &m_json;
+        for (const auto& token : detail::tokenizer(option, ".")) {
+            if (std::string stoken(token); json->has(stoken)) {
+                json = &json->operator[](stoken);
+            } else {
+                throw std::runtime_error("Invalid configuration path: " + std::string(option) + " @" + stoken);
+            }
+        }
+        return Config(*json);
+    }
 
-template<typename T, typename M, typename N>
-// clang-format off
-concept has_put = has_put_generic<T, M,                                                std::add_lvalue_reference_t<N>> ||
-                  has_put_generic<T, std::add_lvalue_reference_t<M>,                   std::add_lvalue_reference_t<N>> ||
-                  has_put_generic<T, std::add_lvalue_reference_t<std::add_const_t<M>>, std::add_lvalue_reference_t<N>>;
-// clang-format on
+    std::pair<bool, Config> operator()(std::string_view option) const
+    {
+        try {
+            return { true, this->operator[](option) };
+        } catch (...) {
+            return { false, Config{ az::json::Value() } };
+        }
+    }
 
-} // namespace PaxSim::Core
+    explicit operator int() const
+    {
+        return m_json.isInteger() ? m_json.operator int() : int();
+    }
+    explicit operator double() const
+    {
+        return m_json.isReal() ? m_json.operator double() : double();
+    }
+    explicit operator std::string() const
+    {
+        return m_json.isString() ? m_json.operator std::string() : std::string();
+    }
+
+    auto begin() const
+    {
+        return m_json.begin();
+    }
+    auto end() const
+    {
+        return m_json.end();
+    }
+
+    friend  std::ostream& operator<<(std::ostream& s, const Config& o)
+    {
+        return s << o.m_json;
+    }
+
+private:
+    az::json::Value m_json;
+};
+
+} // namespace Common
 
 #endif

@@ -6,7 +6,9 @@
 #include "OUCH/Context/OrderBook.h"
 #include "OUCH/Context/FillsBook.h"
 
-#include "Common/Params/FillCancel.h"
+#include "Common/Config.h"
+
+#include "Params/FillCancel.h"
 
 namespace OUCH::Modules {
 
@@ -52,7 +54,7 @@ private:
     template<typename Next>
     void cancel(Next& next)
     {
-        using Key = Common::Params::FillCancel::Key;
+        using Key = Params::FillCancel::Key;
         for (const auto& fill : m_fillsbook.fills) {
             if (fill.live()) {
                 if (auto itr = m_params.cancel.find(Key(fill.quantity(), fill.price())); itr != m_params.cancel.end()) {
@@ -81,10 +83,10 @@ private:
         next.put(m_factory.cancel(fill, order, params));
     }
 
-    Context::OrderBook&         m_orderbook;
-    Context::FillsBook&         m_fillsbook;
-    Common::Params::FillCancel& m_params;
-    Factory                     m_factory;
+    Context::OrderBook& m_orderbook;
+    Context::FillsBook& m_fillsbook;
+    Params::FillCancel& m_params;
+    Factory             m_factory;
 };
 
 } // namespace OUCH::Modules

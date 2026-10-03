@@ -8,9 +8,8 @@
 #include <map>
 #include <cstddef>
 
-namespace Common::Params {
+namespace Params {
 
-using namespace Common;
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
@@ -19,6 +18,8 @@ using PaxSim::Core::log;
 //---------------------------------------------------------------------------------------------------------------------
 class FillCorrect
 {
+    using Config = Common::Config;
+
 public:
     explicit FillCorrect(const Config& config)
     {
@@ -42,5 +43,5 @@ public:
     }
 };
 
-} // namespace Common::Params
+} // namespace Params
 #endif

@@ -4,6 +4,7 @@
 #include "PaxSim/Core/Streamlog.h"
 
 #include "OUCH/Context/Session.h"
+
 #include "Common/Config.h"
 
 namespace OUCH::Modules {

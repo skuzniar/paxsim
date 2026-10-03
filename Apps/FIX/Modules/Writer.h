@@ -10,7 +10,6 @@
 
 namespace FIX::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
 
 using PaxSim::Core::log;
@@ -21,6 +20,8 @@ using PaxSim::Core::log;
 template<typename Factory>
 class Writer
 {
+    using Config = Common::Config;
+
 public:
     template<typename Context>
     Writer(ORWBuffer& obuf, Context& context)

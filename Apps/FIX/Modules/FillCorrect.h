@@ -3,14 +3,15 @@
 
 #include "PaxSim/Core/Streamlog.h"
 
+#include "Common/Config.h"
+
 #include "FIX/Context/OrderBook.h"
 #include "FIX/Context/FillsBook.h"
 
-#include "Common/Params/FillCorrect.h"
+#include "Params/FillCorrect.h"
 
 namespace FIX::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
 
 using PaxSim::Core::log;
@@ -21,6 +22,8 @@ using PaxSim::Core::log;
 template<typename Factory>
 class FillCorrect
 {
+    using Config = Common::Config;
+
 public:
     template<typename Context>
     explicit FillCorrect(Context& context)

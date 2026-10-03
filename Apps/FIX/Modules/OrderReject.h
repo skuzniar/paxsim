@@ -3,13 +3,14 @@
 
 #include "PaxSim/Core/Streamlog.h"
 
+#include "Common/Config.h"
+
 #include "FIX/Context/OrderBook.h"
 
-#include "Common/Params/OrderReject.h"
+#include "Params/OrderReject.h"
 
 namespace FIX::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
 
 using PaxSim::Core::log;
@@ -20,6 +21,8 @@ using PaxSim::Core::log;
 template<typename Factory>
 class OrderReject
 {
+    using Config = Common::Config;
+
 public:
     using NewOrderSingle            = Factory::NewOrderSingle;
     using OrderCancelReplaceRequest = Factory::OrderCancelReplaceRequest;

@@ -3,11 +3,11 @@
 
 #include "PaxSim/Core/Streamlog.h"
 
+#include "Common/Config.h"
+
 #include "OUCH/Context/Session.h"
 #include "OUCH/Context/OrderBook.h"
 #include "OUCH/Context/FillsBook.h"
-
-#include "Common/Config.h"
 
 namespace OUCH::Modules {
 

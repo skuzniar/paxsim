@@ -84,8 +84,9 @@ main(int argc, char* argv[])
 
         // Redirect log if needed
         if (auto [ind, file] = config("Application.Log.File"); ind) {
-            Core::log << Core::level::info << "Redirecting log output to: " << file << '\n';
-            Core::log.is(static_cast<std::string>(file));
+            auto f = static_cast<std::string>(file);
+            Core::log << Core::level::info << "Redirecting log output to: " << f << '\n';
+            Core::log.is(f);
         }
 
         Core::IOContext iocontext;

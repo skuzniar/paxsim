@@ -1,0 +1,9 @@
+add_library(Config INTERFACE)
+
+target_include_directories(Config INTERFACE
+    "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+
+target_link_libraries(Config 
+    INTERFACE az-json
+)

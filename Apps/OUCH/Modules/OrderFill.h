@@ -7,7 +7,7 @@
 #include "OUCH/Context/FillsBook.h"
 
 #include "Common/Config.h"
-#include "Common/Params/OrderFill.h"
+#include "Params/OrderFill.h"
 
 namespace OUCH::Modules {
 
@@ -65,7 +65,7 @@ private:
     }
 
     template<typename Next>
-    void fill(const Order& order, const Common::Params::OrderFill::Fills& fills, Next& next)
+    void fill(const Order& order, const Params::OrderFill::Fills& fills, Next& next)
     {
         log << level::trace << ts << ' ' << here << std::endl;
         for (const auto& f : fills) {
@@ -89,10 +89,10 @@ private:
         }
     }
 
-    Context::OrderBook&        m_orderbook;
-    Context::FillsBook&        m_fillsbook;
-    Common::Params::OrderFill& m_params;
-    Factory                    m_factory;
+    Context::OrderBook& m_orderbook;
+    Context::FillsBook& m_fillsbook;
+    Params::OrderFill&  m_params;
+    Factory             m_factory;
 };
 
 } // namespace OUCH::Modules

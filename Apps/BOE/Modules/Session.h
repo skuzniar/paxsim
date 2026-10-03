@@ -1,9 +1,9 @@
 #ifndef BOE_Modules_Session_dot_h
 #define BOE_Modules_Session_dot_h
 
-#include "BOE/Traits.h"
 #include "PaxSim/Core/Streamlog.h"
 
+#include "BOE/Traits.h"
 #include "BOE/Context/Session.h"
 
 #include "Common/Config.h"

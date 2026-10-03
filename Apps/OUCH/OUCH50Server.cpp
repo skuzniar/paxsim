@@ -19,10 +19,10 @@
 
 #include "OUCH50/Factory.h"
 
-#include "Common/Params/OrderReject.h"
-#include "Common/Params/OrderCancel.h"
-#include "Common/Params/OrderFill.h"
-#include "Common/Params/FillCancel.h"
+#include "Params/OrderReject.h"
+#include "Params/OrderCancel.h"
+#include "Params/OrderFill.h"
+#include "Params/FillCancel.h"
 
 #include "Common/Config.h"
 
@@ -31,7 +31,7 @@ namespace OUCH::OUCH50 {
 struct Server
 {
     // Params is an aggregate of parameter classes.
-    using Params = PaxSim::Core::Aggregate<Common::Params::OrderReject, Common::Params::OrderFill, Common::Params::OrderCancel, Common::Params::FillCancel>;
+    using Params = PaxSim::Core::Aggregate<Params::OrderReject, Params::OrderFill, Params::OrderCancel, Params::FillCancel>;
 
     // Context is an aggregate of context classes.
     using Context = PaxSim::Core::Aggregate<Context::Session, Context::OrderBook, Context::FillsBook, Params>;

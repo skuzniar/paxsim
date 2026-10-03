@@ -18,22 +18,21 @@
 #include "Modules/FillCorrect.h"
 #include "Modules/Writer.h"
 
-#include "FIX/FIX42/Factory.h"
+#include "FIX42/Factory.h"
 
-#include "Common/Params/OrderReject.h"
-#include "Common/Params/OrderCancel.h"
-#include "Common/Params/OrderFill.h"
+#include "Params/OrderReject.h"
+#include "Params/OrderCancel.h"
+#include "Params/OrderFill.h"
 
-#include "Common/Params/FillCancel.h"
-#include "Common/Params/FillCorrect.h"
+#include "Params/FillCancel.h"
+#include "Params/FillCorrect.h"
 
 namespace FIX::FIX42 {
 
 struct Server
 {
     // Params is an aggregate of parameter classes.
-    using Params =
-        Aggregate<Common::Params::OrderReject, Common::Params::OrderFill, Common::Params::OrderCancel, Common::Params::FillCancel, Common::Params::FillCorrect>;
+    using Params = Aggregate<Params::OrderReject, Params::OrderFill, Params::OrderCancel, Params::FillCancel, Params::FillCorrect>;
 
     // Context is an aggregate of context classes.
     using Context = Aggregate<Context::Session, Context::OrderBook, Context::FillsBook, Params>;

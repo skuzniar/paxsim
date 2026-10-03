@@ -3,11 +3,12 @@
 
 #include "PaxSim/Core/Streamlog.h"
 
+#include "Common/Config.h"
+
 #include "OUCH/Context/OrderBook.h"
 #include "OUCH/Context/FillsBook.h"
 
-#include "Common/Config.h"
-#include "Common/Params/OrderCancel.h"
+#include "Params/OrderCancel.h"
 
 namespace OUCH::Modules {
 
@@ -85,10 +86,10 @@ private:
         next.put(m_factory.cancel(order, params));
     }
 
-    Context::OrderBook&          m_orderbook;
-    Context::FillsBook&          m_fillsbook;
-    Common::Params::OrderCancel& m_params;
-    Factory                      m_factory;
+    Context::OrderBook&  m_orderbook;
+    Context::FillsBook&  m_fillsbook;
+    Params::OrderCancel& m_params;
+    Factory              m_factory;
 };
 
 } // namespace OUCH::Modules

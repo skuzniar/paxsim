@@ -3,9 +3,11 @@
 
 #include "PaxSim/Core/Streamlog.h"
 
+#include "Common/Config.h"
+
 #include "OUCH/Context/OrderBook.h"
 
-#include "Common/Params/OrderReject.h"
+#include "Params/OrderReject.h"
 
 namespace OUCH::Modules {
 
@@ -109,9 +111,9 @@ private:
         return true;
     }
 
-    Context::OrderBook&          m_orderbook;
-    Common::Params::OrderReject& m_params;
-    Factory                      m_factory;
+    Context::OrderBook&  m_orderbook;
+    Params::OrderReject& m_params;
+    Factory              m_factory;
 };
 
 } // namespace OUCH::Modules

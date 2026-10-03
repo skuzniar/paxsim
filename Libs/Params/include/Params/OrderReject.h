@@ -8,7 +8,7 @@
 #include <map>
 #include <cstddef>
 
-namespace Common::Params {
+namespace Params {
 
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
@@ -18,6 +18,8 @@ using PaxSim::Core::log;
 //---------------------------------------------------------------------------------------------------------------------
 class OrderReject
 {
+    using Config = Common::Config;
+
 public:
     explicit OrderReject(const Config& config)
     {
@@ -50,5 +52,5 @@ private:
     }
 };
 
-} // namespace Common::Params
+} // namespace Params
 #endif

@@ -4,8 +4,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 list(APPEND CMAKE_MODULE_PATH
     "${CMAKE_SOURCE_DIR}/cmake")
 
-find_package(Lua REQUIRED)
-find_package(Sol2 REQUIRED)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -17,7 +15,6 @@ set(ALL_EXAMPLES
     Echo-4 
     Echo-5 
     Echo-6 
-    Echo-7
 )
 
 message("Examples to be built: ${ALL_EXAMPLES}")
@@ -28,13 +25,10 @@ foreach(example ${ALL_EXAMPLES})
     target_sources(${example} PRIVATE ${example}.cpp)
 
     target_include_directories(${example} PRIVATE 
-        ${LUA_INCLUDE_DIR}
-        ${SOL2_INCLUDE_DIR}
     )
 
     target_link_libraries(${example} PRIVATE
-        PaxSim::Core
-        ${LUA_LIBRARIES} 
+        PaxSim
         Boost::boost 
         Threads::Threads
     )

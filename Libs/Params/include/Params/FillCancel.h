@@ -1,5 +1,5 @@
-#ifndef Common_Params_FillCancel_dot_h
-#define Common_Params_FillCancel_dot_h
+#ifndef Params_FillCancel_dot_h
+#define Params_FillCancel_dot_h
 
 #include "PaxSim/Core/Streamlog.h"
 
@@ -8,9 +8,8 @@
 #include <map>
 #include <cstddef>
 
-namespace Common::Params {
+namespace Params {
 
-using namespace Common;
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
@@ -19,6 +18,8 @@ using PaxSim::Core::log;
 //---------------------------------------------------------------------------------------------------------------------
 class FillCancel
 {
+    using Config = Common::Config;
+
 public:
     explicit FillCancel(const Config& config)
     {
@@ -42,5 +43,5 @@ public:
     }
 };
 
-} // namespace Common::Params
+} // namespace Params
 #endif

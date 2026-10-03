@@ -3,15 +3,12 @@
 
 #include "PaxSim/Core/Streamlog.h"
 
-#include "FIX/Context/Session.h"
-
 #include "Common/Config.h"
 
-#include "FIX/Types.h"
+#include "FIX/Context/Session.h"
 
 namespace FIX::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
 
 using PaxSim::Core::log;
@@ -22,6 +19,8 @@ using PaxSim::Core::log;
 template<typename Factory>
 class Session
 {
+    using Config = Common::Config;
+
 public:
     using State = Context::Session::State;
 
@@ -37,7 +36,7 @@ public:
         m_context.state(State::LogonWait);
     }
 
-    template<typename Context>
+    template<typename Config, typename Context>
     Session(const Config&, Context& context)
       : m_context(context)
       , m_factory(context)

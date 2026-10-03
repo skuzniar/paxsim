@@ -6,11 +6,12 @@
 #include "FIX/Context/OrderBook.h"
 #include "FIX/Context/FillsBook.h"
 
-#include "Common/Params/OrderCancel.h"
+#include "Common/Config.h"
+
+#include "Params/OrderCancel.h"
 
 namespace FIX::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
 
 using PaxSim::Core::log;
@@ -21,6 +22,8 @@ using PaxSim::Core::log;
 template<typename Factory>
 class OrderCancel
 {
+    using Config = Common::Config;
+
 public:
     template<typename Context>
     explicit OrderCancel(Context& context)

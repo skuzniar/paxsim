@@ -10,7 +10,6 @@
 
 namespace FIX::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
@@ -20,6 +19,8 @@ using PaxSim::Core::log;
 template<typename Factory>
 class Feeder
 {
+    using Config = Common::Config;
+
 public:
     using State = Context::Session::State;
 

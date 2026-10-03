@@ -79,9 +79,10 @@ main(int argc, char* argv[])
         }
 
         // Redirect log if needed
-        if (const std::string& file = static_cast<std::string>(config["Application.Log.File"]); !file.empty()) {
-            Core::log << Core::level::info << "Redirecting log output to: " << file << '\n';
-            Core::log.is(file);
+        if (auto [ind, file] = config("Application.Log.File"); ind) {
+            auto f = static_cast<std::string>(file);
+            Core::log << Core::level::info << "Redirecting log output to: " << f << '\n';
+            Core::log.is(f);
         }
 
         // Select the type of client to run

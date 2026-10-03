@@ -8,7 +8,6 @@
 
 namespace FIX::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
 
 using PaxSim::Core::log;
@@ -19,6 +18,8 @@ using PaxSim::Core::log;
 template<typename Factory>
 class Parser
 {
+    using Config = Common::Config;
+
 public:
     template<typename Context>
     Parser(IRWBuffer& ibuf, Context& context)

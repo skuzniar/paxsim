@@ -3,15 +3,12 @@
 
 #include "PaxSim/Core/Streamlog.h"
 
-#include "Common/Config.h"
-
 #include "FIX/Context/OrderBook.h"
 #include "FIX/Context/FillsBook.h"
 #include "FIX/Types.h"
 
 namespace FIX::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
 
 using PaxSim::Core::log;
@@ -35,7 +32,7 @@ public:
     {
     }
 
-    template<typename Context>
+    template<typename Config, typename Context>
     OrderFlow(const Config&, Context& context)
       : m_orderbook(context)
       , m_fillsbook(context)
