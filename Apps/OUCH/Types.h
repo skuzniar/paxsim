@@ -321,6 +321,12 @@ public:
         return m_status;
     }
 
+    bool alive() const
+    {
+        return m_status != Status::Canceled && m_status != Status::DoneForDay && m_status != Status::Expired && m_status != Status::Rejected &&
+               m_status != Status::Suspended && m_status != Status::Stopped;
+    }
+
     void status(Status s) const
     {
         m_status = s;

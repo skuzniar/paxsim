@@ -58,7 +58,7 @@ private:
         log << level::trace << ts << here << std::endl;
         for (const auto& order : m_orderbook.orders) {
             if (auto itr = m_params.fills.find(order.quantity()); itr != m_params.fills.end()) {
-                if (order.status() != Order::Status::Filled && order.status() != Order::Status::PartiallyFilled) {
+                if (order.alive() && order.status() != Order::Status::Filled && order.status() != Order::Status::PartiallyFilled) {
                     fill(order, itr->second, next);
                 }
             }
@@ -81,7 +81,7 @@ private:
         Fill f = Fill(order, static_cast<int>(fill["Quantity"]), static_cast<double>(fill["Price"]));
 
         auto [cumqty, avgprx] = m_fillsbook.cumulative(order.orderID());
-        if (order.quantity() - cumqty > f.quantity()) {
+        if (order.quantity() - cumqty >= f.quantity()) {
             if (!m_fillsbook.fills.insert(f).second) {
                 log << level::error << ts << here << ' ' << "Unable to record the execution for order: " << order.clordID() << std::endl;
                 return;

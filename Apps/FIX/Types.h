@@ -505,6 +505,12 @@ public:
         m_status = s;
     }
 
+    bool alive() const
+    {
+        return m_status != Status::Canceled && m_status != Status::DoneForDay && m_status != Status::Expired && m_status != Status::Rejected &&
+               m_status != Status::Suspended && m_status != Status::Stopped;
+    }
+
     const std::string& symbol() const
     {
         return m_symbol;
