@@ -298,8 +298,9 @@ struct Timestamp
 
     static Timestamp now()
     {
-        // TODO
-        return { static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) };
+        auto since_epoch    = std::chrono::floor<std::chrono::nanoseconds>(std::chrono::system_clock::now());
+        auto since_midnight = since_epoch - std::chrono::floor<std::chrono::days>(since_epoch);
+        return static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::nanoseconds>(since_midnight).count());
     }
 
     operator uint64_t() const
