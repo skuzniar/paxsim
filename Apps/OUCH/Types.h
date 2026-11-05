@@ -1,7 +1,7 @@
 #ifndef OUCH_Types_dot_h
 #define OUCH_Types_dot_h
 
-#include "OUCH/OUCH50//Types.h"
+#include "OUCH/OUCH50/Types.h"
 
 #include <ostream>
 #include <iostream>

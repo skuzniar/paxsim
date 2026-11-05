@@ -1,7 +1,7 @@
 #ifndef BOE_Types_dot_h
 #define BOE_Types_dot_h
 
-#include "BOE/BOE2//Types.h"
+#include "BOE/BOE2/Types.h"
 
 #include <ostream>
 #include <iostream>

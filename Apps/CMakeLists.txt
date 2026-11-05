@@ -4,6 +4,7 @@ find_package(Threads REQUIRED)
 set(ALL_APPS
     PAXSim
     PAXSimClient
+    PAXSimTest
 )
 
 message("Apps to be built: ${ALL_APPS}")
@@ -30,3 +31,4 @@ endforeach()
 add_subdirectory(FIX)
 add_subdirectory(OUCH)
 add_subdirectory(BOE)
+add_subdirectory(TXSE)
