@@ -1,12 +1,12 @@
-#ifndef BOE_Utils_dot_h
-#define BOE_Utils_dot_h
+#ifndef Common_Utils_dot_h
+#define Common_Utils_dot_h
 
 #include <algorithm>
 #include <string>
 #include <chrono>
 #include <cstddef>
 
-namespace boe {
+namespace Common {
 
 //---------------------------------------------------------------------------------------------------------------------
 // Utilities to fill fixed size characted arrays
@@ -202,6 +202,6 @@ to_utchmsn(std::chrono::nanoseconds n)
     return buffer;
 }
 
-} // namespace boe
+} // namespace Common
 
 #endif

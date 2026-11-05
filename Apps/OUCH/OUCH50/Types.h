@@ -1,7 +1,7 @@
 #ifndef OUCH_OUCH50_Types_h
 #define OUCH_OUCH50_Types_h
 
-#include "OUCH/Utils.h"
+#include "Common/Utils.h"
 
 #include <algorithm>
 #include <concepts>
@@ -157,7 +157,7 @@ struct Alpha
     template<typename I>
     Alpha(I v)
     {
-        ritoa(value.data(), value.size(), v);
+        Common::ritoa(value.data(), value.size(), v);
     }
 
     template<size_t K>
@@ -315,7 +315,7 @@ to_string(const Timestamp& o)
 {
     constexpr long secsinday = 60L * 60 * 24;
     long           days      = time(nullptr) / secsinday;
-    return to_utcstring(std::chrono::nanoseconds(days * secsinday * 1000000000 + o.value), 9);
+    return Common::to_utcstring(std::chrono::nanoseconds(days * secsinday * 1000000000 + o.value), 9);
 }
 
 inline std::ostream&

@@ -1,7 +1,7 @@
 #ifndef BOE_BOE2_Types_h
 #define BOE_BOE2_Types_h
 
-#include "BOE/Utils.h"
+#include "Common/Utils.h"
 
 #include <algorithm>
 #include <cmath>
