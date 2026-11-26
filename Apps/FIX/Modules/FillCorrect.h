@@ -55,11 +55,12 @@ private:
     template<typename Next>
     void correct(Next& next)
     {
-        using Key = Params::FillCorrect::Key;
         for (const auto& fill : m_fillsbook.fills) {
             if (fill.live()) {
-                if (auto itr = m_params.correct.find(Key(fill.quantity(), fill.price())); itr != m_params.correct.end()) {
-                    correct(fill, itr->second, next);
+                for (const auto& [selector, qualifier] : m_params) {
+                    if (selector.empty() || m_factory.matches(fill, selector)) {
+                        correct(fill, qualifier, next);
+                    }
                 }
             }
         }

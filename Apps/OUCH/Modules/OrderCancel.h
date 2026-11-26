@@ -54,26 +54,9 @@ private:
     void cancell(Next& next)
     {
         for (const auto& order : m_orderbook.orders) {
-            if (auto itr = m_params.quantity.find(order.quantity()); itr != m_params.quantity.end()) {
-                if (order.status() != Order::Status::Canceled) {
-                    cancel(order, itr->second, next);
-                }
-            }
-        }
-        for (const auto& order : m_orderbook.orders) {
-            auto [cumqty, avgprx] = m_fillsbook.cumulative(order.orderID());
-            auto leaves           = order.quantity() - cumqty;
-            if (auto itr = m_params.leaves.find(order.quantity()); itr != m_params.leaves.end()) {
-                if (order.status() != Order::Status::Canceled) {
-                    cancel(order, itr->second, next);
-                }
-            }
-            // Scan below quantity parameters in ascending order to see if we get hits
-            for (const auto& [below, params] : m_params.below) {
-                if (leaves < below) {
-                    if (order.status() != Order::Status::Canceled) {
-                        cancel(order, params, next);
-                    }
+            for (const auto& [selector, qualifier] : m_params) {
+                if (selector.empty() || m_factory.matches(order, selector)) {
+                    cancel(order, qualifier, next);
                 }
             }
         }

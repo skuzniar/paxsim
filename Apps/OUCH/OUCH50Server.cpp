@@ -17,12 +17,18 @@
 #include "Modules/FillCancel.h"
 #include "Modules/Writer.h"
 
+#include "Control/Parser.h"
+#include "Control/Admin.h"
+#include "Control/Loader.h"
+#include "Control/Writer.h"
+
 #include "OUCH50/Factory.h"
 
 #include "Params/OrderReject.h"
 #include "Params/OrderCancel.h"
 #include "Params/OrderFill.h"
 #include "Params/FillCancel.h"
+#include "Params/Store.h"
 
 #include "Common/Config.h"
 
@@ -31,7 +37,7 @@ namespace OUCH::OUCH50 {
 struct Server
 {
     // Params is an aggregate of parameter classes.
-    using Params = PaxSim::Core::Aggregate<Params::OrderReject, Params::OrderFill, Params::OrderCancel, Params::FillCancel>;
+    using Params = Params::Store<Params::OrderReject, Params::OrderFill, Params::OrderCancel, Params::FillCancel>;
 
     // Context is an aggregate of context classes.
     using Context = PaxSim::Core::Aggregate<Context::Session, Context::OrderBook, Context::FillsBook, Params>;
@@ -46,9 +52,17 @@ struct Server
     using FillCancel              = OUCH::Modules::FillCancel<OUCH::OUCH50::Factory>;
     using Writer                  = OUCH::Modules::Writer<OUCH::OUCH50::Factory>;
 
-    // Handler will be used once the session has been created.
+    // Handler defines message processing pipeline
     using Handler = PaxSim::Core::
         Pipeline<Parser, PaxSim::Core::Flareout<Session, OrderReject, OrderFlow, OrderCancelOnDisconnect, OrderCancel, FillCancel, OrderFill>, Writer>;
+
+    using CtlParser = Control::Parser;
+    using CtlAdmin  = Control::Admin<Params>;
+    using CtlLoader = Control::Loader<Params>;
+    using CtlWriter = Control::Writer;
+
+    // Controller handles control commands
+    using Controller = PaxSim::Core::Pipeline<CtlParser, PaxSim::Core::Flareout<CtlAdmin, CtlLoader>, CtlWriter>;
 };
 
 void
@@ -57,10 +71,14 @@ run(const Common::Config& config, PaxSim::Core::IOContext& iocontext)
     // Create application context
     Server::Context context(config);
 
-    // Create acceptor that will activate server handler once the connection has been established
-    PaxSim::Core::Acceptor<typename Server::Handler> acceptor(iocontext, static_cast<int>(config["Session.Acceptor.Port"]));
+    // Create application acceptor that will activate server handler once the connection has been established
+    PaxSim::Core::Acceptor<typename Server::Handler> appacceptor(iocontext, static_cast<int>(config["Session.Acceptor.Port"]));
+    appacceptor.listen(config, context);
 
-    acceptor.listen(config, context);
+    // Create controller acceptor that will activate control handler once the connection has been established
+    PaxSim::Core::Acceptor<typename Server::Controller> ctlacceptor(iocontext, static_cast<int>(config["Control.Acceptor.Port"]));
+    ctlacceptor.listen(config, context);
+
     iocontext.run();
 }
 

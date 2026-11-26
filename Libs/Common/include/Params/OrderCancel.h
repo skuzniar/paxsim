@@ -2,10 +2,7 @@
 #define Common_Params_OrderCancel_dot_h
 
 #include "PaxSim/Core/Streamlog.h"
-
-#include "Common/Config.h"
-
-#include <map>
+#include "Generic.h"
 #include <cstddef>
 
 namespace Params {
@@ -14,44 +11,28 @@ using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
-// Order cancel scenario parameters.
+// Order Cancel scenario parameters.
 //---------------------------------------------------------------------------------------------------------------------
-class OrderCancel
+class OrderCancel : public Generic
 {
-    using Config = Common::Config;
-
 public:
     explicit OrderCancel(const Config& config)
     {
         init(config);
     }
 
-    std::map<int, Config> quantity;
-    std::map<int, Config> leaves;
-    std::map<int, Config> below;
-
-private:
-    auto load(const Config& config)
-    {
-        for (const auto& entry : config) {
-            if (const auto quantity = static_cast<int>(entry["Quantity"]); quantity != 0) {
-                this->quantity.emplace(quantity, entry);
-            }
-            if (const auto quantity = static_cast<int>(entry["Leaves"]); quantity != 0) {
-                this->leaves.emplace(quantity, entry);
-            }
-            if (const auto quantity = static_cast<int>(entry["Below"]); quantity != 0) {
-                this->below.emplace(quantity, entry);
-            }
-        }
-        log << level::debug << here << " Loaded " << quantity.size() << " quantity entries." << std::endl;
-        log << level::debug << here << " Loaded " << leaves.size() << " leaves entries." << std::endl;
-        log << level::debug << here << " Loaded " << below.size() << " below entries." << std::endl;
-    }
-
     void init(const Config& config)
     {
-        load(config["Modules.OrderCancel"]);
+        if (auto [present, cfg] = config("Control.Order.Cancel"); present) {
+            auto count = load(cfg);
+            log << level::debug << here << " Loaded " << count << " Order Cancel entries." << std::endl;
+        }
+    }
+
+    void clear()
+    {
+        auto count = Generic::clear();
+        log << level::debug << here << " Cleared " << count << " Order Cancel entries." << std::endl;
     }
 };
 

@@ -2,10 +2,7 @@
 #define Common_Params_OrderReject_dot_h
 
 #include "PaxSim/Core/Streamlog.h"
-
-#include "Common/Config.h"
-
-#include <map>
+#include "Generic.h"
 #include <cstddef>
 
 namespace Params {
@@ -14,43 +11,147 @@ using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
-// Order reject scenario parameters.
+// Order Reject scenario parameters.
 //---------------------------------------------------------------------------------------------------------------------
 class OrderReject
 {
+public:
     using Config = Common::Config;
 
-public:
-    explicit OrderReject(const Config& config)
+    class Enter : public Generic
     {
-        init(config);
-    }
-
-    std::map<int, Config> enter;
-    std::map<int, Config> replace;
-    std::map<int, Config> cancel;
-
-private:
-    static auto load(const Config& config)
-    {
-        std::map<int, Config> map;
-        for (const auto& entry : config) {
-            map.emplace(static_cast<int>(entry["Quantity"]), entry);
+    public:
+        explicit Enter(const Config& config)
+        {
+            init(config);
         }
-        return map;
+
+        void init(const Config& config)
+        {
+            if (auto [present, cfg] = config("Control.Order.Reject.Enter"); present) {
+                auto count = load(cfg);
+                log << level::debug << here << " Loaded " << count << " Reject Enter entries." << std::endl;
+            }
+        }
+
+        void clear()
+        {
+            auto count = Generic::clear();
+            log << level::debug << here << " Cleared " << count << " Reject Enter entries." << std::endl;
+        }
+    };
+
+    class Replace : public Generic
+    {
+    public:
+        explicit Replace(const Config& config)
+        {
+            init(config);
+        }
+
+        void init(const Config& config)
+        {
+            if (auto [present, cfg] = config("Control.Order.Reject.Replace"); present) {
+                auto count = load(cfg);
+                log << level::debug << here << " Loaded " << count << " Reject Replace entries." << std::endl;
+            }
+        }
+
+        void clear()
+        {
+            auto count = Generic::clear();
+            log << level::debug << here << " Cleared " << count << " Reject Replace entries." << std::endl;
+        }
+    };
+
+    class Cancel : public Generic
+    {
+    public:
+        explicit Cancel(const Config& config)
+        {
+            init(config);
+        }
+
+        void init(const Config& config)
+        {
+            if (auto [present, cfg] = config("Control.Order.Reject.Cancel"); present) {
+                auto count = load(cfg);
+                log << level::debug << here << " Loaded " << count << " Reject Cancel entries." << std::endl;
+            }
+        }
+
+        void clear()
+        {
+            auto count = Generic::clear();
+            log << level::debug << here << " Cleared " << count << " Reject Cancel entries." << std::endl;
+        }
+    };
+
+    explicit OrderReject(const Config& config)
+      : enter(config)
+      , replace(config)
+      , cancel(config)
+    {
     }
 
     void init(const Config& config)
     {
-        enter   = load(config["Modules.OrderReject.Enter"]);
-        replace = load(config["Modules.OrderReject.Replace"]);
-        cancel  = load(config["Modules.OrderReject.Cancel"]);
+        enter.init(config);
+        replace.init(config);
+        cancel.init(config);
+    }
 
-        log << level::debug << here << " Loaded " << enter.size() << " enter entries." << std::endl;
-        log << level::debug << here << " Loaded " << replace.size() << " replace entries." << std::endl;
-        log << level::debug << here << " Loaded " << cancel.size() << " cancel entries." << std::endl;
+    void clear()
+    {
+        enter.clear();
+        replace.clear();
+        cancel.clear();
+    }
+
+    Enter   enter;
+    Replace replace;
+    Cancel  cancel;
+};
+
+/*
+//---------------------------------------------------------------------------------------------------------------------
+// Order Reject Replace scenario parameters.
+//---------------------------------------------------------------------------------------------------------------------
+class OrderRejectReplace : public Generic<Common::Config>
+{
+public:
+    explicit OrderRejectReplace(const Config& config)
+    {
+        init(config);
+    }
+
+    void init(const Config& config)
+    {
+        if (auto [present, cfg] = config("Order.Reject.Replace"); present) {
+            load(cfg);
+        }
     }
 };
+
+//---------------------------------------------------------------------------------------------------------------------
+// Order Reject Cancel scenario parameters.
+//---------------------------------------------------------------------------------------------------------------------
+class OrderRejectCancel : public Generic<Common::Config>
+{
+public:
+    explicit OrderRejectCancel(const Config& config)
+    {
+        init(config);
+    }
+
+    void init(const Config& config)
+    {
+        if (auto [present, cfg] = config("Order.Reject.Cancel"); present) {
+            load(cfg);
+        }
+    }
+};
+*/
 
 } // namespace Params
 #endif

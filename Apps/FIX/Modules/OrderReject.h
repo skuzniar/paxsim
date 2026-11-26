@@ -69,10 +69,11 @@ private:
     template<typename Next>
     bool reject(const NewOrderSingle& msg, Next& next)
     {
-        auto quantity = to_int<int>(msg[tag::OrderQty]);
-        if (auto pit = m_params.enter.find(quantity); pit != m_params.enter.end()) {
-            next.put(m_factory.reject(msg, pit->second));
-            return false;
+        for (const auto& [selector, qualifier] : m_params.enter) {
+            if (selector.empty() || m_factory.matches(msg, selector)) {
+                next.put(m_factory.reject(msg, qualifier));
+                return false;
+            }
         }
         return true;
     }
@@ -82,10 +83,11 @@ private:
     {
         auto& idx = m_orderbook.orders.get<clordid>();
         if (auto itr = idx.find(Factory::clordID(msg)); itr != idx.end()) {
-            int quantity = itr->quantity();
-            if (auto pit = m_params.replace.find(quantity); pit != m_params.replace.end()) {
-                next.put(m_factory.reject(msg, *itr, pit->second));
-                return false;
+            for (const auto& [selector, qualifier] : m_params.replace) {
+                if (selector.empty() || m_factory.matches(*itr, selector)) {
+                    next.put(m_factory.reject(msg, *itr, qualifier));
+                    return false;
+                }
             }
         }
         return true;
@@ -96,10 +98,11 @@ private:
     {
         auto& idx = m_orderbook.orders.get<clordid>();
         if (auto itr = idx.find(Factory::clordID(msg)); itr != idx.end()) {
-            int quantity = itr->quantity();
-            if (auto pit = m_params.cancel.find(quantity); pit != m_params.cancel.end()) {
-                next.put(m_factory.reject(msg, *itr, pit->second));
-                return false;
+            for (const auto& [selector, qualifier] : m_params.cancel) {
+                if (selector.empty() || m_factory.matches(*itr, selector)) {
+                    next.put(m_factory.reject(msg, *itr, qualifier));
+                    return false;
+                }
             }
         }
         return true;

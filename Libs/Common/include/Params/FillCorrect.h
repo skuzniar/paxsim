@@ -2,10 +2,7 @@
 #define Common_Params_FillCorrect_dot_h
 
 #include "PaxSim/Core/Streamlog.h"
-
-#include "Common/Config.h"
-
-#include <map>
+#include "Generic.h"
 #include <cstddef>
 
 namespace Params {
@@ -14,32 +11,28 @@ using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
-// Fill correct scenario parameters.
+// Fill Correct scenario parameters.
 //---------------------------------------------------------------------------------------------------------------------
-class FillCorrect
+class FillCorrect : public Generic
 {
-    using Config = Common::Config;
-
 public:
     explicit FillCorrect(const Config& config)
     {
         init(config);
     }
 
-    using Key = std::pair<unsigned, double>;
-    std::map<Key, Config> correct;
-
-    auto load(const Config& config)
+    void init(const Config& config)
     {
-        for (const auto& entry : config) {
-            this->correct.emplace(Key(static_cast<int>(entry["Quantity"]), static_cast<double>(entry["Price"])), entry);
-            log << level::debug << entry << std::endl;
+        if (auto [present, cfg] = config("Control.Fill.Correct"); present) {
+            auto count = load(cfg);
+            log << level::debug << here << " Loaded " << count << " Fill Correct entries." << std::endl;
         }
     }
 
-    void init(const Config& config)
+    void clear()
     {
-        load(config["Modules.FillCorrect"]);
+        auto count = Generic::clear();
+        log << level::debug << here << " Cleared " << count << " Fill Correct entries." << std::endl;
     }
 };
 

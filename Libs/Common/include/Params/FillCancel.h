@@ -2,10 +2,7 @@
 #define Params_FillCancel_dot_h
 
 #include "PaxSim/Core/Streamlog.h"
-
-#include "Common/Config.h"
-
-#include <map>
+#include "Generic.h"
 #include <cstddef>
 
 namespace Params {
@@ -14,32 +11,28 @@ using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
-// Fill cancel scenario parameters.
+// Fill Cancel scenario parameters.
 //---------------------------------------------------------------------------------------------------------------------
-class FillCancel
+class FillCancel : public Generic
 {
-    using Config = Common::Config;
-
 public:
     explicit FillCancel(const Config& config)
     {
         init(config);
     }
 
-    using Key = std::pair<unsigned, double>;
-    std::map<Key, Config> cancel;
-
-    auto load(const Config& config)
-    {
-        for (const auto& entry : config) {
-            this->cancel.emplace(Key(static_cast<int>(entry["Quantity"]), static_cast<double>(entry["Price"])), entry);
-        }
-        log << level::debug << here << " Loaded " << cancel.size() << " cancel entries." << std::endl;
-    }
-
     void init(const Config& config)
     {
-        load(config["Modules.FillCancel"]);
+        if (auto [present, cfg] = config("Control.Fill.Cancel"); present) {
+            auto count = load(cfg);
+            log << level::debug << here << " Loaded " << count << " Fill Cancel entries." << std::endl;
+        }
+    }
+
+    void clear()
+    {
+        auto count = Generic::clear();
+        log << level::debug << here << " Cleared " << count << " Fill Cancel entries." << std::endl;
     }
 };
 

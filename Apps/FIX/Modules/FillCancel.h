@@ -55,11 +55,12 @@ private:
     template<typename Next>
     void cancel(Next& next)
     {
-        using Key = Params::FillCancel::Key;
         for (const auto& fill : m_fillsbook.fills) {
             if (fill.live()) {
-                if (auto itr = m_params.cancel.find(Key(fill.quantity(), fill.price())); itr != m_params.cancel.end()) {
-                    cancel(fill, itr->second, next);
+                for (const auto& [selector, qualifier] : m_params) {
+                    if (selector.empty() || m_factory.matches(fill, selector)) {
+                        cancel(fill, qualifier, next);
+                    }
                 }
             }
         }

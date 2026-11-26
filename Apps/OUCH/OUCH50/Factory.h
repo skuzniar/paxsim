@@ -140,6 +140,12 @@ public:
         return Order(msg.userRefNum, msg.buySellIndicator, msg.orderBook, msg.quantity, msg.price);
     }
 
+    static bool matches(const EnterOrder& msg, const Config& config)
+    {
+        int quantity = static_cast<int>(config["Quantity"]);
+        return msg.quantity == quantity;
+    }
+
     auto accept(const EnterOrder& msg, const Order& order)
     {
         OrderAccepted omsg;
@@ -205,6 +211,12 @@ public:
     {
         Order oo(msg.newUserRefNum, o.side(), o.bookID(), msg.quantity, msg.price);
         return oo;
+    }
+
+    static bool matches(const Order& order, const Config& config)
+    {
+        int quantity = static_cast<int>(config["Quantity"]);
+        return order.quantity() == quantity;
     }
 
     auto accept(const ReplaceOrder& msg, const Order& order)
@@ -342,6 +354,14 @@ public:
     //-----------------------------------------------------------------------------------------------------------------
     // Trade and trade cancel handling
     //-----------------------------------------------------------------------------------------------------------------
+    static bool matches(const Fill& fill, const Config& config)
+    {
+        auto quantity = static_cast<int>(config["Quantity"]);
+        auto price    = static_cast<double>(config["Price"]);
+        // TODO - handle just one param
+        return fill.quantity() == quantity && fill.price() == price;
+    }
+
     auto report(const Fill& fill, const Order& order)
     {
         OrderExecuted omsg;

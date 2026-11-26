@@ -188,7 +188,28 @@ public:
         try {
             az::json::Reader(m_json).strictly().parse(ifs);
         } catch (const az::json::Error& e) {
-            std::cout << "Error parising " << file << ". " << e.what() << " line: " << e.line() << " column: " << e.column() << '.' << std::endl;
+            throw std::runtime_error("Error parsing file " + file.string() + ". " + e.what() + " line: " + std::to_string(e.line()) +
+                                     " column: " + std::to_string(e.column()) + '.');
+        }
+    }
+
+    explicit Config(const std::string& str)
+    {
+        try {
+            az::json::Reader(m_json).strictly().parse(str);
+        } catch (const az::json::Error& e) {
+            throw std::runtime_error("Error parsing string " + str + ". " + e.what() + " line: " + std::to_string(e.line()) +
+                                     " column: " + std::to_string(e.column()) + '.');
+        }
+    }
+
+    explicit Config(const char* ptr)
+    {
+        try {
+            az::json::Reader(m_json).strictly().parse(ptr);
+        } catch (const az::json::Error& e) {
+            throw std::runtime_error("Error parsing string " + std::string(ptr) + ". " + e.what() + " line: " + std::to_string(e.line()) +
+                                     " column: " + std::to_string(e.column()) + '.');
         }
     }
 
@@ -219,6 +240,11 @@ public:
         }
     }
 
+    bool empty() const
+    {
+        return m_json.empty();
+    }
+
     explicit operator int() const
     {
         return m_json.isInteger() ? m_json.operator int() : int();
@@ -241,7 +267,7 @@ public:
         return m_json.end();
     }
 
-    friend  std::ostream& operator<<(std::ostream& s, const Config& o)
+    friend std::ostream& operator<<(std::ostream& s, const Config& o)
     {
         return s << o.m_json;
     }

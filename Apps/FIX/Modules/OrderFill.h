@@ -57,20 +57,20 @@ private:
     {
         log << level::trace << ts << here << std::endl;
         for (const auto& order : m_orderbook.orders) {
-            if (auto itr = m_params.fills.find(order.quantity()); itr != m_params.fills.end()) {
-                if (order.alive() && order.status() != Order::Status::Filled && order.status() != Order::Status::PartiallyFilled) {
-                    fill(order, itr->second, next);
+            for (const auto& [selector, qualifier] : m_params) {
+                if (selector.empty() || m_factory.matches(order, selector)) {
+                    fills(order, qualifier, next);
                 }
             }
         }
     }
 
     template<typename Next>
-    void fill(const Order& order, const Params::OrderFill::Fills& fills, Next& next)
+    void fills(const Order& order, const Config& fills, Next& next)
     {
         log << level::trace << ts << here << std::endl;
         for (const auto& f : fills) {
-            fill(order, f, next);
+            fill(order, Config(f), next);
         }
     }
 

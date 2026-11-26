@@ -140,6 +140,12 @@ public:
                      to_float<double>(msg[tag::Price]));
     }
 
+    static bool matches(const NewOrderSingle& msg, const Config& config)
+    {
+        int quantity = static_cast<int>(config["Quantity"]);
+        return to_int<int>(msg[tag::OrderQty]) == quantity;
+    }
+
     OMessage accept(const NewOrderSingle&, const Order& o)
     {
         log << level::trace << oflow << here << std::endl;
@@ -233,6 +239,12 @@ public:
             std::string(msg[tag::ClOrdID]), o.symbol(), o.side(), o.type(), to_int(msg[tag::OrderQty], o.quantity()), to_float(msg[tag::Price], o.price()));
         order.status(Order::Status::Replaced);
         return order;
+    }
+
+    static bool matches(const Order& order, const Config& config)
+    {
+        int quantity = static_cast<int>(config["Quantity"]);
+        return order.quantity() == quantity;
     }
 
     OMessage accept(const OrderCancelReplaceRequest& msg, const Order& o)
@@ -445,6 +457,14 @@ public:
     //-----------------------------------------------------------------------------------------------------------------
     // Trade and trade cancel handling
     //-----------------------------------------------------------------------------------------------------------------
+    static bool matches(const Fill& fill, const Config& config)
+    {
+        auto quantity = static_cast<int>(config["Quantity"]);
+        auto price    = static_cast<double>(config["Price"]);
+        // TODO - handle just one param
+        return fill.quantity() == quantity && fill.price() == price;
+    }
+
     OMessage report(const Fill& fill, const Order& o)
     {
         log << level::trace << oflow << here << std::endl;
