@@ -10,9 +10,11 @@ namespace Common::Context {
 
 namespace bmi = boost::multi_index;
 
-template<typename Fill>
+template<typename F>
 struct FillsBook
 {
+    using Fill = F;
+
     struct orderid
     {};
 

@@ -1,94 +1,18 @@
 #ifndef FIX_Modules_FillCancel_dot_h
 #define FIX_Modules_FillCancel_dot_h
 
-#include "PaxSim/Core/Streamlog.h"
-
-#include "Common/Config.h"
-#include "Common/Params/FillCancel.h"
+#include "Common/Modules/FillCancel.h"
 
 #include "FIX/Context/OrderBook.h"
 #include "FIX/Context/FillsBook.h"
 
 namespace FIX::Modules {
 
-using namespace PaxSim::Core;
-using PaxSim::Core::log;
-
 //---------------------------------------------------------------------------------------------------------------------
 // Fill cancel handling module.
 //---------------------------------------------------------------------------------------------------------------------
 template<typename Factory>
-class FillCancel
-{
-public:
-    using Config = Common::Config;
-    using Params = Common::Params::FillCancel;
-
-    template<typename Context>
-    explicit FillCancel(Context& context)
-      : m_orderbook(context)
-      , m_fillsbook(context)
-      , m_params(context)
-      , m_factory(context)
-    {
-    }
-
-    template<typename Context>
-    FillCancel(const Config&, Context& context)
-      : m_orderbook(context)
-      , m_fillsbook(context)
-      , m_params(context)
-      , m_factory(context)
-    {
-    }
-
-    // Examine fills book and generate fill cancellations if necessary
-    template<typename Next>
-    void eval(Next& next)
-    {
-        log << level::trace << ts << ' ' << here << std::endl;
-        cancel(next);
-    }
-
-private:
-    template<typename Next>
-    void cancel(Next& next)
-    {
-        for (const auto& fill : m_fillsbook) {
-            if (fill.live()) {
-                for (const auto& [selector, qualifier] : m_params) {
-                    if (selector.empty() || m_factory.matches(fill, selector)) {
-                        cancel(fill, qualifier, next);
-                    }
-                }
-            }
-        }
-    }
-
-    template<typename Next>
-    void cancel(const Fill& fill, const Config& params, Next& next)
-    {
-        auto& idx = m_orderbook.orders.get<Context::OrderBook::orderid>();
-        auto  itr = idx.find(fill.orderID());
-        if (itr == idx.end()) {
-            log << level::error << ts << here << ' ' << "Unable to find order for client order ID: " << fill.orderID() << std::endl;
-            return;
-        }
-        return cancel(fill, *itr, params, next);
-    }
-
-    template<typename Next>
-    void cancel(const Fill& fill, const Order& order, const Config& params, Next& next)
-    {
-        fill.cancel();
-        next.put(m_factory.cancel(fill, order, params));
-    }
-
-    Context::OrderBook& m_orderbook;
-    Context::FillsBook& m_fillsbook;
-    Params&             m_params;
-    Factory             m_factory;
-};
+using FillCancel = Common::Modules::FillCancel<Context::OrderBook, Context::FillsBook, Factory>;
 
 } // namespace FIX::Modules
 #endif

@@ -13,9 +13,11 @@ namespace Common::Context {
 //---------------------------------------------------------------------------------------------------------------------
 namespace bmi = boost::multi_index;
 
-template<typename Order>
+template<typename O>
 struct OrderBook
 {
+    using Order = O;
+
     struct orderid
     {};
     struct clordid
@@ -24,15 +26,24 @@ struct OrderBook
     using orderid_t = decltype(std::declval<Order>().orderID());
     using clordid_t = decltype(std::declval<Order>().clordID());
 
-    bmi::multi_index_container<
+    using Container = bmi::multi_index_container<
         // clang-format off
         Order,
             bmi::indexed_by <
                 bmi::ordered_unique     < bmi::tag<orderid>, bmi::const_mem_fun<Order, orderid_t, &Order::orderID>>,
                 bmi::ordered_unique     < bmi::tag<clordid>, bmi::const_mem_fun<Order, clordid_t, &Order::clordID>>
             >
-        > orders;
+        >;
     // clang-format on
+
+    Container orders;
+
+    // Get the type of the index tagged with 'my_tag'
+    using ByOrderID_t = typename Container::template index<clordid>::type;
+    using ByClOrdID_t = typename Container::template index<clordid>::type;
+
+    ByOrderID_t& ByOrderID = orders.template get<clordid>();
+    ByClOrdID_t& ByClOrdID = orders.template get<clordid>();
 
     template<typename Config>
     explicit OrderBook(const Config& config)
