@@ -3,11 +3,11 @@
 
 #include <FIX/Types.h>
 
-#include <Common/OrderBook.h>
+#include <Context/OrderBook.h>
 
 namespace FIX::Context {
 
-using OrderBook = Common::OrderBook<Order>;
+using OrderBook = Common::Context::OrderBook<Order>;
 
 } // namespace FIX::Context
 #endif

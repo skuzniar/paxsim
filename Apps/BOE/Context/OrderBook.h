@@ -3,11 +3,11 @@
 
 #include <BOE/Types.h>
 
-#include <Common/OrderBook.h>
+#include <Context/OrderBook.h>
 
 namespace boe::Context {
 
-using OrderBook = Common::OrderBook<Order>;
+using OrderBook = Common::Context::OrderBook<Order>;
 
 } // namespace boe::Context
 #endif

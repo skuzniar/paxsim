@@ -1,12 +1,12 @@
-#ifndef Common_FillsBook_dot_h
-#define Common_FillsBook_dot_h
+#ifndef Common_Context_FillsBook_dot_h
+#define Common_Context_FillsBook_dot_h
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/mem_fun.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 
-namespace Common {
+namespace Common::Context {
 
 namespace bmi = boost::multi_index;
 
@@ -52,5 +52,5 @@ struct FillsBook
     }
 };
 
-} // namespace Common
+} // namespace Common::Context
 #endif

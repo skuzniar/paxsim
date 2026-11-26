@@ -1,12 +1,12 @@
-#ifndef Common_OrderBook_dot_h
-#define Common_OrderBook_dot_h
+#ifndef Common_Context_OrderBook_dot_h
+#define Common_Context_OrderBook_dot_h
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/mem_fun.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 
-namespace Common {
+namespace Common::Context {
 
 //---------------------------------------------------------------------------------------------------------------------
 // Order book. Collection of orders
@@ -40,5 +40,5 @@ struct OrderBook
     }
 };
 
-} // namespace Common
+} // namespace Common::Context
 #endif

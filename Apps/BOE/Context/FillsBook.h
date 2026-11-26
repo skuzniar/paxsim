@@ -3,11 +3,11 @@
 
 #include <BOE/Types.h>
 
-#include <Common/FillsBook.h>
+#include <Context/FillsBook.h>
 
 namespace boe::Context {
 
-using FillsBook = Common::FillsBook<Fill>;
+using FillsBook = Common::Context::FillsBook<Fill>;
 
 } // namespace boe::Context
 #endif

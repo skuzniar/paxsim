@@ -3,11 +3,11 @@
 
 #include <OUCH/Types.h>
 
-#include <Common/OrderBook.h>
+#include <Context/OrderBook.h>
 
 namespace OUCH::Context {
 
-using OrderBook = Common::OrderBook<Order>;
+using OrderBook = Common::Context::OrderBook<Order>;
 
 } // namespace OUCH::Context
 #endif

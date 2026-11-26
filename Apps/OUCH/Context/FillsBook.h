@@ -3,11 +3,11 @@
 
 #include <OUCH/Types.h>
 
-#include <Common/FillsBook.h>
+#include <Context/FillsBook.h>
 
 namespace OUCH::Context {
 
-using FillsBook = Common::FillsBook<Fill>;
+using FillsBook = Common::Context::FillsBook<Fill>;
 
 } // namespace OUCH::Context
 #endif
