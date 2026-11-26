@@ -6,7 +6,6 @@
 #include "Common/Config.h"
 
 #include "OUCH/Context/OrderBook.h"
-#include "OUCH/Context/FillsBook.h"
 
 #include "Params/OrderCancel.h"
 
@@ -27,7 +26,6 @@ public:
     template<typename Context>
     explicit OrderCancel(Context& context)
       : m_orderbook(context)
-      , m_fillsbook(context)
       , m_params(context)
       , m_factory(context)
     {
@@ -36,7 +34,6 @@ public:
     template<typename Context>
     OrderCancel(const Config&, Context& context)
       : m_orderbook(context)
-      , m_fillsbook(context)
       , m_params(context)
       , m_factory(context)
     {
@@ -71,7 +68,6 @@ private:
     }
 
     Context::OrderBook&  m_orderbook;
-    Context::FillsBook&  m_fillsbook;
     Params::OrderCancel& m_params;
     Factory              m_factory;
 };

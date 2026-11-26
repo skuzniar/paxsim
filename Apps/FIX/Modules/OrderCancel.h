@@ -4,7 +4,6 @@
 #include "PaxSim/Core/Streamlog.h"
 
 #include "FIX/Context/OrderBook.h"
-#include "FIX/Context/FillsBook.h"
 
 #include "Common/Config.h"
 
@@ -28,7 +27,6 @@ public:
     template<typename Context>
     explicit OrderCancel(Context& context)
       : m_orderbook(context)
-      , m_fillsbook(context)
       , m_params(context)
       , m_factory(context)
     {
@@ -37,7 +35,6 @@ public:
     template<typename Context>
     OrderCancel(const Config&, Context& context)
       : m_orderbook(context)
-      , m_fillsbook(context)
       , m_params(context)
       , m_factory(context)
     {
@@ -72,7 +69,6 @@ private:
     }
 
     Context::OrderBook&  m_orderbook;
-    Context::FillsBook&  m_fillsbook;
     Params::OrderCancel& m_params;
     Factory              m_factory;
 };
