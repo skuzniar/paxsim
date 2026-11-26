@@ -11,7 +11,6 @@
 
 namespace OUCH::Modules {
 
-using namespace Common;
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
 

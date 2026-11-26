@@ -13,7 +13,6 @@
 namespace FIX::Modules {
 
 using namespace PaxSim::Core;
-
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -22,9 +21,9 @@ using PaxSim::Core::log;
 template<typename Factory>
 class FillCancel
 {
+public:
     using Config = Common::Config;
 
-public:
     template<typename Context>
     explicit FillCancel(Context& context)
       : m_orderbook(context)
@@ -43,11 +42,11 @@ public:
     {
     }
 
-    // Examine order book and generate fill cancellations if necessary
+    // Examine fills book and generate fill cancellations if necessary
     template<typename Next>
     void eval(Next& next)
     {
-        log << level::trace << ts << here << std::endl;
+        log << level::trace << ts << ' ' << here << std::endl;
         cancel(next);
     }
 

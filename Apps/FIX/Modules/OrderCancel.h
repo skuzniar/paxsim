@@ -17,7 +17,7 @@ using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
-// Order Book cancellation module
+// Order cancel handling module.
 //---------------------------------------------------------------------------------------------------------------------
 template<typename Factory>
 class OrderCancel

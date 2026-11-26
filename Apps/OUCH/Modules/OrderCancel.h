@@ -42,6 +42,7 @@ public:
     {
     }
 
+    // Examine order book and generate fill cancells if necessary
     template<typename Next>
     void eval(Next& next)
     {
