@@ -1,12 +1,12 @@
-#ifndef Control_Writer_dot_h
-#define Control_Writer_dot_h
+#ifndef Common_Control_Writer_dot_h
+#define Common_Control_Writer_dot_h
 
 #include "PaxSim/Core/RWBuffer.h"
 #include "PaxSim/Core/Streamlog.h"
 
 #include "Common/Config.h"
 
-namespace Control {
+namespace Common::Control {
 
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
@@ -43,5 +43,5 @@ private:
     ORWBuffer& m_obuf;
 };
 
-} // namespace Control
+} // namespace Common::Control
 #endif

@@ -4,10 +4,9 @@
 #include "PaxSim/Core/Streamlog.h"
 
 #include "Common/Config.h"
+#include "Common/Params/OrderReject.h"
 
 #include "FIX/Context/OrderBook.h"
-
-#include "Params/OrderReject.h"
 
 namespace FIX::Modules {
 
@@ -22,6 +21,7 @@ template<typename Factory>
 class OrderReject
 {
     using Config = Common::Config;
+    using Params = Common::Params::OrderReject;
 
 public:
     using NewOrderSingle            = Factory::NewOrderSingle;
@@ -108,9 +108,9 @@ private:
         return true;
     }
 
-    Context::OrderBook&  m_orderbook;
-    Params::OrderReject& m_params;
-    Factory              m_factory;
+    Context::OrderBook& m_orderbook;
+    Params&             m_params;
+    Factory             m_factory;
 };
 
 } // namespace FIX::Modules

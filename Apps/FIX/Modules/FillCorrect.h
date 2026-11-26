@@ -4,11 +4,10 @@
 #include "PaxSim/Core/Streamlog.h"
 
 #include "Common/Config.h"
+#include "Common/Params/FillCorrect.h"
 
 #include "FIX/Context/OrderBook.h"
 #include "FIX/Context/FillsBook.h"
-
-#include "Params/FillCorrect.h"
 
 namespace FIX::Modules {
 
@@ -23,6 +22,7 @@ template<typename Factory>
 class FillCorrect
 {
     using Config = Common::Config;
+    using Params = Common::Params::FillCorrect;
 
 public:
     template<typename Context>
@@ -87,10 +87,10 @@ private:
         next.put(m_factory.correct(fill, order, params));
     }
 
-    Context::OrderBook&  m_orderbook;
-    Context::FillsBook&  m_fillsbook;
-    Params::FillCorrect& m_params;
-    Factory              m_factory;
+    Context::OrderBook& m_orderbook;
+    Context::FillsBook& m_fillsbook;
+    Params&             m_params;
+    Factory             m_factory;
 };
 
 } // namespace FIX::Modules

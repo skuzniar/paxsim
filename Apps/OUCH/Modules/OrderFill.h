@@ -7,7 +7,7 @@
 #include "OUCH/Context/FillsBook.h"
 
 #include "Common/Config.h"
-#include "Params/OrderFill.h"
+#include "Common/Params/OrderFill.h"
 
 namespace OUCH::Modules {
 
@@ -22,6 +22,7 @@ class OrderFill
 {
 public:
     using Config = Common::Config;
+    using Params = Common::Params::OrderFill;
 
     template<typename Context>
     explicit OrderFill(Context& context)
@@ -90,7 +91,7 @@ private:
 
     Context::OrderBook& m_orderbook;
     Context::FillsBook& m_fillsbook;
-    Params::OrderFill&  m_params;
+    Params&             m_params;
     Factory             m_factory;
 };
 

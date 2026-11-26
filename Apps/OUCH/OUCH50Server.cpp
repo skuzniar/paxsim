@@ -17,18 +17,18 @@
 #include "Modules/FillCancel.h"
 #include "Modules/Writer.h"
 
-#include "Control/Parser.h"
-#include "Control/Admin.h"
-#include "Control/Loader.h"
-#include "Control/Writer.h"
+#include "Common/Control/Parser.h"
+#include "Common/Control/Admin.h"
+#include "Common/Control/Loader.h"
+#include "Common/Control/Writer.h"
 
 #include "OUCH50/Factory.h"
 
-#include "Params/OrderReject.h"
-#include "Params/OrderCancel.h"
-#include "Params/OrderFill.h"
-#include "Params/FillCancel.h"
-#include "Params/Store.h"
+#include "Common/Params/OrderReject.h"
+#include "Common/Params/OrderCancel.h"
+#include "Common/Params/OrderFill.h"
+#include "Common/Params/FillCancel.h"
+#include "Common/Params/Store.h"
 
 #include "Common/Config.h"
 
@@ -37,7 +37,7 @@ namespace OUCH::OUCH50 {
 struct Server
 {
     // Params is an aggregate of parameter classes.
-    using Params = Params::Store<Params::OrderReject, Params::OrderFill, Params::OrderCancel, Params::FillCancel>;
+    using Params = Common::Params::Store<Common::Params::OrderReject, Common::Params::OrderFill, Common::Params::OrderCancel, Common::Params::FillCancel>;
 
     // Context is an aggregate of context classes.
     using Context = PaxSim::Core::Aggregate<Context::Session, Context::OrderBook, Context::FillsBook, Params>;
@@ -56,10 +56,10 @@ struct Server
     using Handler = PaxSim::Core::
         Pipeline<Parser, PaxSim::Core::Flareout<Session, OrderReject, OrderFlow, OrderCancelOnDisconnect, OrderCancel, FillCancel, OrderFill>, Writer>;
 
-    using CtlParser = Control::Parser;
-    using CtlAdmin  = Control::Admin<Params>;
-    using CtlLoader = Control::Loader<Params>;
-    using CtlWriter = Control::Writer;
+    using CtlParser = Common::Control::Parser;
+    using CtlAdmin  = Common::Control::Admin<Params>;
+    using CtlLoader = Common::Control::Loader<Params>;
+    using CtlWriter = Common::Control::Writer;
 
     // Controller handles control commands
     using Controller = PaxSim::Core::Pipeline<CtlParser, PaxSim::Core::Flareout<CtlAdmin, CtlLoader>, CtlWriter>;

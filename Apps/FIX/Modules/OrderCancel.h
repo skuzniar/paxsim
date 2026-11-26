@@ -6,8 +6,7 @@
 #include "FIX/Context/OrderBook.h"
 
 #include "Common/Config.h"
-
-#include "Params/OrderCancel.h"
+#include "Common/Params/OrderCancel.h"
 
 namespace FIX::Modules {
 
@@ -22,6 +21,7 @@ template<typename Factory>
 class OrderCancel
 {
     using Config = Common::Config;
+    using Params = Common::Params::OrderCancel;
 
 public:
     template<typename Context>
@@ -68,9 +68,9 @@ private:
         next.put(m_factory.cancel(order, params));
     }
 
-    Context::OrderBook&  m_orderbook;
-    Params::OrderCancel& m_params;
-    Factory              m_factory;
+    Context::OrderBook& m_orderbook;
+    Params&             m_params;
+    Factory             m_factory;
 };
 
 } // namespace FIX::Modules

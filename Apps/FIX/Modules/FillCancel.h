@@ -4,11 +4,10 @@
 #include "PaxSim/Core/Streamlog.h"
 
 #include "Common/Config.h"
+#include "Common/Params/FillCancel.h"
 
 #include "FIX/Context/OrderBook.h"
 #include "FIX/Context/FillsBook.h"
-
-#include "Params/FillCancel.h"
 
 namespace FIX::Modules {
 
@@ -23,6 +22,7 @@ class FillCancel
 {
 public:
     using Config = Common::Config;
+    using Params = Common::Params::FillCancel;
 
     template<typename Context>
     explicit FillCancel(Context& context)
@@ -86,7 +86,7 @@ private:
 
     Context::OrderBook& m_orderbook;
     Context::FillsBook& m_fillsbook;
-    Params::FillCancel& m_params;
+    Params&             m_params;
     Factory             m_factory;
 };
 

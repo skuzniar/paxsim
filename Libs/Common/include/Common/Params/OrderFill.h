@@ -1,40 +1,40 @@
-#ifndef Params_FillCancel_dot_h
-#define Params_FillCancel_dot_h
+#ifndef Common_Params_OrderFill_dot_h
+#define Common_Params_OrderFill_dot_h
 
 #include "PaxSim/Core/Streamlog.h"
 #include "Generic.h"
 #include <cstddef>
 
-namespace Params {
+namespace Common::Params {
 
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
-// Fill Cancel scenario parameters.
+// Order Fill scenario parameters.
 //---------------------------------------------------------------------------------------------------------------------
-class FillCancel : public Generic
+class OrderFill : public Generic
 {
 public:
-    explicit FillCancel(const Config& config)
+    explicit OrderFill(const Config& config)
     {
         init(config);
     }
 
     void init(const Config& config)
     {
-        if (auto [present, cfg] = config("Control.Fill.Cancel"); present) {
+        if (auto [present, cfg] = config("Control.Order.Fill"); present) {
             auto count = load(cfg);
-            log << level::debug << here << " Loaded " << count << " Fill Cancel entries." << std::endl;
+            log << level::debug << here << " Loaded " << count << " Order Fill entries." << std::endl;
         }
     }
 
     void clear()
     {
         auto count = Generic::clear();
-        log << level::debug << here << " Cleared " << count << " Fill Cancel entries." << std::endl;
+        log << level::debug << here << " Cleared " << count << " Order Fill entries." << std::endl;
     }
 };
 
-} // namespace Params
+} // namespace Common::Params
 #endif

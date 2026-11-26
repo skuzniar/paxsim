@@ -5,7 +5,7 @@
 #include "Generic.h"
 #include <cstddef>
 
-namespace Params {
+namespace Common::Params {
 
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
@@ -153,5 +153,5 @@ public:
 };
 */
 
-} // namespace Params
+} // namespace Common::Params
 #endif

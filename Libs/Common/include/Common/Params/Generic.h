@@ -1,12 +1,12 @@
-#ifndef Params_Generic_dot_h
-#define Params_Generic_dot_h
+#ifndef Common_Params_Generic_dot_h
+#define Common_Params_Generic_dot_h
 
 #include "Common/Config.h"
 
 #include <vector>
 #include <cstddef>
 
-namespace Params {
+namespace Common::Params {
 
 //---------------------------------------------------------------------------------------------------------------------
 // Generic control parameters.
@@ -50,5 +50,5 @@ protected:
     std::vector<std::pair<Selector, Qualifier>> parameters;
 };
 
-} // namespace Params
+} // namespace Common::Params
 #endif

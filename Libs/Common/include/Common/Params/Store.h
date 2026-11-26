@@ -1,10 +1,10 @@
-#ifndef Params_Store_dot_h
-#define Params_Store_dot_h
+#ifndef Common_Params_Store_dot_h
+#define Common_Params_Store_dot_h
 
 #include <cstddef>
 #include <utility>
 
-namespace Params {
+namespace Common::Params {
 
 //---------------------------------------------------------------------------------------------------------------------
 // Convenience class to collect all parameters.
@@ -33,5 +33,5 @@ public:
     }
 };
 
-} // namespace Params
+} // namespace Common::Params
 #endif

@@ -1,32 +1,32 @@
-#ifndef Control_Admin_dot_h
-#define Control_Admin_dot_h
+#ifndef Common_Control_Loader_dot_h
+#define Common_Control_Loader_dot_h
 
 #include "PaxSim/Core/Streamlog.h"
 
 #include "Common/Config.h"
 
-namespace Control {
+namespace Common::Control {
 
 using namespace PaxSim::Core;
 using PaxSim::Core::log;
 
 //---------------------------------------------------------------------------------------------------------------------
-// Control Admin command processor.
+// Control parameters loader. Parses control command and applies it to control parameters.
 //---------------------------------------------------------------------------------------------------------------------
 template<typename Params>
-class Admin
+class Loader
 {
     using Config = Common::Config;
 
 public:
     template<typename Context>
-    explicit Admin(Context& context)
+    explicit Loader(Context& context)
       : m_params(context)
     {
     }
 
     template<typename Context>
-    Admin(const Config&, Context& context)
+    Loader(const Config&, Context& context)
       : m_params(context)
     {
     }
@@ -35,30 +35,20 @@ public:
     bool put(const char* msg, Next& next)
     {
         log << level::trace << ts << here << std::endl;
+
         try {
-            Config config(msg);
-            if (auto [present, command] = config("Control.Admin.Command"); present) {
-                process(command);
-            }
+            m_params.init(Config(msg));
         } catch (const std::exception& e) {
             next.put(e.what());
-            return false;
+            return true;
         }
         next.put("OK");
-        return false;
+        return true;
     }
 
 private:
-    void process(const Config& command)
-    {
-        // TODO
-        if (auto [present, _] = command("Clear"); present) {
-            m_params.clear();
-        }
-    }
-
     Params& m_params;
 };
 
-} // namespace Control
+} // namespace Common::Control
 #endif

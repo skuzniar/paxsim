@@ -4,10 +4,9 @@
 #include "PaxSim/Core/Streamlog.h"
 
 #include "Common/Config.h"
+#include "Common/Params/OrderCancel.h"
 
 #include "OUCH/Context/OrderBook.h"
-
-#include "Params/OrderCancel.h"
 
 namespace OUCH::Modules {
 
@@ -21,6 +20,7 @@ template<typename Factory>
 class OrderCancel
 {
     using Config = Common::Config;
+    using Params = Common::Params::OrderCancel;
 
 public:
     template<typename Context>
@@ -67,9 +67,9 @@ private:
         next.put(m_factory.cancel(order, params));
     }
 
-    Context::OrderBook&  m_orderbook;
-    Params::OrderCancel& m_params;
-    Factory              m_factory;
+    Context::OrderBook& m_orderbook;
+    Params&             m_params;
+    Factory             m_factory;
 };
 
 } // namespace OUCH::Modules

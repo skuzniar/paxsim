@@ -7,8 +7,7 @@
 #include "FIX/Context/FillsBook.h"
 
 #include "Common/Config.h"
-
-#include "Params/OrderFill.h"
+#include "Common/Params/OrderFill.h"
 
 namespace FIX::Modules {
 
@@ -23,6 +22,7 @@ template<typename Factory>
 class OrderFill
 {
     using Config = Common::Config;
+    using Params = Common::Params::OrderFill;
 
 public:
     template<typename Context>
@@ -92,7 +92,7 @@ private:
 
     Context::OrderBook& m_orderbook;
     Context::FillsBook& m_fillsbook;
-    Params::OrderFill&  m_params;
+    Params&             m_params;
     Factory             m_factory;
 };
 
