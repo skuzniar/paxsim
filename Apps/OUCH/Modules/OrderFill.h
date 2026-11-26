@@ -54,7 +54,7 @@ private:
     void fills(Next& next)
     {
         log << level::trace << ts << ' ' << here << std::endl;
-        for (const auto& order : m_orderbook.orders) {
+        for (const auto& order : m_orderbook) {
             for (const auto& [selector, qualifier] : m_params) {
                 if (selector.empty() || m_factory.matches(order, selector)) {
                     fills(order, qualifier, next);

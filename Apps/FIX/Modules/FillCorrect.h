@@ -55,7 +55,7 @@ private:
     template<typename Next>
     void correct(Next& next)
     {
-        for (const auto& fill : m_fillsbook.fills) {
+        for (const auto& fill : m_fillsbook) {
             if (fill.live()) {
                 for (const auto& [selector, qualifier] : m_params) {
                     if (selector.empty() || m_factory.matches(fill, selector)) {

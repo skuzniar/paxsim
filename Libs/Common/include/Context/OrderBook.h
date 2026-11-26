@@ -29,7 +29,7 @@ struct OrderBook
         Order,
             bmi::indexed_by <
                 bmi::ordered_unique     < bmi::tag<orderid>, bmi::const_mem_fun<Order, orderid_t, &Order::orderID>>,
-                bmi::ordered_unique     < bmi::tag<clordid>, bmi::const_mem_fun<Order, orderid_t, &Order::clordID>>
+                bmi::ordered_unique     < bmi::tag<clordid>, bmi::const_mem_fun<Order, clordid_t, &Order::clordID>>
             >
         > orders;
     // clang-format on
@@ -37,6 +37,24 @@ struct OrderBook
     template<typename Config>
     explicit OrderBook(const Config& config)
     {
+    }
+
+    auto begin() const
+    {
+        return orders.begin();
+    }
+    auto begin()
+    {
+        return orders.begin();
+    }
+
+    auto end() const
+    {
+        return orders.end();
+    }
+    auto end()
+    {
+        return orders.end();
     }
 };
 

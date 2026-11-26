@@ -57,7 +57,7 @@ private:
     void cancell(Next& next)
     {
         log << level::trace << ts << here << std::endl;
-        for (const auto& order : m_orderbook.orders) {
+        for (const auto& order : m_orderbook) {
             if (order.status() != Order::Status::Canceled && order.status() != Order::Status::Rejected) {
                 cancel(order, next);
             }

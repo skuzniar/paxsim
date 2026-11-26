@@ -33,6 +33,24 @@ struct FillsBook
     {
     }
 
+    auto begin() const
+    {
+        return fills.begin();
+    }
+    auto begin()
+    {
+        return fills.begin();
+    }
+
+    auto end() const
+    {
+        return fills.end();
+    }
+    auto end()
+    {
+        return fills.end();
+    }
+
     // Compute the total fills for the order
     [[nodiscard]] std::pair<unsigned, double> cumulative(orderid_t id) const
     {

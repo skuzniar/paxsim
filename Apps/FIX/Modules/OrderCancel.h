@@ -55,7 +55,7 @@ private:
     template<typename Next>
     void cancell(Next& next)
     {
-        for (const auto& order : m_orderbook.orders) {
+        for (const auto& order : m_orderbook) {
             for (const auto& [selector, qualifier] : m_params) {
                 if (selector.empty() || m_factory.matches(order, selector)) {
                     cancel(order, qualifier, next);

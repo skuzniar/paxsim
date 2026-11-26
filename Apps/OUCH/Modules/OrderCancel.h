@@ -42,7 +42,7 @@ public:
     {
     }
 
-    // Examine order book and generate fill cancells if necessary
+    // Examine order book and generate order cancells if necessary
     template<typename Next>
     void eval(Next& next)
     {
@@ -54,7 +54,7 @@ private:
     template<typename Next>
     void cancell(Next& next)
     {
-        for (const auto& order : m_orderbook.orders) {
+        for (const auto& order : m_orderbook) {
             for (const auto& [selector, qualifier] : m_params) {
                 if (selector.empty() || m_factory.matches(order, selector)) {
                     cancel(order, qualifier, next);
