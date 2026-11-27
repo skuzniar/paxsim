@@ -64,7 +64,7 @@ struct Server
     using CtlWriter = Common::Control::Writer;
 
     // Controller handles control commands
-    using Controller = PaxSim::Core::Pipeline<CtlParser, PaxSim::Core::Flareout<CtlAdmin, CtlLoader>, CtlWriter>;
+    using Controller = Pipeline<CtlParser, Flareout<CtlAdmin, CtlLoader>, CtlWriter>;
 };
 
 void
@@ -74,11 +74,11 @@ run(const Common::Config& config, PaxSim::Core::IOContext& iocontext)
     Server::Context context(config);
 
     // Create application acceptor that will activate server handler once the connection has been established
-    PaxSim::Core::Acceptor<typename Server::Handler> appacceptor(iocontext, static_cast<int>(config["Session.Acceptor.Port"]));
+    Acceptor<typename Server::Handler> appacceptor(iocontext, static_cast<int>(config["Session.Acceptor.Port"]));
     appacceptor.listen(config, context);
 
     // Create controller acceptor that will activate control handler once the connection has been established
-    PaxSim::Core::Acceptor<typename Server::Controller> ctlacceptor(iocontext, static_cast<int>(config["Control.Acceptor.Port"]));
+    Acceptor<typename Server::Controller> ctlacceptor(iocontext, static_cast<int>(config["Control.Acceptor.Port"]));
     ctlacceptor.listen(config, context);
 
     iocontext.run();

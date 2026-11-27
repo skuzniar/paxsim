@@ -38,22 +38,23 @@ public:
         try {
             Config config(msg);
             if (auto [present, command] = config("Control.Admin.Command"); present) {
-                process(command);
+                process(command, next);
+                return false;
             }
         } catch (const std::exception& e) {
             next.put(e.what());
             return false;
         }
-        next.put("OK");
-        return false;
+        return true;
     }
 
 private:
-    void process(const Config& command)
+    template<typename Next>
+    void process(const Config& command, Next& next)
     {
-        // TODO
         if (auto [present, _] = command("Clear"); present) {
             m_params.clear();
+            next.put("OK");
         }
     }
 
