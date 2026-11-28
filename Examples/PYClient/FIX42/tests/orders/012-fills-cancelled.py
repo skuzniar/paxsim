@@ -10,8 +10,13 @@ import impl.util as util
 def run(client, simctl):
     '''Fills cancelled'''
 
-    # Clear simulator controls
+    # Clear simulator controls and put blank fill and fill cancel  inctructions
     simctl.send(simctl.Admin.Command({ "Clear":  True }))
+    simctl.send(simctl.Order.Fill([
+        { "Quantity":  101, "Price": 1.23 },
+        { "Quantity":  202, "Price": 2.34 },
+        ]))
+    simctl.send(simctl.Fill.Cancel({ "Reason": "Consent" }))
 
     #-- New Buy order with two fills
     nor = util.fixmsg(util.new_order_header, util.new_order_body, __doc__, client)
@@ -28,6 +33,8 @@ def run(client, simctl):
         ({35:'8'}, {39:'1', 150:'1', 11:nor.getField(11), 31:'1.230', 32:'101', 151:'6003'}),
         ({35:'8'}, {39:'1', 150:'1', 11:nor.getField(11), 31:'2.340', 32:'202', 151:'5801'})
         ])
+
+    return
 
     # Two trade cancells
     client.expect_all([

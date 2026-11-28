@@ -10,8 +10,9 @@ import impl.util as util
 def run(client, simctl):
     '''Order filled'''
 
-    # Clear simulator controls
+    # Clear simulator controls and put blank fill inctructions
     simctl.send(simctl.Admin.Command({ "Clear":  True }))
+    simctl.send(simctl.Order.Fill([{ "Quantity":  100, "Price": 1.23 }]))
 
     #-- New Buy order with one fill
     nor = util.fixmsg(util.new_order_header, util.new_order_body, __doc__, client)
@@ -34,6 +35,13 @@ def run(client, simctl):
 
     client.send(can)
     client.expect({35:'8'}, {39:'4', 150:'4', 11:can.getField(11), 41:can.getField(41), 151:'6001'})
+
+    # Clear simulator controls and put blank fill inctructions
+    simctl.send(simctl.Admin.Command({ "Clear":  True }))
+    simctl.send(simctl.Order.Fill([
+        { "Quantity":  100, "Price": 1.23 },
+        { "Quantity":  200, "Price": 2.34 },
+        ]))
 
     #-- New Buy order with two fills
     nor = util.fixmsg(util.new_order_header, util.new_order_body, __doc__, client)
@@ -59,6 +67,15 @@ def run(client, simctl):
 
     client.send(can)
     client.expect({35:'8'}, {39:'4', 150:'4', 11:can.getField(11), 41:can.getField(41), 151:'5802'})
+
+    # Clear simulator controls and put blank fill inctructions
+    simctl.send(simctl.Admin.Command({ "Clear":  True }))
+    simctl.send(simctl.Order.Fill([
+        { "Quantity":  100, "Price": 1.23 },
+        { "Quantity":  200, "Price": 2.34 },
+        { "Quantity":  300, "Price": 3.45 },
+        ]))
+
 
     #-- New Buy order with three fills
     nor = util.fixmsg(util.new_order_header, util.new_order_body, __doc__, client)

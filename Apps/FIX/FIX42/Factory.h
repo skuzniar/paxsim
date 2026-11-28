@@ -435,7 +435,7 @@ public:
         auto omsg = make(msg_type::ExecutionReport);
 
         int         code = static_cast<int>(params["Reason"]);
-        std::string text = static_cast<std::string>(params["Message"]);
+        std::string text = static_cast<std::string>(params["Text"]);
 
         omsg.push_back_string(tag::ClOrdID, o.clordID());
         omsg.push_back_string(tag::Symbol, o.symbol());

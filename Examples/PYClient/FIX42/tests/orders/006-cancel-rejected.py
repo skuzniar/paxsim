@@ -23,6 +23,9 @@ def run(client, simctl):
     client.send(nor)
     client.expect({35:'8'}, {39:'0', 150:'0', 11:nor.getField(11)})
 
+    #  Put blank reject inctructions
+    simctl.send(simctl.Order.Reject.Cancel({ "Reason":  11, "Text": "SimCtl testing" }))
+
     #-- Cancel order
     can = util.fixmsg(util.cancel_order_header, util.cancel_order_body, __doc__, client)
     can.setField(fix.OrigClOrdID(nor.getField(11)))
