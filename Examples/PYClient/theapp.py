@@ -7,6 +7,7 @@ from pathlib    import Path
 from contextlib import chdir
 
 from proctl import Proctl
+from simctl import SimCtl
 from fixapp import FIXApp
 from logmon import Logmon
 from loader import Loader
@@ -56,21 +57,24 @@ class TheApp:
 
         with chdir(location):
             proctl = Proctl()
+            simctl = SimCtl('localhost', 8888)
             fixapp = FIXApp()
             logmon = Logmon()
             loader = Loader()
 
             proctl.start()
+            simctl.start()
             fixapp.start()
             logmon.start()
 
-            self.interact(loader, fixapp, logmon)
+            self.interact(loader, fixapp, simctl, logmon)
 
             logmon.stop()
             fixapp.stop()
+            simctl.stop()
             proctl.stop()
 
-    def interact(self, loader, fixapp, logmon):
+    def interact(self, loader, fixapp, simctl, logmon):
         def prompt():
             print("h     - Print this message.")
             print("s     - Scan for test cases.")
@@ -82,7 +86,7 @@ class TheApp:
             print("Failed to logon, exiting...")
             return
 
-        runner = Runner(fixapp, None, logmon)
+        runner = Runner(fixapp, simctl, logmon)
 
         while True:
             try:

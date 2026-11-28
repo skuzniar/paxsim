@@ -7,8 +7,11 @@ import quickfix  as fix
 import impl.util as util
 
 #--- Test case must have run method
-def run(client):
+def run(client, simctl):
     '''Replace rejected'''
+
+    # Clear simulator controls
+    simctl.send(simctl.Admin.Command({ "Clear":  True }))
 
     #-- New Buy order
     nor = util.fixmsg(util.new_order_header, util.new_order_body, __doc__, client)
@@ -19,6 +22,9 @@ def run(client):
 
     client.send(nor)
     client.expect({35:'8'}, {39:'0', 150:'0', 11:nor.getField(11)})
+
+    #  Put blank reject inctructions
+    simctl.send(simctl.Order.Reject.Replace({ "Reason":  11, "Text": "SimCtl testing" }))
 
     #-- Replace order
     rep = util.fixmsg(util.replace_order_header, util.replace_order_body, __doc__, client)

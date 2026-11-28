@@ -7,8 +7,11 @@ import quickfix  as fix
 import impl.util as util
 
 #--- Test case must have run method
-def run(client):
+def run(client, simctl):
     '''Unsolicited cancel'''
+
+    # Clear simulator controls
+    simctl.send(simctl.Admin.Command({ "Clear":  True }))
 
     #-- New order with trigger quantity
     nor = util.fixmsg(util.new_order_header, util.new_order_body, __doc__, client)
