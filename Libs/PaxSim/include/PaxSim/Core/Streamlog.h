@@ -326,7 +326,7 @@ template<class CharT, class Traits>
 auto&
 oflow(std::basic_ostream<CharT, Traits>& os)
 {
-    return os << ts << ' ' << green("=== ");
+    return os << ts << ' ' << yellow("=== ");
 }
 
 template<class CharT, class Traits>

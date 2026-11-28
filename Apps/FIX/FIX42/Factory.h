@@ -167,7 +167,7 @@ public:
         return omsg.commit();
     }
 
-    OMessage reject(const NewOrderSingle& msg, int code, std::string& reason)
+    OMessage reject(const NewOrderSingle& msg, int code, std::string& text)
     {
         log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);
@@ -186,7 +186,7 @@ public:
         omsg.push_back_decimal(tag::Price, split(to_float(msg[tag::Price])));
         omsg.push_back_decimal(tag::AvgPx, split(0));
         omsg.push_back_int(tag::OrdRejReason, code);
-        omsg.push_back_string(tag::Text, reason);
+        omsg.push_back_string(tag::Text, text);
 
         return omsg.commit();
     }
@@ -195,8 +195,8 @@ public:
     {
         auto omsg = make(msg_type::ExecutionReport);
 
-        int         code = static_cast<int>(params["Error"]);
-        std::string text = static_cast<std::string>(params["Message"]);
+        int         code = static_cast<int>(params["Reason"]);
+        std::string text = static_cast<std::string>(params["Text"]);
 
         omsg.push_back_string(tag::ClOrdID, msg[tag::ClOrdID]);
         omsg.push_back_string(tag::Symbol, msg[tag::Symbol]);
@@ -269,7 +269,7 @@ public:
         return omsg.commit();
     }
 
-    OMessage reject(const OrderCancelReplaceRequest& msg, int code, std::string& reason)
+    OMessage reject(const OrderCancelReplaceRequest& msg, int code, std::string& text)
     {
         log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::OrderCancelReject);
@@ -280,12 +280,12 @@ public:
         omsg.push_back_char(tag::OrdStatus, std::underlying_type_t<Order::Status>(Order::Status::Rejected));
         omsg.push_back_char(tag::CxlRejResponseTo, 'G');
         omsg.push_back_int(tag::CxlRejReason, code);
-        omsg.push_back_string(tag::Text, reason);
+        omsg.push_back_string(tag::Text, text);
 
         return omsg.commit();
     }
 
-    OMessage reject(const OrderCancelReplaceRequest& msg, const Order& o, int code, std::string& reason)
+    OMessage reject(const OrderCancelReplaceRequest& msg, const Order& o, int code, std::string& text)
     {
         log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::OrderCancelReject);
@@ -296,7 +296,7 @@ public:
         omsg.push_back_char(tag::OrdStatus, std::underlying_type_t<Order::Status>(o.status()));
         omsg.push_back_char(tag::CxlRejResponseTo, 'G');
         omsg.push_back_int(tag::CxlRejReason, code);
-        omsg.push_back_string(tag::Text, reason);
+        omsg.push_back_string(tag::Text, text);
 
         return omsg.commit();
     }
@@ -305,8 +305,8 @@ public:
     {
         auto omsg = make(msg_type::OrderCancelReject);
 
-        int         code = static_cast<int>(params["Error"]);
-        std::string text = static_cast<std::string>(params["Message"]);
+        int         code = static_cast<int>(params["Reason"]);
+        std::string text = static_cast<std::string>(params["Text"]);
 
         omsg.push_back_string(tag::OrderID, "NONE");
         omsg.push_back_string(tag::ClOrdID, msg[tag::ClOrdID]);
@@ -357,7 +357,7 @@ public:
         return omsg.commit();
     }
 
-    OMessage reject(const OrderCancelRequest& msg, int code, std::string& reason)
+    OMessage reject(const OrderCancelRequest& msg, int code, std::string& text)
     {
         log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::OrderCancelReject);
@@ -367,12 +367,12 @@ public:
         omsg.push_back_char(tag::OrdStatus, std::underlying_type_t<Order::Status>(Order::Status::Rejected));
         omsg.push_back_char(tag::CxlRejResponseTo, 'F');
         omsg.push_back_int(tag::CxlRejReason, code);
-        omsg.push_back_string(tag::Text, reason);
+        omsg.push_back_string(tag::Text, text);
 
         return omsg.commit();
     }
 
-    OMessage reject(const OrderCancelRequest& msg, const Order& o, int code, std::string& reason)
+    OMessage reject(const OrderCancelRequest& msg, const Order& o, int code, std::string& text)
     {
         log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::OrderCancelReject);
@@ -382,7 +382,7 @@ public:
         omsg.push_back_char(tag::OrdStatus, std::underlying_type_t<Order::Status>(o.status()));
         omsg.push_back_char(tag::CxlRejResponseTo, 'F');
         omsg.push_back_int(tag::CxlRejReason, code);
-        omsg.push_back_string(tag::Text, reason);
+        omsg.push_back_string(tag::Text, text);
 
         return omsg.commit();
     }
@@ -391,8 +391,8 @@ public:
     {
         auto omsg = make(msg_type::OrderCancelReject);
 
-        int         code = static_cast<int>(params["Error"]);
-        std::string text = static_cast<std::string>(params["Message"]);
+        int         code = static_cast<int>(params["Reason"]);
+        std::string text = static_cast<std::string>(params["Text"]);
 
         omsg.push_back_string(tag::ClOrdID, msg[tag::ClOrdID]);
         omsg.push_back_string(tag::OrigClOrdID, msg[tag::OrigClOrdID]);
@@ -407,7 +407,7 @@ public:
     //-----------------------------------------------------------------------------------------------------------------
     // Unsolicited Order cancel handling
     //-----------------------------------------------------------------------------------------------------------------
-    OMessage cancel(const Order& o, const std::string& reason)
+    OMessage cancel(const Order& o, const std::string& text)
     {
         log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);
@@ -421,7 +421,7 @@ public:
         omsg.push_back_int(tag::OrderQty, o.quantity());
         omsg.push_back_decimal(tag::Price, split(o.price()));
         omsg.push_back_int(tag::OrdRejReason, 88);
-        omsg.push_back_string(tag::Text, reason);
+        omsg.push_back_string(tag::Text, text);
 
         set_fills(omsg, o);
         omsg.push_back_char(tag::OrdStatus, std::underlying_type_t<Order::Status>(o.status()));
@@ -434,7 +434,7 @@ public:
         log << level::trace << oflow << here << std::endl;
         auto omsg = make(msg_type::ExecutionReport);
 
-        int         code = static_cast<int>(params["Error"]);
+        int         code = static_cast<int>(params["Reason"]);
         std::string text = static_cast<std::string>(params["Message"]);
 
         omsg.push_back_string(tag::ClOrdID, o.clordID());

@@ -270,7 +270,7 @@ def main(suite, location):
         print("Exception occured while running", suite, ':', e)
 
 if __name__=='__main__':
-    parser = argparse.ArgumentParser(description='Loader')
+    parser = argparse.ArgumentParser(description='FIXApp')
     parser.add_argument('suite', type=str, help='Test suite name')
     parser.add_argument('location', type=str, help='Test suite location')
     args = parser.parse_args()

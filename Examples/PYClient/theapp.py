@@ -27,6 +27,7 @@ class TheApp:
         for p in paths:
             for f in Path(os.path.expanduser(p)).rglob('.' + type(self).__name__.lower()):
                 files.append(str(f))
+        print("TheApp - files:", files)
 
         #--- Loctuples is a dictionary of test suite names and their locations
         loctuples = dict()
@@ -38,6 +39,7 @@ class TheApp:
                     if len(name) > 0 and not name.startswith('#'):
                         loctuples[name] = spath if spath else '.'
 
+        print("TheApp - loctuples:", loctuples)
         return loctuples
 
     # --- Test cases entry points

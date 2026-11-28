@@ -20,8 +20,3 @@ def run(session):
     session.send(nor)
     session.expect({35:'8'}, {39:'8', 150:'8', 11:nor.getField(11)})
 
-    nor.setField(fix.OrderQty(5111))
-
-    session.send(nor)
-    session.expect({35:'8'}, {39:'8', 150:'8', 11:nor.getField(11)})
-

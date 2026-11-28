@@ -24,17 +24,17 @@
                 Enter: 
                 [
                     {Selector: {}              , Qualifier: {Reason:  1}},
-                    {Selector: {Quantity: 5101}, Qualifier: {Reason: 11}},
+                    {Selector: {Quantity: 5101}, Qualifier: {Reason: 11, Text: "Order Enter reject"}},
                 ],
                 Replace: 
                 [
                     {Selector: {}              , Qualifier: {Reason:  1}},
-                    {Selector: {Quantity: 5101}, Qualifier: {Reason: 11}},
+                    {Selector: {Quantity: 5101}, Qualifier: {Reason: 11, Text: "Order Replace reject"}},
                 ],
                 Cancel: 
                 [
                     {Selector: {}              , Qualifier: {Reason:  1}},
-                    {Selector: {Quantity: 5101}, Qualifier: {Reason: 11}},
+                    {Selector: {Quantity: 5101}, Qualifier: {Reason: 11, Text: "Order Cancel reject"}},
                 ],
             },
             Cancel: 
