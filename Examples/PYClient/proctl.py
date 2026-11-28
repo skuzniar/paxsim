@@ -21,7 +21,7 @@ def locate(paths, pattern):
 #--------------------------------------------------------------------------------------------------
 # Process controller. Runs processes it deems necessary. Here just exchange simulator.
 #--------------------------------------------------------------------------------------------------
-class Proctl:
+class ProCtl:
     def __init__(self):
         pass
 
@@ -105,7 +105,7 @@ class Proctl:
 def main(suite, location):
     try:
         with chdir(location):
-            proctl = Proctl()
+            proctl = ProCtl()
             proctl.start()
             time.sleep(5)
             proctl.stop()

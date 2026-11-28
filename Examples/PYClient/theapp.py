@@ -6,10 +6,10 @@ import traceback
 from pathlib    import Path
 from contextlib import chdir
 
-from proctl import Proctl
+from proctl import ProCtl
 from simctl import SimCtl
 from fixapp import FIXApp
-from logmon import Logmon
+from logmon import LogMon
 from loader import Loader
 from runner import Runner
 
@@ -56,10 +56,10 @@ class TheApp:
         print("Selected suite:", suite, "at:", location)
 
         with chdir(location):
-            proctl = Proctl()
+            proctl = ProCtl()
             simctl = SimCtl('localhost', 8888)
             fixapp = FIXApp()
-            logmon = Logmon()
+            logmon = LogMon()
             loader = Loader()
 
             proctl.start()

@@ -7,7 +7,7 @@ import threading
 
 from contextlib import chdir
 
-class Logmon:
+class LogMon:
     def __init__(self):
         # List of files and their modification times
         self.files = []
@@ -156,7 +156,7 @@ class Logmon:
 def main(suite, location):
     try:
         with chdir(location):
-            logmon = Logmon()
+            logmon = LogMon()
             logmon.start()
             time.sleep(10)
             logmon.stop()
