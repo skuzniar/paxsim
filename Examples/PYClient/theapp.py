@@ -82,7 +82,7 @@ class TheApp:
             print("Failed to logon, exiting...")
             return
 
-        runner = Runner(fixapp, logmon)
+        runner = Runner(fixapp, None, logmon)
 
         while True:
             try:
